@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<XMLDB PATH="question/type/guessit/db" VERSION="2013070" COMMENT="XMLDB file for Moodle question/type/guessit"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="../../../../lib/xmldb/xmldb.xsd"
+>
+  <TABLES>
+    <TABLE NAME="question_guessit" COMMENT="Options for guessit questions">
+      <FIELDS>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true" NEXT="question"/>
+        <FIELD NAME="question" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="Foreign key references question.id" PREVIOUS="id" NEXT="casesensitive"/>
+        <FIELD NAME="casesensitive" TYPE="int" LENGTH="1" NOTNULL="false" DEFAULT="0" SEQUENCE="false" COMMENT="make marking case sensitive" PREVIOUS="delimitchars" NEXT="fixedgapsize"/>
+        <FIELD NAME="fixedgapsize" TYPE="int" LENGTH="1" NOTNULL="false" DEFAULT="1" SEQUENCE="false" COMMENT="all gaps set to the same size in the renderer" PREVIOUS="disableregex" NEXT="correctfeedback"/>
+        <FIELD NAME="correctfeedback" TYPE="text" NOTNULL="false" SEQUENCE="false" PREVIOUS="fixedgapsize" NEXT="correctfeedbackformat"/>
+        <FIELD NAME="correctfeedbackformat" TYPE="int" LENGTH="2" NOTNULL="false" DEFAULT="0" SEQUENCE="false" PREVIOUS="correctfeedback" NEXT="partiallycorrectfeedback" />
+        <FIELD NAME="partiallycorrectfeedback" TYPE="text" NOTNULL="false" SEQUENCE="false" PREVIOUS="correctfeedbackformat" NEXT="partiallycorrectfeedbackformat"/>
+        <FIELD NAME="partiallycorrectfeedbackformat" TYPE="int" LENGTH="2" NOTNULL="false" DEFAULT="0" SEQUENCE="false" PREVIOUS="partiallycorrectfeedback" NEXT="incorrectfeedback"/>
+        <FIELD NAME="incorrectfeedback" TYPE="text" NOTNULL="false" SEQUENCE="false" PREVIOUS="partiallycorrectfeedbackformat" NEXT="incorrectfeedbackformat"/>
+        <FIELD NAME="incorrectfeedbackformat" TYPE="int" LENGTH="2" NOTNULL="false" DEFAULT="0" SEQUENCE="false" PREVIOUS="incorrectfeedback"/>
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id" NEXT="question"/>
+        <KEY NAME="question" TYPE="foreign" FIELDS="question" REFTABLE="question" REFFIELDS="id" PREVIOUS="primary" />
+      </KEYS>
+    </TABLE>
+    <TABLE NAME="question_guessit_settings" COMMENT="per gap settings for the guessit question type ">
+      <FIELDS>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
+        <FIELD NAME="question" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false"/>
+        <FIELD NAME="itemid" TYPE="text" LENGTH="10" NOTNULL="false" SEQUENCE="false" COMMENT="The id (including instance) of each gap" />
+        <FIELD NAME="gaptext" TYPE="text" LENGTH="10" NOTNULL="false" SEQUENCE="false" COMMENT="text of the gap including delimiter" />
+        <FIELD NAME="correctfeedback" TYPE="text" LENGTH="10" NOTNULL="false" SEQUENCE="false" COMMENT="Feedback displayed for correct response" />
+        <FIELD NAME="incorrectfeedback" TYPE="text" NOTNULL="false" SEQUENCE="false" COMMENT="Feedback displayed for incorrect response" />
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+        <KEY NAME="guessit_gapsettings" TYPE="foreign" FIELDS="question" REFTABLE="question" REFFIELDS="id" PREVIOUS="primary" />
+      </KEYS>
+    </TABLE>
+  </TABLES>
+</XMLDB>

@@ -1,0 +1,138 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto+Mono&family=Roboto:wght@300&display=swap');
+
+/* classes without the que prefix are used in the
+question editing form
+*/
+
+.guessit .hascorrect {
+    background: lightblue;
+    border: solid thin black;
+}
+
+.guessit .hasnocorrect {
+    border: solid thin black;
+    box-shadow: 3px 3px #7bc1f7;
+    font-style: italic;
+}
+
+.guessit .item {
+    background: white;
+}
+
+/* elements shown via renderer.php at runtime */
+
+.que.guessit span.gapfeedbackincorrect {
+    background: #faa;
+    color: darkslategray;
+    border: 1px solid #f7d0d0;
+}
+
+.que.guessit span.gapfeedbackcorrect {
+    background: #afa;
+    background-color: #afa;
+    color: darkslategray;
+}
+
+/* the gap where answers are dropped/keyed in */
+.que.guessit input[type=text] {
+    font-family: 'Roboto Mono', 'Lucida Console', Courier, monospace;
+    font-size: 1.2em;
+    background: white;
+    color: black;
+    margin-bottom: 1px;
+    margin-top: 1px;
+    padding: 1px;
+    display: inline-block;
+    height: inherit;
+    border-radius: 0.25em;
+    border: 1px solid #a0a0a0;
+    padding-left: 5px;
+    padding-right: 5px;
+}
+
+/* glow a little around the border */
+
+.que.guessit input.droptarget:hover {
+    box-shadow: 0 0 8px #7bc1f7;
+}
+
+.que.guessit input.droptarget:focus {
+    box-shadow: 0 0 8px #7bc1f7;
+}
+
+.que.guessit div.answeroptions {
+    margin-bottom: 15px;
+}
+
+
+/*Displays the correct answer in delimiters if an
+incorrec answer was entered */
+.que.guessit span.aftergapfeedback {
+    color: green;
+    font-style: italic;
+    font-weight: bold;
+}
+
+
+/* styling the dropdowns*/
+.que.guessit.qtext select {    
+    color: black;
+    padding-bottom: 1px;
+    padding-top: 1px;
+}
+
+.guessittable td {
+    border: solid;
+    border-width: thin;
+}
+
+.guessitfirstcol {
+    background-color: #bcbbbb;
+}
+
+.guessitcol {
+    background-color: lightgray;
+}
+
+.guessittable th {
+    background-color: lightgray;
+    border: solid;
+    border-width: thin;
+}
+
+.guessittable caption {
+    border-bottom: solid;
+    border-width: thin;
+}
+
+.que.guessit input.correctduplicate {
+    background-color: #ff0;
+}
+
+.que.guessit input.correct {
+    background-color: #afa;
+}
+
+.que.guessit select.incorrect {
+    background-color: #faa;
+}
+.que.guessit input.incorrect {
+    background-color: #faa;
+}
+
+/* Showing markup. top & left determined by position of input element. 
+*/
+.que.guessit .markup {
+  font-family: "Lucida Console", Courier, monospace; 
+  font-size: 1.2em;
+  margin-left: 5px;
+  position: absolute;
+  top: 22px;
+  left: 0px;
+}
+
+.que.guessit .input-wrapper {
+  display: inline-block;
+  position: relative;
+  margin-bottom: 12px;
+}
