@@ -56,8 +56,7 @@ class qtype_guessit_renderer extends qtype_with_combined_feedback_renderer {
 
     /**
      * Generate the display of the formulation part of the question shown at runtime
-     * in a quiz.  This is the area that contains the question text with gaps, and the
-     * draggable potential answers
+     * in a quiz.  This is the area that contains the question text with gaps.
      *
      * @param question_attempt $qa the question attempt to display.
      * @param question_display_options $options controls what should and should not be displayed.
@@ -72,10 +71,7 @@ class qtype_guessit_renderer extends qtype_with_combined_feedback_renderer {
         
         $this->displayoptions = $options;
         $question = $qa->get_question();
-        if (!$options->readonly) {
-            //$question->initjs((Boolean) $question->singleuse);
-        }
-        //$this->itemsettings = json_decode($question->itemsettings);
+        
         $seranswers = $qa->get_step(0)->get_qt_var('_allanswers');
         $this->allanswers = unserialize($seranswers);
         $output = "";
@@ -85,7 +81,6 @@ class qtype_guessit_renderer extends qtype_with_combined_feedback_renderer {
 
         foreach ($question->textfragments as $place => $fragment) {
             if ($place > 0) {
-                // TODO calculate the markup string according to word letters found not found.
                 $questiontext .= '<div class="input-wrapper">';
                 $questiontext .= $this->embedded_element($qa, $place, $options, $markedgaps);
                 $questiontext .= '</div>';
@@ -106,35 +101,7 @@ class qtype_guessit_renderer extends qtype_with_combined_feedback_renderer {
         $output = html_writer::tag('div', $output, ['class' => 'qtext']);
         return $output;
     }
-    /**
-     * populate answer options when using dragdrop mode
-     *
-     * @param question_attempt $qa
-     * @return string
-     */
 
-    public function setup_answeroptions(question_attempt $qa) : string {
-        $question = $qa->get_question();
-        $answeroptions = '';
-
-        $potentialanswerid = 0;
-        foreach ($this->allanswers as $potentialanswer) {
-            if (!preg_match($question->blankregex, trim($potentialanswer))) {
-                $cssclasses = " draggable answers ";
-                /* When previewing after a quiz is complete */
-                if ($this->displayoptions->readonly) {
-                    $cssclasses = " draggable answers readonly ";
-                }
-                 $cssclasses = $question->is_used($potentialanswer, $qa, $cssclasses);
-                /* the question->id is necessary to make a draggable potential answer unique for multi question quiz pages */
-                $answeroptions .= '<span draggable="true" id="pa:_' . $question->id . '_' . $potentialanswerid++
-                    . '" class= "' . $cssclasses . '">' .
-                    $potentialanswer . " </span>";
-            }
-        }
-        $answeroptions = html_writer::tag('div', $answeroptions, array('class' => 'answeroptions'));
-        return $answeroptions;
-    }
     /**
      * Set divs that are inspected by the mobile app
      * for settings
@@ -341,6 +308,7 @@ class qtype_guessit_renderer extends qtype_with_combined_feedback_renderer {
      * @return string
      */
     public function specific_feedback(question_attempt $qa) {
+        return "too much cooks<br>===";
         return $this->combined_feedback($qa) . $this->get_duplicate_feedback($qa);
     }
 
