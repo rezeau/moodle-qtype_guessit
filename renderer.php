@@ -63,12 +63,10 @@ class qtype_guessit_renderer extends qtype_with_combined_feedback_renderer {
      * @return string HTML fragment.
      */
     public function formulation_and_controls(question_attempt $qa, question_display_options $options) {
-        
-        //print_r($qa);
-        
+        global $PAGE;
+        $PAGE->requires->js_call_amd('qtype_guessit/autogrow', 'init');
         $currentanswer = $qa->get_last_qt_var($fieldname) ?? '';
         $currentanswer = htmlspecialchars_decode($currentanswer);
-        
         $this->displayoptions = $options;
         $question = $qa->get_question();
         
@@ -132,18 +130,20 @@ class qtype_guessit_renderer extends qtype_with_combined_feedback_renderer {
         $currentanswer = htmlspecialchars_decode($currentanswer);
         $rightanswer = $question->get_right_choice_for($place);
         $itemsettings = $this->get_itemsettings($rightanswer);
+        /*
         if ($question->fixedgapsize == 1) {
             /* set all gaps to the size of the  biggest gap
              */
-            $size = $question->maxgapsize;
+            /*$size = $question->maxgapsize;
         } else {
             /* otherwise set the size of an individual gap which might
              * be less than the string width if it is in the form
              * "[cat|dog|elephant] the width should be 8 and not 14
              */
-            $size = $question->get_size($rightanswer);
+            /*$size = $question->get_size($rightanswer);
         }
-
+*/
+$size = 6;
         /* $options->correctness is really about it being ready to mark, */
         $aftergaptext = "";
         $inputclass = "";
@@ -181,16 +181,15 @@ class qtype_guessit_renderer extends qtype_with_combined_feedback_renderer {
         if ($options->readonly) {
             $readonly = array('disabled' => 'true');
             $inputattributes = array_merge($inputattributes, $readonly);
-    }
-        /* it is a typetext (guessit) question */
-        $inputattributes['class'] = 'typetext guessit ' . $inputclass;
-        $inputattributes['spellcheck'] = 'false';        
+        }
+        $inputattributes['class'] = 'typetext guessit auto-grow-input ' . $inputclass;
+        $inputattributes['spellcheck'] = 'false';
+        // To enable the autogrow text feature.
+        //$inputattributes['oninput'] = 'autogrow(this)';
         $markupcode = "";
         if ($currentanswer !== $rightanswer) {
             $markupcode = $this->get_markup_string ($currentanswer, $rightanswer);
-        } 
-        // TODO calculate here the contents of the $markupcode string.
-        
+        }
         return html_writer::empty_tag('input', $inputattributes) . '<span class="markup">'.$markupcode.'</span>';
     }
 
@@ -308,7 +307,6 @@ class qtype_guessit_renderer extends qtype_with_combined_feedback_renderer {
      * @return string
      */
     public function specific_feedback(question_attempt $qa) {
-        return "too much cooks<br>===";
         return $this->combined_feedback($qa) . $this->get_duplicate_feedback($qa);
     }
 

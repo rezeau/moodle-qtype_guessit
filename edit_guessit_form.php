@@ -108,6 +108,13 @@ class qtype_guessit_edit_form extends question_edit_form {
      */
     
     protected function form_setup(MoodleQuickForm $mform) : MoodleQuickForm {
+        /*
+        global $PAGE;
+        $PAGE->requires->jquery();
+        $PAGE->requires->jquery_plugin('ui');
+        $PAGE->requires->jquery_plugin('ui-css');        
+        $PAGE->requires->js_call_amd('qtype_guessit/autogrow', 'init');
+        */
         $mform->removeelement('questiontext');
         return $mform;
     }
