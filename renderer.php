@@ -17,15 +17,10 @@
 /**
  * Generates the output for guessit questions
  *
- * @package    qtype_guessit
- * @copyright  2019 Marcus Green
- * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- */
-
-/**
- * Generates the output for guessit questions
- *
- * @copyright  2019 Marcus Green
+ * @package qtype_guessit
+ * @subpackage guessit
+ * @copyright  2024 Joseph Rézeau <moodle@rezeau.org>
+ * @copyright  based on work by 2019 Marcus Green <marcusavgreen@gmail.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class qtype_guessit_renderer extends qtype_with_combined_feedback_renderer {
@@ -34,13 +29,13 @@ class qtype_guessit_renderer extends qtype_with_combined_feedback_renderer {
      * responses that would be correct if submitted
      * @var array
      */
-    public $correctresponses = array();
+    public $correctresponses = [];
     /**
      * correct and distractor answers
      *
      * @var array
      */
-    public $allanswers = array();
+    public $allanswers = [];
     /**
      * Used to store the per-gap settings, e.g. feedback
      * @var array
@@ -63,17 +58,16 @@ class qtype_guessit_renderer extends qtype_with_combined_feedback_renderer {
      * @return string HTML fragment.
      */
     public function formulation_and_controls(question_attempt $qa, question_display_options $options) {
-        global $PAGE;
-        $PAGE->requires->js_call_amd('qtype_guessit/autogrow', 'init');
+        $this->page->requires->js_call_amd('qtype_guessit/autogrow', 'init');
         $currentanswer = $qa->get_last_qt_var($fieldname) ?? '';
         $currentanswer = htmlspecialchars_decode($currentanswer);
         $this->displayoptions = $options;
         $question = $qa->get_question();
-        
+
         $seranswers = $qa->get_step(0)->get_qt_var('_allanswers');
         $this->allanswers = unserialize($seranswers);
         $output = "";
-        $answeroptions = '';        
+        $answeroptions = '';
         $questiontext = '';
         $markedgaps = $question->get_markedgaps($qa, $options);
 
@@ -93,7 +87,7 @@ class qtype_guessit_renderer extends qtype_with_combined_feedback_renderer {
             $output .= $questiontext;
 
         if ($qa->get_state() == question_state::$invalid) {
-            $output .= html_writer::nonempty_tag('div', $question->get_validation_error(array('answer' => $output)),
+            $output .= html_writer::nonempty_tag('div', $question->get_validation_error(['answer' => $output]),
              ['class' => 'validationerror']);
         }
         $output = html_writer::tag('div', $output, ['class' => 'qtext']);
@@ -108,7 +102,7 @@ class qtype_guessit_renderer extends qtype_with_combined_feedback_renderer {
      * @param  string $questiontext
      * @return string
      */
-    public function app_connect(qtype_guessit_question $question, string $questiontext) : string {
+    public function app_connect(qtype_guessit_question $question, string $questiontext): string {
         return $questiontext;
     }
     /**
@@ -129,21 +123,10 @@ class qtype_guessit_renderer extends qtype_with_combined_feedback_renderer {
         $currentanswer = $qa->get_last_qt_var($fieldname) ?? '';
         $currentanswer = htmlspecialchars_decode($currentanswer);
         $rightanswer = $question->get_right_choice_for($place);
-        $itemsettings = $this->get_itemsettings($rightanswer);
-        /*
-        if ($question->fixedgapsize == 1) {
-            /* set all gaps to the size of the  biggest gap
-             */
-            /*$size = $question->maxgapsize;
-        } else {
-            /* otherwise set the size of an individual gap which might
-             * be less than the string width if it is in the form
-             * "[cat|dog|elephant] the width should be 8 and not 14
-             */
-            /*$size = $question->get_size($rightanswer);
-        }
-*/
-$size = 6;
+
+        /* Todo insert gapsize choice here. */
+
+        $size = 6;
         /* $options->correctness is really about it being ready to mark, */
         $aftergaptext = "";
         $inputclass = "";
@@ -151,18 +134,12 @@ $size = 6;
             $gap = $markedgaps['p' . $place];
             $fraction = $gap['fraction'];
             $response = $qa->get_last_qt_data();
-
-            /* fraction is always either 1 or 0 for correct or incorrect response */
             if ($fraction == 1) {
                 array_push($this->correctresponses, $response[$fieldname]);
-                /* if the gap contains !! or  the response is (a correct) non blank */
                 if (!preg_match($question->blankregex, $rightanswer) || ($response[$fieldname] != '')) {
-                    $aftergaptext = $this->get_aftergap_text($qa, $fraction, $itemsettings);
-                    /* sets the field background to green or yellow if fraction is 1 */
                     $inputclass = $this->get_input_class($markedgaps, $qa, $fraction, $fieldname);
                 }
             } else if ($fraction == 0) {
-                $aftergaptext = $this->get_aftergap_text($qa, $fraction, $itemsettings, $rightanswer);
                 $inputclass = $this->feedback_class($fraction);
             }
         }
@@ -170,22 +147,20 @@ $size = 6;
         $qprefix = $qa->get_qt_field_name('');
         $inputname = $qprefix . 'p' . $place;
 
-        $inputattributes = array(
+        $inputattributes = [
             'type' => "text",
             'name' => $inputname,
             'value' => $currentanswer,
             'id' => $inputname,
-            'size' => $size
-        );
+            'size' => $size,
+        ];
         /* When previewing after a quiz is complete */
         if ($options->readonly) {
-            $readonly = array('disabled' => 'true');
+            $readonly = ['disabled' => 'true'];
             $inputattributes = array_merge($inputattributes, $readonly);
         }
         $inputattributes['class'] = 'typetext guessit auto-grow-input ' . $inputclass;
         $inputattributes['spellcheck'] = 'false';
-        // To enable the autogrow text feature.
-        //$inputattributes['oninput'] = 'autogrow(this)';
         $markupcode = "";
         if ($currentanswer !== $rightanswer) {
             $markupcode = $this->get_markup_string ($currentanswer, $rightanswer);
@@ -194,53 +169,13 @@ $size = 6;
     }
 
     /**
-     * What appears after a gap once it is marked, e.g. a tick a cross or feedback
-     * on the answer
-     *
-     * @param question_attempt $qa
-     * @param number $fraction
-     * @param array $itemsettings
-     * @param string $rightanswer
-     * @return string
-     */
-    public function get_aftergap_text(question_attempt $qa, $fraction, $itemsettings, $rightanswer = "") {
-        /* If the display options are set to not display the right answer
-        then don't display the aftergap text either */
-        if (!$this->displayoptions->rightanswer) {
-            //return false;
-        }
-        //$aftergaptext = '<span class="h5p-guessit-markup">====></span></div>';
-        //return $aftergaptext;
-        if (($fraction == 0) && ($rightanswer != "") && ($rightanswer != ".+")) {
-            /* replace | operator with the word or */
-            $rightanswerdisplay = preg_replace("/\|/", " ".get_string("or", "qtype_guessit")." ", $rightanswer);
-            /* replace !! with the 'blank' */
-            $rightanswerdisplay = preg_replace("/\!!/", get_string("blank", "qtype_guessit"), $rightanswerdisplay);
-            $question = $qa->get_question();
-            $delim = qtype_guessit::get_delimit_array($question->delimitchars);
-            /* set background to red and image to cross if fraction is 0 (an incorrect response
-             * was given */
-            $aftergaptext = $this->feedback_image($fraction);
-            $aftergaptext .= "<span class='aftergapfeedback' title='" .
-            get_string("correctanswer", "qtype_guessit") . "'>" . $delim["l"] .
-                $rightanswerdisplay . $delim["r"] . "</span>";
-            $aftergaptext .= " <span class='gapfeedbackincorrect' title='feedback' >"
-            . $this->get_feedback($itemsettings, false) . "</span>";
-        } else {
-            $aftergaptext = $this->feedback_image($fraction);
-            $aftergaptext .= " <span class='gapfeedbackcorrect' title='feedback' >" .
-            $this->get_feedback($itemsettings, true) . "</span>";
-        }
-        return $aftergaptext;
-    }
-    /**
      * Get feedback for correct or incorrect response
      *
      * @param array|null $settings
      * @param bool   $correctness
      * @return string
      */
-    protected function get_feedback($settings, bool $correctness) :string {
+    protected function get_feedback($settings, bool $correctness): string {
         if ($settings == null) {
             return "";
         }
@@ -354,85 +289,85 @@ $size = 6;
     }
 
     /**
-     * construct the markup string
+     * Construct the markup string
      *
-     * @param question_attempt $qa
+     * @param string $studentanswer
+     * @param string $answer
      * @return string
      *
      */
-    public function get_markup_string ($studentAnswer, $answer) {
-        $cleanAnswer = $answer;
-         // Check if answer has only ASCII characters
-        $hasOnlyAscii = preg_match('/^[\x00-\x7F]*$/', $answer);
-        if (!$hasOnlyAscii) {
-            $cleanAnswer = $this->removeDiacritics($answer);
+    public function get_markup_string($studentanswer, $answer) {
+        $cleananswer = $answer;
+        // Check if answer has only ASCII characters.
+        $hasonlyascii = preg_match('/^[\x00-\x7F]*$/', $answer);
+        if (!$hasonlyascii) {
+            $cleananswer = $this->removeDiacritics($answer);
         }
 
-        // Check if student answer has only ASCII characters
-        $cleanStudentAnswer = $studentAnswer;
-        $hasOnlyAscii = preg_match('/^[\x00-\x7F]*$/', $studentAnswer);
-        if (!$hasOnlyAscii) {
-            $cleanStudentAnswer = $this->removeDiacritics($studentAnswer);
+        // Check if student answer has only ASCII characters.
+        $cleanstudentanswer = $studentanswer;
+        $hasonlyascii = preg_match('/^[\x00-\x7F]*$/', $studentanswer);
+        if (!$hasonlyascii) {
+            $cleanstudentanswer = $this->removeDiacritics($studentanswer);
         }
 
-        // Initialize variables
-        $markup = ''; 
-        $eq = '='; 
-        $lw = '<'; 
-        $gt = '>'; 
+        // Initialize variables.
+        $markup = '';
+        $eq = '=';
+        $lw = '<';
+        $gt = '>';
         $i = 0;
-        // 1️⃣ List of punctuation or special characters to "give" to the user
+        // List of punctuation or special characters to "give" to the user.
         $punctuation = "';:,.-?¿!¡ßœ";
 
-        // 2️⃣ Get the minimum length of answer and student answer
-        $minLen = min(strlen($answer), strlen($studentAnswer));
+        // Get the minimum length of answer and student answer.
+        $minlen = min(strlen($answer), strlen($studentanswer));
 
-        // 3️⃣ Initialize markup string
-        $markup = ''; 
-        $eq = '='; 
-        $lw = '<'; 
-        $gt = '>'; 
+        // Initialize markup string.
+        $markup = '';
+        $eq = '=';
+        $lw = '<';
+        $gt = '>';
 
-        // 4️⃣ Loop through each character up to the minimum length
-        for ($i = 0; $i < $minLen; $i++) {
+        // Loop through each character up to the minimum length.
+        for ($i = 0; $i < $minlen; $i++) {
             // This is needed for non-ascii characters.
-            $answerLetter = mb_substr($answer, $i, 1, 'UTF-8'); // Extract 1 character at index $i
-            $cleanAnswerLetter = mb_strtolower($cleanAnswer[$i]); // Lowercase for multibyte support
-            $studentLetter = mb_substr($studentAnswer, $i, 1, 'UTF-8'); // Extract 1 character at index $i
-            $cleanStudentLetter = mb_strtolower($cleanStudentAnswer[$i]); // Lowercase for multibyte support
+            $answerletter = mb_substr($answer, $i, 1, 'UTF-8'); // Extract 1 character at index $i.
+            $cleananswerletter = mb_strtolower($cleananswer[$i]); // Lowercase for multibyte support.
+            $studentletter = mb_substr($studentanswer, $i, 1, 'UTF-8'); // Extract 1 character at index $i.
+            $cleanstudentletter = mb_strtolower($cleanstudentanswer[$i]); // Lowercase for multibyte support.
 
-            // 5️⃣ Logic to generate the markup
-            if ($studentLetter === $answerLetter) {
-                $markup .= $eq; // Exact match
-            } 
-            elseif ($cleanStudentLetter === $cleanAnswerLetter) {
-                $markup .= $answerLetter;
+            // Logic to generate the markup.
+            if ($studentletter === $answerletter) {
+                $markup .= $eq; // Exact match.
+            } else if ($cleanstudentletter === $cleananswerletter) {
+                $markup .= $answerletter;
                 break;
-            } 
-            elseif ($cleanStudentLetter === $cleanAnswerLetter || strpos($punctuation, $cleanAnswer[$i]) !== false) {
-                $markup .= $answerLetter;
+            } else if ($cleanstudentletter === $cleananswerletter || strpos($punctuation, $cleananswer[$i]) !== false) {
+                $markup .= $answerletter;
                 break;
-            } 
-            elseif ($cleanStudentLetter < $cleanAnswerLetter) {
-                $markup .= $gt; // Student letter is "less than" the answer letter
+            } else if ($cleanstudentletter < $cleananswerletter) {
+                $markup .= $gt; // Student letter is "less than" the answer letter.
                 break;
-            } 
-            else {
-                $markup .= $lw; // Student letter is "greater than" the answer letter
+            } else {
+                $markup .= $lw; // Student letter is "greater than" the answer letter.
                 break;
             }
         }
-          // 6️⃣ Return the generated markup for debugging or further use
+          // Return the generated markup for debugging or further use.
         return $markup;
-  }
+    }
 
-  /**
+    /**
      * Removes diacritics from a string.
+     * @param string $text
+     * @return string $text
      */
-    public function removeDiacritics($text) {
+    public function removediacritics($text) {
         // IMPORTANT: this js file must be encoded in UTF-8 no BOM(65001)
-        // If it's not, then use the unicode codes at https://web.archive.org/web/20120918093154/http://lehelk.com/2011/05/06/script-to-remove-diacritics/
-        $defaultDiacriticsRemovalMap = [
+        // If it's not, then use the unicode codes at
+        // https://web.archive.org/web/20120918093154/http://lehelk.com/2011/05/06/script-to-remove-diacritics/ .
+        $defaultdiacriticsremovalmap = [
             ['base' => 'a', 'letters' => '/[àáâãäåæ]/u'],
             ['base' => 'c', 'letters' => '/[ç]/u'],
             ['base' => 'e', 'letters' => '/[éèêë]/u'],
@@ -443,7 +378,7 @@ $size = 6;
             ['base' => 'y', 'letters' => '/[ýÿ]/u'],
         ];
 
-        foreach ($defaultDiacriticsRemovalMap as $change) {
+        foreach ($defaultdiacriticsremovalmap as $change) {
             $text = preg_replace($change['letters'], $change['base'], $text);
         }
         return $text;

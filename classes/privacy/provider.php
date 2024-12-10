@@ -13,11 +13,13 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+
 /**
  * Privacy class for Moodle guessit question type.
  *
  * @package    qtype_guessit
- * @copyright  Marcus Green 2018
+ * @copyright  2024 Joseph Rézeau <moodle@rezeau.org>
+ * @copyright  based on work by 2018 Marcus Green
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 namespace qtype_guessit\privacy;
@@ -25,7 +27,8 @@ namespace qtype_guessit\privacy;
 /**
  * Privacy Subsystem for qtype_guessit implementing null_provider.
  *
- * @copyright  2021 Marcus Green
+ * @copyright  2024 Joseph Rézeau <moodle@rezeau.org>
+ * @copyright  based on work by 2018 Marcus Green
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class provider implements
@@ -37,7 +40,7 @@ class provider implements
      *
      * @return  string
      */
-    public static function get_reason() : string {
+    public static function get_reason(): string {
         return 'privacy:null_reason';
     }
 }

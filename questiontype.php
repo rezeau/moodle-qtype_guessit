@@ -17,9 +17,12 @@
 /**
  * The question type class for the guessit question type.
  *
- * @package    qtype_guessit
- * @copyright  2018 Marcus Green
- * @license http://www.gnu.org/copyleft/gpl.html GNU Public License
+ * @package qtype_guessit
+ * @subpackage guessit
+ * @copyright  2024 Joseph Rézeau <moodle@rezeau.org>
+ * @copyright  based on work by 2018 Marcus Green <marcusavgreen@gmail.com>
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+
  */
 defined('MOODLE_INTERNAL') || die();
 global $CFG;
@@ -63,7 +66,7 @@ class qtype_guessit extends question_type {
      */
     public function get_question_options($question) {
         global $DB;
-        $question->options = $DB->get_record('question_guessit', array('question' => $question->id), '*', MUST_EXIST);
+        $question->options = $DB->get_record('question_guessit', ['question' => $question->id], '*', MUST_EXIST);
         parent::get_question_options($question);
     }
 
@@ -76,7 +79,7 @@ class qtype_guessit extends question_type {
      * @param boolean $forceplaintextanswers
      */
     protected function initialise_question_answers(question_definition $question, $questiondata, $forceplaintextanswers = true) {
-        $question->answers = array();
+        $question->answers = [];
         if (empty($questiondata->options->answers)) {
             return;
         }
@@ -118,7 +121,7 @@ class qtype_guessit extends question_type {
     protected function initialise_question_instance(question_definition $question, $questiondata) {
         parent::initialise_question_instance($question, $questiondata);
         $this->initialise_question_answers($question, $questiondata, true);
-        $question->places = array();
+        $question->places = [];
         $counter = 1;
         $question->maxgapsize = 0;
         foreach ($questiondata->options->answers as $choicedata) {
@@ -176,7 +179,7 @@ class qtype_guessit extends question_type {
      * @return array
      */
     public static function get_delimit_array($delimitchars) {
-        $delimitarray = array();
+        $delimitarray = [];
         $delimitarray["l"] = substr($delimitchars, 0, 1);
         $delimitarray["r"] = substr($delimitchars, 1, 1);
         return $delimitarray;
@@ -223,11 +226,9 @@ class qtype_guessit extends question_type {
         // Fetch old answer ids so that we can reuse them.
         $this->update_question_answers($question, $answerfields);
 
-        $options = $DB->get_record('question_guessit', array('question' => $question->id));
+        $options = $DB->get_record('question_guessit', ['question' => $question->id]);
         $this->update_question_guessit($question, $options, $context);
-        //$this->update_item_settings($question, 'question_guessit_settings');
 
-        //$this->save_hints($question, true);
         return true;
     }
 
@@ -241,7 +242,7 @@ class qtype_guessit extends question_type {
      */
     public function update_question_guessit($question, $options, $context) {
         global $DB;
-        $options = $DB->get_record('question_guessit', array('question' => $question->id));
+        $options = $DB->get_record('question_guessit', ['question' => $question->id]);
         if (!$options) {
             $options = new stdClass();
             $options->question = $question->id;
@@ -268,7 +269,7 @@ class qtype_guessit extends question_type {
      */
     public function update_question_answers($question, array $answerfields) {
         global $DB;
-        $oldanswers = $DB->get_records('question_answers', array('question' => $question->id), 'id ASC');
+        $oldanswers = $DB->get_records('question_answers', ['question' => $question->id], 'id ASC');
         // Insert all the new answers.
         foreach ($answerfields as $field) {
             // Save the true answer - update an existing answer if possible.
@@ -293,7 +294,7 @@ class qtype_guessit extends question_type {
         }
         // Delete old answer records.
         foreach ($oldanswers as $oa) {
-            $DB->delete_records('question_answers', array('id' => $oa->id));
+            $DB->delete_records('question_answers', ['id' => $oa->id]);
         }
     }
 
@@ -314,7 +315,7 @@ class qtype_guessit extends question_type {
          * comes from the import and from $question->wronganswers field which
          * comes from the question_editing form.
          */
-        $answerfields = array();
+        $answerfields = [];
         /* this next block runs when importing from xml */
         if (property_exists($question, 'answer')) {
             foreach ($question->answer as $key => $value) {
@@ -404,7 +405,7 @@ class qtype_guessit extends question_type {
         global $CFG;
         $pluginmanager = core_plugin_manager::instance();
         $guessitinfo = $pluginmanager->get_plugin_info('qtype_guessit');
-        /*convert json into an object */        
+        /*convert json into an object */
 
         $output = parent::export_to_xml($question, $format);
         $output .= '    <casesensitive>' . $question->options->casesensitive .

@@ -17,10 +17,11 @@
 /**
  * Serve question type files
  *
- * @since      3.5
- * @package    qtype_guessit
- * @copyright  Marcus Green 2018
+ * @subpackage guessit
+ * @copyright  2024 Joseph Rézeau <moodle@rezeau.org>
+ * @copyright  based on work by 2018 Marcus Green
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @package qtype_guessit
  */
 
 /**
@@ -36,7 +37,7 @@
  * @param array $options additional options affecting the file serving
  *
  */
-function qtype_guessit_pluginfile($course, $cm, $context, $filearea, $args, $forcedownload, array $options = array()) {
+function qtype_guessit_pluginfile($course, $cm, $context, $filearea, $args, $forcedownload, array $options = []) {
     global $CFG;
     require_once($CFG->libdir . '/questionlib.php');
     question_pluginfile($course, $context, 'qtype_guessit', $filearea, $args, $forcedownload, $options);

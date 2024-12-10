@@ -18,14 +18,18 @@
  * guessit question definition class. Mainly about runtime
  *
  * @package    qtype_guessit
- * @copyright  2017 Marcus Green
+ * @subpackage guessit
+ * @copyright  2024 Joseph Rézeau <moodle@rezeau.org>
+ * @copyright  based on work by 2017 Marcus Green
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 /**
  * guessit question definition class.
  *
  * @package    qtype_guessit
- * @copyright  2017 Marcus Green
+ * @subpackage guessit
+ * @copyright  2024 Joseph Rézeau <moodle@rezeau.org>
+ * @copyright  based on work by 2017 Marcus Green
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class qtype_guessit_question extends question_graded_automatically_with_countback {
@@ -41,7 +45,7 @@ class qtype_guessit_question extends question_graded_automatically_with_countbac
      * Set the size of every gap to the size of the larges so students do not
      * get an idea of the correct answer from gap sizes
      *
-     * @var boolean
+     * @var bool
      */
     public $fixedgapsize;
 
@@ -66,7 +70,7 @@ class qtype_guessit_question extends question_graded_automatically_with_countbac
 
     /**
      * By default Cat is treated the same as cat. Setting it to 1 will make it case sensitive
-     * @var boolean
+     * @var bool
      */
     public $casesensitive;
 
@@ -74,7 +78,7 @@ class qtype_guessit_question extends question_graded_automatically_with_countbac
      * array of strings as correct question answers
      * @var rray
      */
-    public $answers = array();
+    public $answers = [];
 
     /**
      * checks for gaps that get a mark for being left black i.e. [!!]
@@ -86,7 +90,7 @@ class qtype_guessit_question extends question_graded_automatically_with_countbac
      * @var array place number => group number of the places in the question
      * text where choices can be put. Places are numbered from 1.
      */
-    public $places = array();
+    public $places = [];
 
     /**
      * @var array of strings, one longer than $places, which is achieved by
@@ -98,7 +102,7 @@ class qtype_guessit_question extends question_graded_automatically_with_countbac
      * An array with all correct answers and distractors/wrong answers
      * @var array
      */
-    public $allanswers = array();
+    public $allanswers = [];
 
     /**
      * Start a new attempt at this question, storing any information that will
@@ -264,7 +268,7 @@ class qtype_guessit_question extends question_graded_automatically_with_countbac
      * @return array
      */
     public function get_correct_response() {
-        $response = array();
+        $response = [];
         foreach ($this->places as $place => $answer) {
             $response[$this->field($place)] = $answer;
         }
@@ -357,10 +361,9 @@ class qtype_guessit_question extends question_graded_automatically_with_countbac
      * @return array
      */
     public function grade_response(array $response) {
-        //$response = $this->discard_duplicates($response);
         $right = $this->get_num_parts_right($response)[0];
         $this->fraction = $right / $this->gapcount;
-        $grade = array($this->fraction, question_state::graded_state_for_fraction($this->fraction));
+        $grade = [$this->fraction, question_state::graded_state_for_fraction($this->fraction)];
         return $grade;
     }
 
@@ -415,8 +418,8 @@ class qtype_guessit_question extends question_graded_automatically_with_countbac
      * @return bool true if the user can access this file.
      */
     public function check_file_access($qa, $options, $component, $filearea, $args, $forcedownload) {
-        if ($component == 'question' && in_array($filearea, array('correctfeedback',
-                    'partiallycorrectfeedback', 'incorrectfeedback'))) {
+        if ($component == 'question' && in_array($filearea, ['correctfeedback',
+                    'partiallycorrectfeedback', 'incorrectfeedback'])) {
             return $this->check_combined_feedback_file_access($qa, $options, $filearea);
         } else if ($component == 'question' && $filearea == 'hint') {
             return $this->check_hint_file_access($qa, $options, $args);
@@ -451,7 +454,6 @@ class qtype_guessit_question extends question_graded_automatically_with_countbac
             $answerparts = explode("|", $answer);
 
             foreach ($answerparts as $answer) {
-                // TODO Find why it was not checked earlier, plus strcasecmp would be more concise.
                 if (!$this->casesensitive == 1) {
                     $answergiven = core_text::strtolower($answergiven, 'UTF-8');
                     $answer = core_text::strtolower($answer, 'UTF-8');
@@ -503,9 +505,9 @@ class qtype_guessit_question extends question_graded_automatically_with_countbac
      * @return array
      */
     public function get_markedgaps(question_attempt $qa, question_display_options $options) {
-        $markedgaps = array();
+        $markedgaps = [];
         $question = $qa->get_question();
-        $correctgaps = array();
+        $correctgaps = [];
         foreach (array_keys($question->textfragments) as $place) {
             if ($place < 1) {
                 continue;

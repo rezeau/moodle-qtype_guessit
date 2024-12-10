@@ -16,8 +16,10 @@
 
 /**
  * The editing form code for this question type.
- * @package    qtype_guessit
- * @copyright  2017 Marcus Green
+ * @package qtype_guessit
+ * @subpackage guessit
+ * @copyright  2024 Joseph Rézeau <moodle@rezeau.org>
+ * @copyright  based on work by 2017 Marcus Green
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 defined('MOODLE_INTERNAL') || die();
@@ -26,7 +28,8 @@ require_once($CFG->dirroot . '/question/type/edit_question_form.php');
 
 /**
  * Editing form for the guessit question type
- * @copyright Marcus Green 2017
+ * @copyright  2024 Joseph Rézeau <moodle@rezeau.org>
+ * @copyright  based on work by 2017 Marcus Green
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  * guessit editing form definition.
  *
@@ -50,9 +53,8 @@ class qtype_guessit_edit_form extends question_edit_form {
         global $CFG, $OUTPUT, $SESSION;
         $mform = $this->form_setup($mform);
 
-
         $mform->addElement('html', '<div id="questiontext" >');
-        $mform->addElement('editor', 'questiontext', get_string('questiontext', 'question'), array('rows' => 10),
+        $mform->addElement('editor', 'questiontext', get_string('questiontext', 'question'), ['rows' => 10],
                 $this->editoroptions);
         $mform->addElement('html', '</div>');
 
@@ -65,7 +67,7 @@ class qtype_guessit_edit_form extends question_edit_form {
         $mform->removeelement('defaultmark');
 
         $mform->addElement('editor', 'generalfeedback', get_string('generalfeedback', 'question')
-                , array('rows' => 10), $this->editoroptions);
+                , ['rows' => 10], $this->editoroptions);
 
         $mform->setType('generalfeedback', PARAM_RAW);
         $mform->addHelpButton('generalfeedback', 'generalfeedback', 'question');
@@ -90,14 +92,11 @@ class qtype_guessit_edit_form extends question_edit_form {
         $mform->addElement('advcheckbox', 'fixedgapsize', get_string('fixedgapsize', 'qtype_guessit'));
         $mform->setDefault('fixedgapsize', $config->fixedgapsize);
         $mform->addHelpButton('fixedgapsize', 'fixedgapsize', 'qtype_guessit');
-        
+
         /* Makes marking case sensitive so Cat is not the same as cat */
         $mform->addElement('advcheckbox', 'casesensitive', get_string('casesensitive', 'qtype_gapfill'));
          $mform->addHelpButton('casesensitive', 'casesensitive', 'qtype_gapfill');
          $mform->setDefault('casesensitive', $config->casesensitive);
-        
-        
-        
 
     }
     /**
@@ -106,26 +105,9 @@ class qtype_guessit_edit_form extends question_edit_form {
      * @param MoodleQuickForm $mform
      * @return MoodleQuickForm
      */
-    
-    protected function form_setup(MoodleQuickForm $mform) : MoodleQuickForm {
-        /*
-        global $PAGE;
-        $PAGE->requires->jquery();
-        $PAGE->requires->jquery_plugin('ui');
-        $PAGE->requires->jquery_plugin('ui-css');        
-        $PAGE->requires->js_call_amd('qtype_guessit/autogrow', 'init');
-        */
+    protected function form_setup(MoodleQuickForm $mform): MoodleQuickForm {
         $mform->removeelement('questiontext');
         return $mform;
-    }
-    
-    /**
-     * Load in existing data as form defaults.
-     *
-     * @param mixed $question object or array of default values
-     */
-    public function set_data($question) {
-        parent::set_data($question);
     }
 
     /**
@@ -155,7 +137,7 @@ class qtype_guessit_edit_form extends question_edit_form {
      * @return boolean
      */
     public function validation($fromform, $data) {
-        $errors = array();
+        $errors = [];
         /* don't save the form if there are no fields defined */
         $gaps = qtype_guessit::get_gaps('[]', $fromform['questiontext']['text']);
         if (count($gaps) == 0) {

@@ -18,7 +18,9 @@
  * Version information. When a new version is released the version is incremented
  *
  * @package    qtype_guessit
- * @copyright  2024 Marcus Green
+ * @subpackage guessit
+ * @copyright  2024 Joseph Rézeau <moodle@rezeau.org>
+ * @copyright  based on work by 2024 Marcus Green
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 

@@ -17,48 +17,38 @@
 /**
  * The language strings for component 'qtype_guessit', language 'en'
  *
- * @copyright &copy; 2012 Marcus Green
- * @author marcusavgreen@gmail.com
- * @license http://www.gnu.org/copyleft/gpl.html GNU Public License
  * @package qtype_guessit
+ * @subpackage guessit
+ * @copyright  2024 Joseph Rézeau <moodle@rezeau.org>
+ * @copyright  based on work by 2012 Marcus Green <marcusavgreen@gmail.com>
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 defined('MOODLE_INTERNAL') || die();
+$string['blank'] = 'blank';
 $string['casesensitive'] = 'Case Sensitive';
 $string['casesensitive_help'] = 'When this is checked, if the correct answer is CAT, cat will be flagged as a wrong answer';
-
 $string['correct'] = 'Feedback for correct.';
-$string['editquestiontext'] = 'Edit question text';
-$string['incorrect'] = 'Feedback for incorrect.';
-
-$string['pluginnameediting'] = 'Editing Guess It.';
-$string['pluginnameadding'] = 'Adding a Guess It Question.';
-
-$string['guessit'] = 'guessit.';
-
+$string['correctanswer'] = 'Well done!';
 $string['displayguessit'] = 'guessit';
-
-$string['pluginname'] = 'Guess It';
-$string['pluginname_help'] = 'Place the words to be found within square brackets e.g. [The] [cat] [sat] [on] [the] [mat].';
-
-$string['pluginname_link'] = 'question/type/guessit';
-$string['pluginnamesummary'] = 'A Guess It style question.';
-$string['questionsmissing'] = 'You have not included any words to be found in your question text';
-
-$string['pleaseenterananswer'] = 'Please enter an answer.';
+$string['editquestiontext'] = 'Edit question text';
 $string['fixedgapsize'] = 'Fixed Gap Size';
 $string['fixedgapsize_help'] = 'When attempting the question all gaps will be set to the same size as the largest gap. This removes gap size as a clue to the correct answer.';
 $string['fixedgapsizeset_text'] = 'Sets the size of every gap to that of the biggest gap';
-$string['moreoptions'] = 'More Options.';
-$string['blank'] = 'blank';
-$string['or'] = 'or';
-
-$string['gap_singular'] = 'word';
 $string['gap_plural'] = 'words';
-$string['yougotnrightcount'] = 'You found {$a->num} {$a->gaporgaps} out of {$a->outof}.';
-$string['correctanswer'] = 'Well done!';
-
-/* Used in the settings */
-$string['questiontext'] = "Question text";
-$string['questiontext_help'] = "Put delimiters around the words that will become the text";
-
+$string['gap_singular'] = 'word';
+$string['guessit'] = 'guessit.';
+$string['incorrect'] = 'Feedback for incorrect.';
+$string['moreoptions'] = 'More Options.';
+$string['or'] = 'or';
+$string['pleaseenterananswer'] = 'Please enter an answer.';
+$string['pluginname'] = 'Guess It';
+$string['pluginname_help'] = 'Place the words to be found within square brackets e.g. [The] [cat] [sat] [on] [the] [mat].';
+$string['pluginname_link'] = 'question/type/guessit';
+$string['pluginnameadding'] = 'Adding a Guess It Question.';
+$string['pluginnameediting'] = 'Editing Guess It.';
+$string['pluginnamesummary'] = 'A Guess It style question.';
 $string['privacy:null_reason'] = 'The guessit question type does not effect or store any data itself.';
+$string['questionsmissing'] = 'You have not included any words to be found in your question text';
+$string['questiontext'] = "Question text";
+$string['questiontext_help'] = "Put square brackets [...] around the words to be guessed.";
+$string['yougotnrightcount'] = 'You found {$a->num} {$a->gaporgaps} out of {$a->outof}.';

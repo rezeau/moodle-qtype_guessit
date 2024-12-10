@@ -17,17 +17,10 @@
 /**
  * guessit question type backup
  *
- * @package    qtype_guessit
- * @subpackage backup-moodle2
- * @copyright  2017 Marcus Green
- * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- */
-
-/**
- *
- * Provides steps to perform one complete backup of a guessit question instance
- *
- * @copyright  2017 Marcus Green
+ * @package qtype_guessit
+ * @subpackage guessit
+ * @copyright  2024 Joseph Rézeau <moodle@rezeau.org>
+ * @copyright  based on work by 2017 Marcus Green
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class backup_qtype_guessit_plugin extends backup_qtype_plugin {
@@ -58,9 +51,9 @@ class backup_qtype_guessit_plugin extends backup_qtype_plugin {
          $this->add_question_question_answers($pluginwrapper);
 
         // Now create the qtype own structures.
-        $guessit = new backup_nested_element('guessit', array('id'), array(
+        $guessit = new backup_nested_element('guessit', ['id'], [
             'casesensitive', 'fixedgapsize', 'correctfedback', 'correctfeddbackformat',
-            'partiallycorrectfeedback', 'partiallycorrectfeedbackformat', 'incorrectfeedback', 'incorrectfeedbackformat'));
+            'partiallycorrectfeedback', 'partiallycorrectfeedbackformat', 'incorrectfeedback', 'incorrectfeedbackformat']);
 
         // Now the own qtype tree.
         $pluginwrapper->add_child($guessit);
@@ -69,8 +62,8 @@ class backup_qtype_guessit_plugin extends backup_qtype_plugin {
 
         // Set source to populate the data.
         $guessit->set_source_table('question_guessit',
-                array('question' => backup::VAR_PARENTID));
-         
+                ['question' => backup::VAR_PARENTID]);
+
         // Don't need to annotate ids nor files.
 
         return $plugin;
@@ -82,9 +75,9 @@ class backup_qtype_guessit_plugin extends backup_qtype_plugin {
      * files to be processed both in backup and restore.
      */
     public static function get_qtype_fileareas() {
-        return array(
+        return [
             'correctfeedback' => 'question_created',
             'partiallycorrectfeedback' => 'question_created',
-            'incorrectfeedback' => 'question_created');
+            'incorrectfeedback' => 'question_created'];
     }
 }
