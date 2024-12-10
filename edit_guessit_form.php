@@ -88,14 +88,15 @@ class qtype_guessit_edit_form extends question_edit_form {
     protected function get_options(MoodleQuickform $mform, $config) {
         $mform->addElement('header', 'feedbackheader', get_string('options', 'question'));
 
-        // Sets all gaps to the size of the largest gap, avoids giving clues to the correct answer.
-        $mform->addElement('advcheckbox', 'fixedgapsize', get_string('fixedgapsize', 'qtype_guessit'));
-        $mform->setDefault('fixedgapsize', $config->fixedgapsize);
-        $mform->addHelpButton('fixedgapsize', 'fixedgapsize', 'qtype_guessit');
+        $gapsizedisplaytypes = ["gapsizematchword" => get_string('gapsize_matchword', 'qtype_guessit'),
+            "gapsizefixed" => get_string('gapsize_fixed', 'qtype_guessit'),
+            "gapsizegrow" => get_string('gapsize_grow', 'qtype_guessit')];
+        $mform->addElement('select', 'gapsizedisplay', get_string('gapsize_display', 'qtype_guessit'), $gapsizedisplaytypes);
+        $mform->addHelpButton('gapsizedisplay', 'gapsize_display', 'qtype_guessit');
 
         /* Makes marking case sensitive so Cat is not the same as cat */
-        $mform->addElement('advcheckbox', 'casesensitive', get_string('casesensitive', 'qtype_gapfill'));
-         $mform->addHelpButton('casesensitive', 'casesensitive', 'qtype_gapfill');
+        $mform->addElement('advcheckbox', 'casesensitive', get_string('casesensitive', 'qtype_guessit'));
+         $mform->addHelpButton('casesensitive', 'casesensitive', 'qtype_guessit');
          $mform->setDefault('casesensitive', $config->casesensitive);
 
     }

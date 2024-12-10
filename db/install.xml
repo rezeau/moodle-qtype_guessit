@@ -9,7 +9,7 @@
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true" NEXT="question"/>
         <FIELD NAME="question" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="Foreign key references question.id" PREVIOUS="id" NEXT="casesensitive"/>
         <FIELD NAME="casesensitive" TYPE="int" LENGTH="1" NOTNULL="false" DEFAULT="0" SEQUENCE="false" COMMENT="make marking case sensitive" PREVIOUS="delimitchars" NEXT="fixedgapsize"/>
-        <FIELD NAME="fixedgapsize" TYPE="int" LENGTH="1" NOTNULL="false" DEFAULT="1" SEQUENCE="false" COMMENT="all gaps set to the same size in the renderer" PREVIOUS="disableregex" NEXT="correctfeedback"/>
+        <FIELD NAME="gapsizedisplay" TYPE="char" LENGTH="20" NOTNULL="false" DEFAULT="1" SEQUENCE="false" COMMENT="select gaps size display in the renderer" PREVIOUS="casesensitive" NEXT="correctfeedback"/>
         <FIELD NAME="correctfeedback" TYPE="text" NOTNULL="false" SEQUENCE="false" PREVIOUS="fixedgapsize" NEXT="correctfeedbackformat"/>
         <FIELD NAME="correctfeedbackformat" TYPE="int" LENGTH="2" NOTNULL="false" DEFAULT="0" SEQUENCE="false" PREVIOUS="correctfeedback" NEXT="partiallycorrectfeedback" />
         <FIELD NAME="partiallycorrectfeedback" TYPE="text" NOTNULL="false" SEQUENCE="false" PREVIOUS="correctfeedbackformat" NEXT="partiallycorrectfeedbackformat"/>

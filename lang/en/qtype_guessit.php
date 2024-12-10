@@ -31,11 +31,19 @@ $string['correct'] = 'Feedback for correct.';
 $string['correctanswer'] = 'Well done!';
 $string['displayguessit'] = 'guessit';
 $string['editquestiontext'] = 'Edit question text';
-$string['fixedgapsize'] = 'Fixed Gap Size';
-$string['fixedgapsize_help'] = 'When attempting the question all gaps will be set to the same size as the largest gap. This removes gap size as a clue to the correct answer.';
-$string['fixedgapsizeset_text'] = 'Sets the size of every gap to that of the biggest gap';
 $string['gap_plural'] = 'words';
 $string['gap_singular'] = 'word';
+$string['gapsize_display'] = 'Select Gap Size to display';
+$string['gapsize_display_help'] = 'Select Gap Size to display when attempting the question:
+
+"Proportional Gap Size" = each gap will be set to the same size as the gapped out word.
+
+"Fixed Gap Size" = all gaps will be set to the same size as the largest gap.
+
+"Dynamic Gap Size" = each gap will grow to accomodate longish words if needed.';
+$string['gapsize_fixed'] = 'Fixed Gap Size';
+$string['gapsize_grow'] = 'Dynamic Gap Size';
+$string['gapsize_matchword'] = 'Proportional Gap Size';
 $string['guessit'] = 'guessit.';
 $string['incorrect'] = 'Feedback for incorrect.';
 $string['moreoptions'] = 'More Options.';
