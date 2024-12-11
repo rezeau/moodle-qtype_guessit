@@ -23,7 +23,7 @@
  * @copyright  based on work by 2019 Marcus Green <marcusavgreen@gmail.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class qtype_guessit_renderer extends qtype_with_combined_feedback_renderer {
+class qtype_guessit_renderer extends qtype_renderer {
 
     /**
      * responses that would be correct if submitted
@@ -59,8 +59,6 @@ class qtype_guessit_renderer extends qtype_with_combined_feedback_renderer {
      */
     public function formulation_and_controls(question_attempt $qa, question_display_options $options) {
         $this->page->requires->js_call_amd('qtype_guessit/autogrow', 'init');
-        $currentanswer = $qa->get_last_qt_var($fieldname) ?? '';
-        $currentanswer = htmlspecialchars_decode($currentanswer);
         $this->displayoptions = $options;
         $question = $qa->get_question();
 
@@ -124,7 +122,6 @@ class qtype_guessit_renderer extends qtype_with_combined_feedback_renderer {
         $currentanswer = htmlspecialchars_decode($currentanswer);
         $rightanswer = $question->get_right_choice_for($place);
         $size = 0;
-        echo '<br><br><br><br>$question->gapsizedisplay = '.$question->gapsizedisplay;
         if ($question->gapsizedisplay === 'gapsizematchword') {
             $size = $question->get_size($rightanswer);
         } else if ($question->gapsizedisplay === 'gapsizefixed') {
@@ -251,9 +248,9 @@ class qtype_guessit_renderer extends qtype_with_combined_feedback_renderer {
      * @param question_attempt $qa
      * @return string
      */
-    public function specific_feedback(question_attempt $qa) {
-        return $this->combined_feedback($qa) . $this->get_duplicate_feedback($qa);
-    }
+    //public function specific_feedback(question_attempt $qa) {
+      //  return $this->combined_feedback($qa) . $this->get_duplicate_feedback($qa);
+    //}
 
     /**
      * if noduplicates is set check if any responses

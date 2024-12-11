@@ -257,7 +257,6 @@ class qtype_guessit extends question_type {
         $options->casesensitive = $question->casesensitive;
         $options->gapsizedisplay = $question->gapsizedisplay;
 
-        $options = $this->save_combined_feedback_helper($options, $question, $context, true);
         $DB->update_record('question_guessit', $options);
     }
 
@@ -349,8 +348,6 @@ class qtype_guessit extends question_type {
     public function move_files($questionid, $oldcontextid, $newcontextid) {
         /* Thanks to Jean-Michel Vedrine for pointing out the need for this and delete_files function */
         parent::move_files($questionid, $oldcontextid, $newcontextid);
-        $this->move_files_in_combined_feedback($questionid, $oldcontextid, $newcontextid);
-        $this->move_files_in_hints($questionid, $oldcontextid, $newcontextid);
     }
 
     /**
@@ -360,8 +357,6 @@ class qtype_guessit extends question_type {
      */
     protected function delete_files($questionid, $contextid) {
         parent::delete_files($questionid, $contextid);
-        $this->delete_files_in_combined_feedback($questionid, $contextid);
-        $this->delete_files_in_hints($questionid, $contextid);
     }
 
     /**
@@ -386,8 +381,6 @@ class qtype_guessit extends question_type {
             return false;
         }
         $question = parent::import_from_xml($data, $question, $format, null);
-        $format->import_combined_feedback($question, $data, true);
-        $format->import_hints($question, $data, true, false, $format->get_format($question->questiontextformat));
         $question->isimport = true;
         return $question;
 
@@ -416,7 +409,6 @@ class qtype_guessit extends question_type {
                 . $guessitinfo->release . ' version:' . $guessitinfo->versiondisk . ' Moodle version:'
                 . $CFG->version . ' release:' . $CFG->release
                 . " -->\n";
-        $output .= $format->write_combined_feedback($question->options, $question->id, $question->contextid);
         return $output;
     }
 

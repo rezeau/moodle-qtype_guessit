@@ -36,11 +36,11 @@ $string['gap_singular'] = 'word';
 $string['gapsize_display'] = 'Select Gap Size to display';
 $string['gapsize_display_help'] = 'Select Gap Size to display when attempting the question:
 
+"Dynamic Gap Size" = each gap will grow to accomodate longish words if needed.
+
 "Proportional Gap Size" = each gap will be set to the same size as the gapped out word.
 
-"Fixed Gap Size" = all gaps will be set to the same size as the largest gap.
-
-"Dynamic Gap Size" = each gap will grow to accomodate longish words if needed.';
+"Fixed Gap Size" = all gaps will be set to the same size as the largest gap.';
 $string['gapsize_fixed'] = 'Fixed Gap Size';
 $string['gapsize_grow'] = 'Dynamic Gap Size';
 $string['gapsize_matchword'] = 'Proportional Gap Size';
