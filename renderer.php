@@ -189,28 +189,11 @@ class qtype_guessit_renderer extends qtype_renderer {
         if (!$this->displayoptions->correctness) {
             return "";
         }
-        /*The atto editor tends to inject various tags that will not look good
-         * in feedback (e.g. <p> or <br/> so this strips all but the strip exceptions out)
-         */
         $stripexcptions = "<hr><a><b><i><u><strike><font>";
         if ($correctness) {
             return strip_tags($settings->correctfeedback, $stripexcptions);
         } else {
             return strip_tags($settings->incorrectfeedback, $stripexcptions);
-        }
-    }
-    /**
-     * Get the item settings for this gap based on the gap text
-     * If you have duplicate gaps it will not distinguish between them
-     *
-     * @param string $rightanswer
-     * @return array
-     */
-    protected function get_itemsettings(string $rightanswer) {
-        foreach ($this->itemsettings as $set) {
-            if ($set->gaptext == $rightanswer) {
-                return $set;
-            }
         }
     }
 
@@ -226,49 +209,8 @@ class qtype_guessit_renderer extends qtype_renderer {
      * @return string
      */
     public function get_input_class(array $markedgaps, question_attempt $qa, $fraction, $fieldname) {
-        $response = $qa->get_last_qt_data();
-        $question = $qa->get_question();
-
         $inputclass = $this->feedback_class($fraction);
-        foreach ($markedgaps as $gap) {
-            if ($response[$fieldname] == $gap['value']) {
-                if ($gap['duplicate'] == 'true') {
-                    if ($question->noduplicates == 1) {
-                        $inputclass = ' correctduplicate';
-                    }
-                }
-            }
-        }
         return $inputclass;
-    }
-
-    /**
-     * Get feedback/hint information
-     *
-     * @param question_attempt $qa
-     * @return string
-     */
-    //public function specific_feedback(question_attempt $qa) {
-      //  return $this->combined_feedback($qa) . $this->get_duplicate_feedback($qa);
-    //}
-
-    /**
-     * if noduplicates is set check if any responses
-     * are duplicate values
-     *
-     * @param question_attempt $qa
-     * @return string
-     *
-     */
-    public function get_duplicate_feedback(question_attempt $qa) {
-        $question = $qa->get_question();
-        if ($question->noduplicates == 0) {
-            return;
-        }
-        $arrunique = array_unique($this->correctresponses);
-        if (count($arrunique) != count($this->correctresponses)) {
-            return get_string('duplicatepartialcredit', 'qtype_guessit');
-        }
     }
 
     /**

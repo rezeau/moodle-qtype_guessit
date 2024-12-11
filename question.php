@@ -411,22 +411,6 @@ class qtype_guessit_question extends question_graded_automatically_with_countbac
     }
 
     /**
-     * Checks whether the users is allow to be served a particular file.
-     * Component and filearea refers to fields in the mdl_files table
-     *
-     * @param question_attempt $qa the question attempt being displayed.
-     * @param question_display_options $options the options that control display of the question.
-     * @param string $component the name of the component we are serving files for.
-     * @param string $filearea the name of the file area.
-     * @param array $args the remaining bits of the file path.
-     * @param bool $forcedownload whether the user must be forced to download the file.
-     * @return bool true if the user can access this file.
-     */
-    public function check_file_access($qa, $options, $component, $filearea, $args, $forcedownload) {
-        return parent::check_file_access($qa, $options, $component, $filearea, $args, $forcedownload);
-    }
-
-    /**
      * Compare the answer given with the correct answer, does it match?
      * To normalise white spaces add
      * $answergiven = preg_replace('/\s+/', ' ', $answergiven);

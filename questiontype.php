@@ -339,27 +339,6 @@ class qtype_guessit extends question_type {
     }
 
     /**
-     * Move all the files belonging to this question from one context to another.
-     * @param int $questionid the question being moved.
-     * @param int $oldcontextid the context it is moving from.
-     * @param int $newcontextid the context it is moving to.
-     *
-     */
-    public function move_files($questionid, $oldcontextid, $newcontextid) {
-        /* Thanks to Jean-Michel Vedrine for pointing out the need for this and delete_files function */
-        parent::move_files($questionid, $oldcontextid, $newcontextid);
-    }
-
-    /**
-     * Delete all the files belonging to this question.Seems the same as in the parent
-     * @param int $questionid the question being deleted.
-     * @param int $contextid the context the question is in.
-     */
-    protected function delete_files($questionid, $contextid) {
-        parent::delete_files($questionid, $contextid);
-    }
-
-    /**
      * The name of the key column in the foreign table (might have been questionid instead)
      * @return string
      */

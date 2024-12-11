@@ -86,8 +86,9 @@ class qtype_guessit_edit_form extends question_edit_form {
     protected function get_options(MoodleQuickform $mform) {
         $mform->addElement('header', 'feedbackheader', get_string('options', 'question'));
 
-        $gapsizedisplaytypes = ["gapsizegrow" => get_string('gapsize_grow', 'qtype_guessit'), "gapsizematchword" => get_string('gapsize_matchword', 'qtype_guessit'),
-            "gapsizefixed" => get_string('gapsize_fixed', 'qtype_guessit')
+        $gapsizedisplaytypes = ["gapsizegrow" =>
+            get_string('gapsize_grow', 'qtype_guessit'), "gapsizematchword" => get_string('gapsize_matchword',
+            'qtype_guessit'), "gapsizefixed" => get_string('gapsize_fixed', 'qtype_guessit'),
             ];
         $mform->addElement('select', 'gapsizedisplay', get_string('gapsize_display', 'qtype_guessit'), $gapsizedisplaytypes);
         $mform->addHelpButton('gapsizedisplay', 'gapsize_display', 'qtype_guessit');
