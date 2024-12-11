@@ -47,13 +47,13 @@ class qtype_guessit_question extends question_graded_automatically_with_countbac
      *
      * @var bool
      */
-    public $fixedgapsize;
+    public $gapsizedisplay;
 
     /**
      * The size of the biggest gap (used when fixedgapsize is true
      * @var int
      */
-    public $maxgapsize;
+    //public $maxgapsize;
 
     /**
      * its a whole number, it's only called fraction because it is referred to that in core

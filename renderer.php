@@ -123,10 +123,15 @@ class qtype_guessit_renderer extends qtype_with_combined_feedback_renderer {
         $currentanswer = $qa->get_last_qt_var($fieldname) ?? '';
         $currentanswer = htmlspecialchars_decode($currentanswer);
         $rightanswer = $question->get_right_choice_for($place);
-
-        /* Todo insert gapsize choice here. */
-
-        $size = 6;
+        $size = 0;
+        echo '<br><br><br><br>$question->gapsizedisplay = '.$question->gapsizedisplay;
+        if ($question->gapsizedisplay === 'gapsizematchword') {
+            $size = $question->get_size($rightanswer);
+        } else if ($question->gapsizedisplay === 'gapsizefixed') {
+            $size = $question->maxgapsize;
+        } else if ($question->gapsizedisplay === 'gapsizegrow') {
+            $size = 6;
+        }
         /* $options->correctness is really about it being ready to mark, */
         $aftergaptext = "";
         $inputclass = "";
@@ -159,7 +164,12 @@ class qtype_guessit_renderer extends qtype_with_combined_feedback_renderer {
             $readonly = ['disabled' => 'true'];
             $inputattributes = array_merge($inputattributes, $readonly);
         }
-        $inputattributes['class'] = 'typetext guessit auto-grow-input ' . $inputclass;
+        // Only use autogrowinput if gapsizedisplay is set to gapsizegrow.
+        $autogrowinput = '';
+        if ($question->gapsizedisplay === 'gapsizegrow') {
+            $autogrowinput = ' auto-grow-input ';
+        }
+        $inputattributes['class'] = 'typetext guessit '. $autogrowinput. $inputclass;
         $inputattributes['spellcheck'] = 'false';
         $markupcode = "";
         if ($currentanswer !== $rightanswer) {

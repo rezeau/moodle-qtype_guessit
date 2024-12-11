@@ -55,7 +55,7 @@ class qtype_guessit extends question_type {
      * @return array
      */
     public function extra_question_fields() {
-        return ['question_guessit', 'casesensitive', 'fixedgapsize'];
+        return ['question_guessit', 'casesensitive', 'gapsizedisplay'];
     }
 
 
@@ -250,12 +250,12 @@ class qtype_guessit extends question_type {
             $options->partiallycorrectfeedback = '';
             $options->incorrectfeedback = '';
             $options->casesensitive = '';
-            $options->fixedgapsize = '';
+            $options->gapsizedisplay = '';
             $options->id = $DB->insert_record('question_guessit', $options);
         }
 
         $options->casesensitive = $question->casesensitive;
-        $options->fixedgapsize = $question->fixedgapsize;
+        $options->gapsizedisplay = $question->gapsizedisplay;
 
         $options = $this->save_combined_feedback_helper($options, $question, $context, true);
         $DB->update_record('question_guessit', $options);
@@ -410,8 +410,8 @@ class qtype_guessit extends question_type {
         $output = parent::export_to_xml($question, $format);
         $output .= '    <casesensitive>' . $question->options->casesensitive .
                 "</casesensitive>\n";
-        $output .= '    <fixedgapsize>' . $question->options->fixedgapsize .
-                "</fixedgapsize>\n";
+        $output .= '    <gapsizedisplay>' . $question->options->gapsizedisplay .
+                "</gapsizedisplay>\n";
         $output .= '    <!-- guessit release:'
                 . $guessitinfo->release . ' version:' . $guessitinfo->versiondisk . ' Moodle version:'
                 . $CFG->version . ' release:' . $CFG->release
