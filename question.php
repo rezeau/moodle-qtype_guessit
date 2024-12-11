@@ -215,9 +215,7 @@ class qtype_guessit_question extends question_graded_automatically_with_countbac
      * @return string
      */
     public function get_validation_error(array $response) {
-        if (!$this->is_gradable_response($response)) {
-            return get_string('pleaseenterananswer', 'qtype_guessit');
-        }
+        return get_string('pleaseenterananswer', 'qtype_guessit');
     }
 
     /**

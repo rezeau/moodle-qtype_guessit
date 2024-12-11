@@ -130,19 +130,24 @@ class qtype_guessit_renderer extends qtype_renderer {
             $size = 6;
         }
         /* $options->correctness is really about it being ready to mark, */
-        $aftergaptext = "";
         $inputclass = "";
         if ((($options->correctness) || ($options->numpartscorrect)) && isset($markedgaps['p' . $place])) {
             $gap = $markedgaps['p' . $place];
             $fraction = $gap['fraction'];
             $response = $qa->get_last_qt_data();
-            if ($fraction == 1) {
+            if (empty($currentanswer)) {
+                $inputclass = '';
+            } else if ($fraction == 1) {
                 array_push($this->correctresponses, $response[$fieldname]);
                 if (!preg_match($question->blankregex, $rightanswer) || ($response[$fieldname] != '')) {
                     $inputclass = $this->get_input_class($markedgaps, $qa, $fraction, $fieldname);
                 }
             } else if ($fraction == 0) {
-                $inputclass = $this->feedback_class($fraction);
+                if (preg_match('/^' . preg_quote($currentanswer[0], '/') . '/i', $rightanswer)) {
+                    $inputclass = 'partiallycorrect';
+                } else {
+                    $inputclass = $this->feedback_class($fraction);
+                }
             }
         }
 
