@@ -61,7 +61,7 @@ class qtype_guessit_renderer extends qtype_renderer {
         $this->page->requires->js_call_amd('qtype_guessit/autogrow', 'init');
         $this->displayoptions = $options;
         $question = $qa->get_question();
-
+        $laststep = $qa->get_reverse_step_iterator();
         $seranswers = $qa->get_step(0)->get_qt_var('_allanswers');
         $this->allanswers = unserialize($seranswers);
         $output = "";
@@ -219,6 +219,33 @@ class qtype_guessit_renderer extends qtype_renderer {
     }
 
     /**
+     * Get feedback/hint information
+     *
+     * @param question_attempt $qa
+     * @return string
+     */
+    public function specific_feedback(question_attempt $qa, $rightans = 'too many cooks') {
+        $currentanswer = '';
+        $i = 0;
+        // Get $rightanswer.
+        foreach ($qa->get_step_iterator() as $step) {
+            $response = $step->get_qt_data();
+            $rightanswer = $this->get_rightanswer ($response);
+            break;
+        }
+        // Get $currentanswer
+        foreach ($qa->get_step_iterator() as $step) {
+            $response = $step->get_qt_data();
+            if (!empty($response) && $i > 0) {
+                $currentanswer.= implode(',', $response).',';
+            }
+            $i++;
+        }
+        $currentanswer = rtrim($currentanswer, ',');
+        return $this->format_specific_feedback ($rightanswer, $currentanswer);
+    }
+
+    /**
      * overriding base class method purely to return a string
      * yougotnrightcount instead of default yougotnright
      *
@@ -251,6 +278,8 @@ class qtype_guessit_renderer extends qtype_renderer {
      *
      */
     public function get_markup_string($studentanswer, $answer) {
+        // echo 'get_markup_string<br>';
+        // echo $studentanswer. ' '. $answer .'<hr>';
         $cleananswer = $answer;
         // Check if answer has only ASCII characters.
         $hasonlyascii = preg_match('/^[\x00-\x7F]*$/', $answer);
@@ -336,5 +365,62 @@ class qtype_guessit_renderer extends qtype_renderer {
             $text = preg_replace($change['letters'], $change['base'], $text);
         }
         return $text;
+    }
+
+    /**
+     * Format rightanswer and currentanswer nicely for specific feedback disply.
+     * @param string $rightanswer
+     * @param string $currentanswer
+     * @return string $formattedfeedback
+     */
+    private function get_rightanswer ($response) {
+        // Step 1: Extract the serialized string
+            $serialized = $response['_allanswers'];
+            // Step 2: Extract the "s:X" lengths from the serialized string
+            preg_match_all('/s:(\d+):/', $serialized, $matches);
+            $lengths = $matches[1]; // [8, 3, 5, 2]
+            // Step 3: Unserialize the value to get the array of words
+            $array = unserialize($serialized); // ['four', 'two', 'three', 'one']
+            // Step 4: Combine lengths and values into an associative array
+            $combined = [];
+            foreach ($array as $index => $value) {
+                $combined[] = ['length' => $lengths[$index], 'value' => $value];
+            }
+            // Step 5: Sort the array by the 'length' value in ascending order
+            usort($combined, function($a, $b) {
+                return $a['length'] <=> $b['length'];
+            });
+            // Step 6: Extract the reordered values from the sorted array
+            $reorderedValues = array_column($combined, 'value');
+            // Step 7: Join the elements of the array into a single string separated by commas
+            $rightanswer = implode(',', $reorderedValues);
+            // Output the rightanswer.
+            //echo $rightanswer; // Outputs: one,two,three,four
+        return $rightanswer;
+    }
+
+    /**
+     * Format rightanswer and currentanswer nicely for specific feedback disply.
+     * @param string $rightanswer
+     * @param string $currentanswer
+     * @return string $formattedfeedback
+     */
+    private function format_specific_feedback ($rightanswer, $currentanswer) {
+        $arrayrightanswer = explode(',', $rightanswer);        
+        $arraycurrentanswer = explode(',', $currentanswer);        
+        $formattedfeedback = "";
+        $lengthrightanswer = count($arrayrightanswer);
+        $currentanswers = array_chunk($arraycurrentanswer, $lengthrightanswer);
+        foreach ($currentanswers as $outer_index => $sub_array) {   
+            // Loop through the inner array
+            foreach ($sub_array as $inner_index => $value) {
+                $studentanswer = $value;
+                $rightanswer = $arrayrightanswer[$inner_index];
+                $markupcode = $this->get_markup_string ($studentanswer, $rightanswer);
+                $formattedfeedback.= '<div class="specific-feedback input-wrapper">'. $studentanswer. '<span class="feedback-markup">'.$markupcode. '</span></div>';
+            }
+            $formattedfeedback.= '<div></div>';
+        }
+        return $formattedfeedback;
     }
 }

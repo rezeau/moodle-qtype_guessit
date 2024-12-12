@@ -5,7 +5,8 @@
 }
 
 /* the gap where answers are dropped/keyed in */
-.que.guessit input[type=text] {
+.que.guessit input[type=text],
+.que.guessit .specific-feedback {
     font-family: 'Roboto Mono', 'Lucida Console', Courier, monospace;
     font-size: 1.2em;
     background: white;
@@ -52,8 +53,20 @@
   left: 0px;
 }
 
+.que.guessit .feedback-markup {
+  font-family: "Lucida Console", Courier, monospace; 
+  margin-left: 5px;
+  position: absolute;
+  top: 22px;
+  left: 0px;
+}
+
 .que.guessit .input-wrapper {
   display: inline-block;
   position: relative;
   margin-bottom: 12px;
+}
+
+.que.guessit .specific-feedback.input-wrapper {
+  margin-right: 4px;
 }
