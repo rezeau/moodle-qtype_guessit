@@ -37,7 +37,11 @@ define(['jquery'], function() {
                 e.style.width = "auto"; // Reset width
                 e.style.width = (e.scrollWidth + 1) + "px"; // Set the width to the content size plus 1 px for adjustment.
             });
-
+            e.addEventListener("keydown", (event) => {
+                if (event.key === " ") {
+                    event.preventDefault(); // Prevent space from being entered
+                }
+            });
             // Adjust the input width on page load (for pre-filled values)
             e.dispatchEvent(new Event('input'));
         });
