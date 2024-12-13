@@ -225,15 +225,18 @@ class qtype_guessit_renderer extends qtype_renderer {
      * @return string
      */
     public function specific_feedback(question_attempt $qa, $rightans = 'too many cooks') {
+        $question = $qa->get_question();
+
+        // Get $rightanswer.
+        $rightanswer = '';        
+        foreach ($question->answers as $answer) {
+            $rightanswer .= $answer->answer . ',';
+        }
+        $rightanswer = rtrim($rightanswer, ',');
+        
+        // Get $currentanswer
         $currentanswer = '';
         $i = 0;
-        // Get $rightanswer.
-        foreach ($qa->get_step_iterator() as $step) {
-            $response = $step->get_qt_data();
-            $rightanswer = $this->get_rightanswer ($response);
-            break;
-        }
-        // Get $currentanswer
         foreach ($qa->get_step_iterator() as $step) {
             $response = $step->get_qt_data();
             if (!empty($response) && $i > 0) {
@@ -242,6 +245,7 @@ class qtype_guessit_renderer extends qtype_renderer {
             $i++;
         }
         $currentanswer = rtrim($currentanswer, ',');
+
         return $this->format_specific_feedback ($rightanswer, $currentanswer);
     }
 
@@ -365,38 +369,6 @@ class qtype_guessit_renderer extends qtype_renderer {
             $text = preg_replace($change['letters'], $change['base'], $text);
         }
         return $text;
-    }
-
-    /**
-     * Format rightanswer and currentanswer nicely for specific feedback disply.
-     * @param string $rightanswer
-     * @param string $currentanswer
-     * @return string $formattedfeedback
-     */
-    private function get_rightanswer ($response) {
-        // Step 1: Extract the serialized string
-            $serialized = $response['_allanswers'];
-            // Step 2: Extract the "s:X" lengths from the serialized string
-            preg_match_all('/s:(\d+):/', $serialized, $matches);
-            $lengths = $matches[1]; // [8, 3, 5, 2]
-            // Step 3: Unserialize the value to get the array of words
-            $array = unserialize($serialized); // ['four', 'two', 'three', 'one']
-            // Step 4: Combine lengths and values into an associative array
-            $combined = [];
-            foreach ($array as $index => $value) {
-                $combined[] = ['length' => $lengths[$index], 'value' => $value];
-            }
-            // Step 5: Sort the array by the 'length' value in ascending order
-            usort($combined, function($a, $b) {
-                return $a['length'] <=> $b['length'];
-            });
-            // Step 6: Extract the reordered values from the sorted array
-            $reorderedValues = array_column($combined, 'value');
-            // Step 7: Join the elements of the array into a single string separated by commas
-            $rightanswer = implode(',', $reorderedValues);
-            // Output the rightanswer.
-            //echo $rightanswer; // Outputs: one,two,three,four
-        return $rightanswer;
     }
 
     /**
