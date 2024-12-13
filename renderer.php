@@ -59,6 +59,7 @@ class qtype_guessit_renderer extends qtype_renderer {
      */
     public function formulation_and_controls(question_attempt $qa, question_display_options $options) {
         $this->page->requires->js_call_amd('qtype_guessit/autogrow', 'init');
+        $this->page->requires->js_call_amd('qtype_guessit/keyevents', 'init');
         $this->displayoptions = $options;
         $question = $qa->get_question();
         $laststep = $qa->get_reverse_step_iterator();
