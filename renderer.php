@@ -118,8 +118,8 @@ class qtype_guessit_renderer extends qtype_renderer {
         $question = $qa->get_question();
         $fieldname = $question->field($place);
 
-        $currentanswer = $qa->get_last_qt_var($fieldname) ?? '';
-        $currentanswer = htmlspecialchars_decode($currentanswer);
+        $studentanswer = $qa->get_last_qt_var($fieldname) ?? '';
+        $studentanswer = htmlspecialchars_decode($studentanswer);
         $rightanswer = $question->get_right_choice_for($place);
         $size = 0;
         if ($question->gapsizedisplay === 'gapsizematchword') {
@@ -135,7 +135,7 @@ class qtype_guessit_renderer extends qtype_renderer {
             $gap = $markedgaps['p' . $place];
             $fraction = $gap['fraction'];
             $response = $qa->get_last_qt_data();
-            if (empty($currentanswer)) {
+            if (empty($studentanswer)) {
                 $inputclass = '';
             } else if ($fraction == 1) {
                 array_push($this->correctresponses, $response[$fieldname]);
@@ -143,7 +143,7 @@ class qtype_guessit_renderer extends qtype_renderer {
                     $inputclass = $this->get_input_class($markedgaps, $qa, $fraction, $fieldname);
                 }
             } else if ($fraction == 0) {
-                if (preg_match('/^' . preg_quote($currentanswer[0], '/') . '/i', $rightanswer)) {
+                if (preg_match('/^' . preg_quote($studentanswer[0], '/') . '/i', $rightanswer)) {
                     $inputclass = 'partiallycorrect';
                 } else {
                     $inputclass = $this->feedback_class($fraction);
@@ -157,7 +157,7 @@ class qtype_guessit_renderer extends qtype_renderer {
         $inputattributes = [
             'type' => "text",
             'name' => $inputname,
-            'value' => $currentanswer,
+            'value' => $studentanswer,
             'id' => $inputname,
             'size' => $size,
         ];
@@ -174,8 +174,8 @@ class qtype_guessit_renderer extends qtype_renderer {
         $inputattributes['class'] = 'typetext guessit '. $autogrowinput. $inputclass;
         $inputattributes['spellcheck'] = 'false';
         $markupcode = "";
-        if ($currentanswer !== $rightanswer) {
-            $markupcode = $this->get_markup_string ($currentanswer, $rightanswer);
+        if ($studentanswer !== $rightanswer) {
+            $markupcode = $this->get_markup_string ($studentanswer, $rightanswer);
         }
         return html_writer::empty_tag('input', $inputattributes) . '<span class="markup">'.$markupcode.'</span>';
     }
@@ -224,29 +224,28 @@ class qtype_guessit_renderer extends qtype_renderer {
      * @param question_attempt $qa
      * @return string
      */
-    public function specific_feedback(question_attempt $qa, $rightans = 'too many cooks') {
+    public function specific_feedback(question_attempt $qa) {
         $question = $qa->get_question();
-
         // Get $rightanswer.
-        $rightanswer = '';        
+        $rightanswer = '';
         foreach ($question->answers as $answer) {
             $rightanswer .= $answer->answer . ',';
         }
         $rightanswer = rtrim($rightanswer, ',');
-        
-        // Get $currentanswer
-        $currentanswer = '';
+
+        // Get $studentanswer.
+        $studentanswer = '';
         $i = 0;
         foreach ($qa->get_step_iterator() as $step) {
             $response = $step->get_qt_data();
             if (!empty($response) && $i > 0) {
-                $currentanswer.= implode(',', $response).',';
+                $studentanswer .= implode(',', $response).',';
             }
             $i++;
         }
-        $currentanswer = rtrim($currentanswer, ',');
+        $studentanswer = rtrim($studentanswer, ',');
 
-        return $this->format_specific_feedback ($rightanswer, $currentanswer);
+        return $this->format_specific_feedback ($rightanswer, $studentanswer);
     }
 
     /**
@@ -282,8 +281,6 @@ class qtype_guessit_renderer extends qtype_renderer {
      *
      */
     public function get_markup_string($studentanswer, $answer) {
-        // echo 'get_markup_string<br>';
-        // echo $studentanswer. ' '. $answer .'<hr>';
         $cleananswer = $answer;
         // Check if answer has only ASCII characters.
         $hasonlyascii = preg_match('/^[\x00-\x7F]*$/', $answer);
@@ -372,23 +369,23 @@ class qtype_guessit_renderer extends qtype_renderer {
     }
 
     /**
-     * Format rightanswer and currentanswer nicely for specific feedback disply.
+     * Format rightanswer and studentanswer nicely for specific feedback disply.
      * @param string $rightanswer
-     * @param string $currentanswer
+     * @param string $studentanswer
      * @return string $formattedfeedback
      */
-    private function format_specific_feedback ($rightanswer, $currentanswer) {
-        $arrayrightanswer = explode(',', $rightanswer);        
-        $arraycurrentanswer = explode(',', $currentanswer);        
+    private function format_specific_feedback($rightanswer, $studentanswer) {
+        $arrayrightanswer = explode(',', $rightanswer);
+        $arraystudentanswer = explode(',', $studentanswer);
         $formattedfeedback = "";
         $lengthrightanswer = count($arrayrightanswer);
-        $currentanswers = array_chunk($arraycurrentanswer, $lengthrightanswer);        
-        foreach ($currentanswers as $outer_index => $sub_array) {   
-            // Loop through the inner array            
-            foreach ($sub_array as $inner_index => $value) {
+        $studentanswers = array_chunk($arraystudentanswer, $lengthrightanswer);
+        foreach ($studentanswers as $outerindex => $subarray) {
+            // Loop through the inner array.
+            foreach ($subarray as $innerindex => $value) {
                 $colorclass = '';
                 $studentanswer = $value;
-                $rightanswer = $arrayrightanswer[$inner_index];
+                $rightanswer = $arrayrightanswer[$innerindex];
                 $markupcode = $this->get_markup_string ($studentanswer, $rightanswer);
                 if ($studentanswer) {
                     if ($studentanswer === $rightanswer) {
@@ -402,9 +399,10 @@ class qtype_guessit_renderer extends qtype_renderer {
                 } else {
                     $studentanswer = '&nbsp;';
                 }
-                $formattedfeedback.= '<div class="specific-feedback input-wrapper '.$colorclass.'">'. $studentanswer. '<span class="feedback-markup">'.$markupcode. '</span></div>';
+                $formattedfeedback .= '<div class="specific-feedback input-wrapper '.$colorclass.'">'.
+                    $studentanswer. '<span class="feedback-markup">'.$markupcode. '</span></div>';
             }
-            $formattedfeedback.= '<div></div>';
+            $formattedfeedback .= '<div></div>';
         }
         return $formattedfeedback;
     }
