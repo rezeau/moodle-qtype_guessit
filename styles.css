@@ -26,21 +26,20 @@
     margin-bottom: 15px;
 }
 
+.que.guessit .correct,
 .que.guessit input.correct {
     background-color: #afa;
 }
 
-.que.guessit select.incorrect {
-    background-color: #faa;
-}
+.que.guessit .incorrect,
 .que.guessit input.incorrect {
     background-color: #faa;
 }
 
+.que.guessit .partiallycorrect,
 .que.guessit input.partiallycorrect {
     background-color: #ffff99;
 }
-
 
 /* Showing markup. top & left determined by position of input element. 
 */

@@ -382,14 +382,27 @@ class qtype_guessit_renderer extends qtype_renderer {
         $arraycurrentanswer = explode(',', $currentanswer);        
         $formattedfeedback = "";
         $lengthrightanswer = count($arrayrightanswer);
-        $currentanswers = array_chunk($arraycurrentanswer, $lengthrightanswer);
+        $currentanswers = array_chunk($arraycurrentanswer, $lengthrightanswer);        
         foreach ($currentanswers as $outer_index => $sub_array) {   
-            // Loop through the inner array
+            // Loop through the inner array            
             foreach ($sub_array as $inner_index => $value) {
+                $colorclass = '';
                 $studentanswer = $value;
                 $rightanswer = $arrayrightanswer[$inner_index];
                 $markupcode = $this->get_markup_string ($studentanswer, $rightanswer);
-                $formattedfeedback.= '<div class="specific-feedback input-wrapper">'. $studentanswer. '<span class="feedback-markup">'.$markupcode. '</span></div>';
+                if ($studentanswer) {
+                    if ($studentanswer === $rightanswer) {
+                        $colorclass = 'correct';
+                        $markupcode = '';
+                    } else if (preg_match('/^' . preg_quote($studentanswer[0], '/') . '/i', $rightanswer)) {
+                        $colorclass = 'partiallycorrect';
+                    } else {
+                        $colorclass = 'incorrect';
+                    }
+                } else {
+                    $studentanswer = '&nbsp;';
+                }
+                $formattedfeedback.= '<div class="specific-feedback input-wrapper '.$colorclass.'">'. $studentanswer. '<span class="feedback-markup">'.$markupcode. '</span></div>';
             }
             $formattedfeedback.= '<div></div>';
         }
