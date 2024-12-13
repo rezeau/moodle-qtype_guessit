@@ -23,23 +23,32 @@
 /**
  * @module qtype_guessit/keyevents
  *
- * Upon pressing Space when inputting a word into a gap, this script moves to the next gap.
+ * Upon pressing Space bar: move to the next gap OR to the Check button after the last gap.
  */
 define(['jquery'], function() {
 
     /**
-     * Initialize the auto-grow input functionality.
+     * Override the space bar behaviour
      */
-    function init() {
-        document.querySelectorAll('input[class*="auto-grow-input"]').forEach(function(e) {
-            e.addEventListener("keydown", (e) => {
-        if (e.key === " ") {
-            event.preventDefault(); // This prevents the default space input action
-        }
-        return true;
-      });
-            // Adjust the input width on page load (for pre-filled values)
-            e.dispatchEvent(new Event('input'));
+function init() {
+        const inputs = document.querySelectorAll('input[class*="auto-grow-input"]');
+        const checkButton = document.querySelector('button[type="submit"], button.check-button');
+        // Adjust this selector as needed to target the "Check" button
+
+        inputs.forEach(function(e, index) {
+            e.addEventListener("keydown", (event) => {
+                if (event.key === " ") {
+                    event.preventDefault(); // Prevent space from being entered
+
+                    if (index < inputs.length - 1) {
+                        // Move focus to the next input field
+                        inputs[index + 1].focus();
+                    } else if (checkButton) {
+                        // If it's the last input, move to the "Check" button
+                        checkButton.focus();
+                    }
+                }
+            });
         });
     }
 
