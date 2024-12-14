@@ -52,20 +52,17 @@ class backup_qtype_guessit_plugin extends backup_qtype_plugin {
 
         // Now create the qtype own structures.
         $guessit = new backup_nested_element('guessit', ['id'], [
-            'casesensitive', 'fixedgapsize', 'correctfedback', 'correctfeddbackformat',
+            'casesensitive', 'gapsizedisplay', 'correctfedback', 'correctfeddbackformat',
             'partiallycorrectfeedback', 'partiallycorrectfeedbackformat', 'incorrectfeedback', 'incorrectfeedbackformat']);
 
         // Now the own qtype tree.
         $pluginwrapper->add_child($guessit);
-
-        $pluginwrapper->add_child($gapsettings);
 
         // Set source to populate the data.
         $guessit->set_source_table('question_guessit',
                 ['question' => backup::VAR_PARENTID]);
 
         // Don't need to annotate ids nor files.
-
         return $plugin;
     }
 
