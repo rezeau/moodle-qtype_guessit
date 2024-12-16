@@ -85,11 +85,6 @@ class qtype_guessit_question extends question_graded_automatically_with_countbac
      */
     public $answers = [];
 
-    /**
-     * checks for gaps that get a mark for being left black i.e. [!!]
-     * @var string
-     */
-    public $blankregex = "/!.*!/";
 
     /**
      * @var array place number => group number of the places in the question
@@ -124,18 +119,8 @@ class qtype_guessit_question extends question_graded_automatically_with_countbac
          */
         $answers = [];
         foreach ($this->allanswers as $answer) {
-            if (strpos($answer, '|')) {
-                $answers = array_merge($answers, explode("|", $answer));
-            } else {
-                array_push($answers, $answer);
-            }
+            array_push($answers, $answer);
         }
-        /* array_unique is for when you have multiple identical answers separated
-         * by |, i.e. olympic medals as [gold|silve|bronze]
-         */
-        $this->allanswers = array_unique($answers);
-        shuffle($this->allanswers);
-        $step->set_qt_var('_allanswers', serialize($this->allanswers));
     }
 
     /**
@@ -196,7 +181,7 @@ class qtype_guessit_question extends question_graded_automatically_with_countbac
         $iscomplete = true;
         foreach ($this->answers as $rightanswer) {
             $answergiven = array_shift($response);
-            if ((!($answergiven == "")) || (preg_match($this->blankregex, $rightanswer->answer))) {
+            if (!($answergiven == "") ) {
                 $gapsfilled++;
             }
         }
@@ -291,9 +276,9 @@ class qtype_guessit_question extends question_graded_automatically_with_countbac
             $rightanswer = core_text::strtolower($rightanswer, 'UTF-8');
         }
 
-        if ($this->compare_response_with_answer($answergiven, $rightanswer, $this->disableregex)) {
+        if ($this->compare_response_with_answer($answergiven, $rightanswer)) {
             return true;
-        } else if (($answergiven == "") && (preg_match($this->blankregex, $rightanswer))) {
+        } else if (($answergiven == "") ) {
             return true;
         } else {
             return false;
@@ -323,7 +308,7 @@ class qtype_guessit_question extends question_graded_automatically_with_countbac
                 $answergiven = core_text::strtolower($answergiven, 'UTF-8');
                 $rightanswer = core_text::strtolower($rightanswer, 'UTF-8');
             }
-            if ($this->compare_response_with_answer($answergiven, $rightanswer, $this->disableregex)) {
+            if ($this->compare_response_with_answer($answergiven, $rightanswer)) {
                 $numright++;
             }
         }
@@ -347,7 +332,7 @@ class qtype_guessit_question extends question_graded_automatically_with_countbac
                 $answergiven = core_text::strtolower($answergiven);
                 $rightanswer = core_text::strtolower($rightanswer);
             }
-            if (!$this->compare_response_with_answer($answergiven, $rightanswer, $this->disableregex)) {
+            if (!$this->compare_response_with_answer($answergiven, $rightanswer)) {
                 $response[$this->field($place)] = '';
             }
         }
@@ -378,9 +363,6 @@ class qtype_guessit_question extends question_graded_automatically_with_countbac
      * @return number
      */
     public function compute_final_grade($responses, $totaltries) {
-        if (($this->noduplicates == 1) && (count($responses) > 0)) {
-             $responses[0] = $this->discard_duplicates($responses[0]);
-        }
         $totalscore = 0;
         foreach (array_keys($this->places) as $place) {
             $fieldname = $this->field($place);
@@ -393,7 +375,7 @@ class qtype_guessit_question extends question_graded_automatically_with_countbac
                     continue;
                 }
                 $resp = $response[$fieldname];
-                if (!$this->compare_response_with_answer($resp, $rcfp, $this->disableregex)) {
+                if (!$this->compare_response_with_answer($resp, $rcfp)) {
                     $lastwrongindex = $i;
                     $finallyright = false;
                 } else {
@@ -419,54 +401,19 @@ class qtype_guessit_question extends question_graded_automatically_with_countbac
      * @param boolean $disableregex
      * @return boolean
      */
-    public function compare_response_with_answer($answergiven, $answer, $disableregex = false) {
+    public function compare_response_with_answer($answergiven, $answer) {
         /* converts things like &lt; into < */
         $answer = htmlspecialchars_decode($answer);
         $answergiven = htmlspecialchars_decode($answergiven);
-
-        if ($disableregex == true) {
-            /* use the | operator without regular expressions. Useful for
-             * programming languages or math related questions which use
-             * special characters such as ()and slashes. Introduced with
-             * guessit 1.8
-             */
-            $correctness = false;
-            $answerparts = explode("|", $answer);
-
-            foreach ($answerparts as $answer) {
-                if (!$this->casesensitive == 1) {
-                    $answergiven = core_text::strtolower($answergiven, 'UTF-8');
-                    $answer = core_text::strtolower($answer, 'UTF-8');
-                }
-                if (strcmp(trim($answergiven), trim($answer)) == 0) {
-                    $correctness = true;
-                } else if (preg_match($this->blankregex, $answer) && $answergiven == "") {
-                    $correctness = true;
-                }
-            }
-            return $correctness;
-        }
-
         $pattern = str_replace('/', '\/', $answer);
-        $regexp = "";
-        /* if the gap contains | then only match complete words
-         * this is to avoid a situation where [cat|dog]
-         * would match catty or bigcat and adog and doggy
-         */
-        if (strpos($pattern, "|")) {
-            $regexp = '/\b(' . $pattern . ')\b/u';
-        } else {
-            $regexp = '/^' . $pattern . '$/u';
-        }
+        $regexp = '/^' . $pattern . '$/u';
 
         // Make the match insensitive if requested to, not sure this is necessary.
         if (!$this->casesensitive) {
             $regexp .= 'i';
         }
-        /* the @ is to suppress warnings, e.g. someone forgot to turn off regex matching */
+
         if (@preg_match($regexp, trim($answergiven))) {
-            return true;
-        } else if (preg_match($this->blankregex, $answer) && $answergiven == "") {
             return true;
         } else {
             return false;
@@ -477,7 +424,6 @@ class qtype_guessit_question extends question_graded_automatically_with_countbac
      * array(1) (  [p1] => array(3)(
      * [value] => (string) 0
      *  [fraction] => (int) 1
-     *  [duplicate] => (string) false
      * ))
      *
      * @param question_attempt $qa
@@ -509,15 +455,23 @@ class qtype_guessit_question extends question_graded_automatically_with_countbac
                 }
             }
         }
-        $arrunique = array_unique($correctgaps);
-        $arrduplicates = array_diff_assoc($correctgaps, $arrunique);
-        foreach ($markedgaps as $fieldname => $gap) {
-            if (in_array($gap['value'], $arrduplicates)) {
-                $markedgaps[$fieldname]['duplicate'] = 'true';
-            } else {
-                $markedgaps[$fieldname]['duplicate'] = 'false';
-            }
-        }
         return $markedgaps;
+    }
+
+    /**
+     * Create the appropriate behaviour for an attempt at this question,
+     * given the desired (archetypal) behaviour.
+     *
+     * @param question_attempt $qa the attempt we are creating a behaviour for.
+     * @param string $preferredbehaviour the requested type of behaviour.
+     * @return question_behaviour the new behaviour object.
+     */
+    public function make_behaviour(question_attempt $qa, $preferredbehaviour) {
+        GLOBAL $CFG;
+        // If guessit behaviour has been installed, make all default behaviours default to guessit.
+            if (file_exists($CFG->dirroot.'/question/behaviour/guessit/')) {
+                return question_engine::make_behaviour('guessit', $qa, 'adaptive');
+            }
+        return question_engine::make_archetypal_behaviour($preferredbehaviour, $qa);
     }
 }

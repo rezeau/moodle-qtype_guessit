@@ -29,6 +29,7 @@ class qtype_guessit_renderer extends qtype_renderer {
      * responses that would be correct if submitted
      * @var array
      */
+
     public $correctresponses = [];
     /**
      * correct and distractor answers
@@ -36,11 +37,7 @@ class qtype_guessit_renderer extends qtype_renderer {
      * @var array
      */
     public $allanswers = [];
-    /**
-     * Used to store the per-gap settings, e.g. feedback
-     * @var array
-     */
-    public $itemsettings = [];
+
     /**
      * all the options that controls how a question is displayed
      * more about the question engine than this specific question type
@@ -62,8 +59,6 @@ class qtype_guessit_renderer extends qtype_renderer {
         $this->displayoptions = $options;
         $question = $qa->get_question();
         $laststep = $qa->get_reverse_step_iterator();
-        $seranswers = $qa->get_step(0)->get_qt_var('_allanswers');
-        $this->allanswers = unserialize($seranswers);
         $output = "";
         $answeroptions = '';
         $questiontext = '';
@@ -92,17 +87,6 @@ class qtype_guessit_renderer extends qtype_renderer {
         return $output;
     }
 
-    /**
-     * Set divs that are inspected by the mobile app
-     * for settings
-     *
-     * @param qtype_guessit_question $question
-     * @param  string $questiontext
-     * @return string
-     */
-    public function app_connect(qtype_guessit_question $question, string $questiontext): string {
-        return $questiontext;
-    }
     /**
      * Construct the gaps, e.g. textentry and set the state accordingly
      *
@@ -139,7 +123,7 @@ class qtype_guessit_renderer extends qtype_renderer {
                 $inputclass = '';
             } else if ($fraction == 1) {
                 array_push($this->correctresponses, $response[$fieldname]);
-                if (!preg_match($question->blankregex, $rightanswer) || ($response[$fieldname] != '')) {
+                if (($response[$fieldname] != '')) {
                     $inputclass = $this->get_input_class($markedgaps, $qa, $fraction, $fieldname);
                 }
             } else if ($fraction == 0) {
@@ -162,6 +146,7 @@ class qtype_guessit_renderer extends qtype_renderer {
             'size' => $size,
         ];
         /* When previewing after a quiz is complete */
+        // Papijo use this readonly state to not display feedback ???
         if ($options->readonly) {
             $readonly = ['disabled' => 'true'];
             $inputattributes = array_merge($inputattributes, $readonly);
@@ -203,10 +188,7 @@ class qtype_guessit_renderer extends qtype_renderer {
     }
 
     /**
-     * set the feedback class to green unless noduplicates is set
-     * then check if this is a duplicated value and if it is set the background
-     * to yellow.
-     *
+     * Does what it sayx
      * @param array $markedgaps
      * @param question_attempt $qa
      * @param number $fraction either 0 or 1 for correct or incorrect
@@ -317,10 +299,17 @@ class qtype_guessit_renderer extends qtype_renderer {
         for ($i = 0; $i < $minlen; $i++) {
             // This is needed for non-ascii characters.
             $answerletter = mb_substr($answer, $i, 1, 'UTF-8'); // Extract 1 character at index $i.
-            $cleananswerletter = mb_strtolower($cleananswer[$i]); // Lowercase for multibyte support.
+            if (!empty($cleananswer) && is_string($cleananswer) && $i < mb_strlen($cleananswer)) {
+                $cleananswerletter = mb_strtolower(mb_substr($cleananswer, $i, 1));
+            } else {
+                $cleananswerletter = ''; // Default or fallback value.
+            }
             $studentletter = mb_substr($studentanswer, $i, 1, 'UTF-8'); // Extract 1 character at index $i.
-            $cleanstudentletter = mb_strtolower($cleanstudentanswer[$i]); // Lowercase for multibyte support.
-
+            if (!empty($cleanstudentanswer) && is_string($cleanstudentanswer) && $i < mb_strlen($cleanstudentanswer)) {
+                $cleanstudentletter = mb_strtolower(mb_substr($cleanstudentanswer, $i, 1));
+            } else {
+                $cleanstudentletter = ''; // Default or fallback value.
+            }
             // Logic to generate the markup.
             if ($studentletter === $answerletter) {
                 $markup .= $eq; // Exact match.
