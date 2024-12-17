@@ -111,12 +111,12 @@ class qtype_guessit_question extends question_graded_automatically_with_countbac
     /**
      * get the length of the correct answer and if the | is used
      * the length of the longest of the correct answers
-     * @param string $answer
+     * @param string $rightanswer
      * @return number
      */
-    public function get_size($answer) {
-        $answer = htmlspecialchars_decode($answer);
-        $words = explode("|", $answer);
+    public function get_size($rightanswer) {
+        $rightanswer = htmlspecialchars_decode($rightanswer);
+        $words = explode("|", $rightanswer);
         $maxlen = max(array_map('strlen', $words));
         return $maxlen;
     }
@@ -165,8 +165,8 @@ class qtype_guessit_question extends question_graded_automatically_with_countbac
         $gapsfilled = 0;
         $iscomplete = true;
         foreach ($this->answers as $rightanswer) {
-            $answergiven = array_shift($response);
-            if (!($answergiven == "") ) {
+            $studentanswer = array_shift($response);
+            if (!($studentanswer == "") ) {
                 $gapsfilled++;
             }
         }
@@ -227,8 +227,8 @@ class qtype_guessit_question extends question_graded_automatically_with_countbac
      * @return boolean
      */
     public function is_gradable_response(array $response) {
-        foreach ($response as $answergiven) {
-            if (($answergiven !== "")) {
+        foreach ($response as $studentanswer) {
+            if (($studentanswer !== "")) {
                 return true;
             }
         }
@@ -242,8 +242,8 @@ class qtype_guessit_question extends question_graded_automatically_with_countbac
      */
     public function get_correct_response() {
         $response = [];
-        foreach ($this->places as $place => $answer) {
-            $response[$this->field($place)] = $answer;
+        foreach ($this->places as $place => $rightanswer) {
+            $response[$this->field($place)] = $rightanswer;
         }
         return $response;
     }
@@ -251,19 +251,19 @@ class qtype_guessit_question extends question_graded_automatically_with_countbac
     /**
      * called from within renderer in interactive mode
      *
-     * @param string $answergiven
+     * @param string $studentanswer
      * @param string $rightanswer
      * @return boolean
      */
-    public function is_correct_response($answergiven, $rightanswer) {
+    public function is_correct_response($studentanswer, $rightanswer) {
         if (!$this->casesensitive == 1) {
-            $answergiven = core_text::strtolower($answergiven, 'UTF-8');
+            $studentanswer = core_text::strtolower($studentanswer, 'UTF-8');
             $rightanswer = core_text::strtolower($rightanswer, 'UTF-8');
         }
 
-        if ($this->compare_response_with_answer($answergiven, $rightanswer)) {
+        if ($this->compare_response_with_answer($studentanswer, $rightanswer)) {
             return true;
-        } else if (($answergiven == "") ) {
+        } else if (($studentanswer == "") ) {
             return true;
         } else {
             return false;
@@ -285,15 +285,15 @@ class qtype_guessit_question extends question_graded_automatically_with_countbac
             if (!isset($response[$this->field($place)])) {
                 continue;
             }
-            $answergiven = $response[$this->field($place)];
+            $studentanswer = $response[$this->field($place)];
             if (!array_key_exists($this->field($place), $response)) {
                 continue;
             }
             if (!$this->casesensitive == 1) {
-                $answergiven = core_text::strtolower($answergiven, 'UTF-8');
+                $studentanswer = core_text::strtolower($studentanswer, 'UTF-8');
                 $rightanswer = core_text::strtolower($rightanswer, 'UTF-8');
             }
-            if ($this->compare_response_with_answer($answergiven, $rightanswer)) {
+            if ($this->compare_response_with_answer($studentanswer, $rightanswer)) {
                 $numright++;
             }
         }
@@ -311,13 +311,13 @@ class qtype_guessit_question extends question_graded_automatically_with_countbac
             if (!array_key_exists($this->field($place), $response)) {
                 continue;
             }
-            $answergiven = $response[$this->field($place)];
+            $studentanswer = $response[$this->field($place)];
             $rightanswer = $this->get_right_choice_for($place);
             if (!$this->casesensitive == 1) {
-                $answergiven = core_text::strtolower($answergiven);
+                $studentanswer = core_text::strtolower($studentanswer);
                 $rightanswer = core_text::strtolower($rightanswer);
             }
-            if (!$this->compare_response_with_answer($answergiven, $rightanswer)) {
+            if (!$this->compare_response_with_answer($studentanswer, $rightanswer)) {
                 $response[$this->field($place)] = '';
             }
         }
@@ -378,19 +378,19 @@ class qtype_guessit_question extends question_graded_automatically_with_countbac
     /**
      * Compare the answer given with the correct answer, does it match?
      * To normalise white spaces add
-     * $answergiven = preg_replace('/\s+/', ' ', $answergiven);
+     * $studentanswer = preg_replace('/\s+/', ' ', $studentanswer);
      *  before if($disableregex etc etc
      *
-     * @param string $answergiven
-     * @param string $answer
+     * @param string $studentanswer
+     * @param string $rightanswer
      * @param boolean $disableregex
      * @return boolean
      */
-    public function compare_response_with_answer($answergiven, $answer) {
+    public function compare_response_with_answer($studentanswer, $rightanswer) {
         /* converts things like &lt; into < */
-        $answer = htmlspecialchars_decode($answer);
-        $answergiven = htmlspecialchars_decode($answergiven);
-        $pattern = str_replace('/', '\/', $answer);
+        $rightanswer = htmlspecialchars_decode($rightanswer);
+        $studentanswer = htmlspecialchars_decode($studentanswer);
+        $pattern = str_replace('/', '\/', $rightanswer);
         $regexp = '/^' . $pattern . '$/u';
 
         // Make the match insensitive if requested to, not sure this is necessary.
@@ -398,7 +398,7 @@ class qtype_guessit_question extends question_graded_automatically_with_countbac
             $regexp .= 'i';
         }
 
-        if (@preg_match($regexp, trim($answergiven))) {
+        if (@preg_match($regexp, trim($studentanswer))) {
             return true;
         } else {
             return false;
