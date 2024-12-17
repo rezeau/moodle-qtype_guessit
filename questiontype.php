@@ -95,9 +95,6 @@ class qtype_guessit extends question_type {
                  */
                 $a->answer = stripslashes($a->answer);
             }
-            if (!in_array($a->answer, $question->allanswers, true)) {
-                array_push($question->allanswers, $a->answer);
-            }
             /* answer in this context means correct answers, i.e. where
              * fraction contains a 1 */
             if (strpos($a->fraction, '1') !== false) {

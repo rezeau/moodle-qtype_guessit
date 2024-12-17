@@ -99,29 +99,14 @@ class qtype_guessit_question extends question_graded_automatically_with_countbac
     public $textfragments;
 
     /**
-     * An array with all correct answers and distractors/wrong answers
-     * @var array
-     */
-    public $allanswers = [];
-
-    /**
      * Start a new attempt at this question, storing any information that will
      * be needed later in the step and doing initialisation
      *
      * @param question_attempt_step $step
      * @param number $variant (apparently not used)
      */
-    public function start_attempt(question_attempt_step $step, $variant) {
-        /* this is for multiple values in any order with the | (or operator)
-         * it takes the first occurance of an or, splits it into separate fields
-         * that will be draggable when answering. It then discards any subsequent
-         * fields with an | in it.
-         */
-        $answers = [];
-        foreach ($this->allanswers as $answer) {
-            array_push($answers, $answer);
-        }
-    }
+    //public function start_attempt(question_attempt_step $step, $variant) {        
+    //}
 
     /**
      * get the length of the correct answer and if the | is used

@@ -31,12 +31,6 @@ class qtype_guessit_renderer extends qtype_renderer {
      */
 
     public $correctresponses = [];
-    /**
-     * correct and distractor answers
-     *
-     * @var array
-     */
-    public $allanswers = [];
 
     /**
      * all the options that controls how a question is displayed
