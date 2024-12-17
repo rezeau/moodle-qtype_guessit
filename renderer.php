@@ -20,7 +20,7 @@
  * @package qtype_guessit
  * @subpackage guessit
  * @copyright  2024 Joseph Rézeau <moodle@rezeau.org>
- * @copyright  based on work by 2019 Marcus Green <marcusavgreen@gmail.com>
+ * @copyright  based on GapFill by 2019 Marcus Green <marcusavgreen@gmail.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class qtype_guessit_renderer extends qtype_renderer {
@@ -95,10 +95,13 @@ class qtype_guessit_renderer extends qtype_renderer {
         /** @var \qtype_guessit_question $question */
         $question = $qa->get_question();
         $fieldname = $question->field($place);
-
         $studentanswer = $qa->get_last_qt_var($fieldname) ?? '';
         $studentanswer = htmlspecialchars_decode($studentanswer);
         $rightanswer = $question->get_right_choice_for($place);
+        if (!$question->casesensitive == 1) {
+            $studentanswer = core_text::strtolower($studentanswer, 'UTF-8');
+            $rightanswer = core_text::strtolower($rightanswer, 'UTF-8');
+        }
         $size = 0;
         if ($question->gapsizedisplay === 'gapsizematchword') {
             $size = $question->get_size($rightanswer);
@@ -282,13 +285,6 @@ class qtype_guessit_renderer extends qtype_renderer {
 
         // Get the minimum length of answer and student answer.
         $minlen = min(strlen($answer), strlen($studentanswer));
-
-        // Initialize markup string.
-        $markup = '';
-        $eq = '=';
-        $lw = '<';
-        $gt = '>';
-
         // Loop through each character up to the minimum length.
         for ($i = 0; $i < $minlen; $i++) {
             // This is needed for non-ascii characters.

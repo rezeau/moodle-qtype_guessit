@@ -20,7 +20,7 @@
  * @package    qtype_guessit
  * @subpackage guessit
  * @copyright  2024 Joseph Rézeau <moodle@rezeau.org>
- * @copyright  based on work by 2017 Marcus Green
+ * @copyright  based on GapFill by 2017 Marcus Green
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 /**
@@ -29,7 +29,7 @@
  * @package    qtype_guessit
  * @subpackage guessit
  * @copyright  2024 Joseph Rézeau <moodle@rezeau.org>
- * @copyright  based on work by 2017 Marcus Green
+ * @copyright  based on GapFill by 2017 Marcus Green
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class qtype_guessit_question extends question_graded_automatically_with_countback {
@@ -97,16 +97,6 @@ class qtype_guessit_question extends question_graded_automatically_with_countbac
      * indexing from 0. The bits of question text that go between the placeholders.
      */
     public $textfragments;
-
-    /**
-     * Start a new attempt at this question, storing any information that will
-     * be needed later in the step and doing initialisation
-     *
-     * @param question_attempt_step $step
-     * @param number $variant (apparently not used)
-     */
-    //public function start_attempt(question_attempt_step $step, $variant) {        
-    //}
 
     /**
      * get the length of the correct answer and if the | is used
@@ -387,22 +377,9 @@ class qtype_guessit_question extends question_graded_automatically_with_countbac
      * @return boolean
      */
     public function compare_response_with_answer($studentanswer, $rightanswer) {
-        /* converts things like &lt; into < */
-        $rightanswer = htmlspecialchars_decode($rightanswer);
-        $studentanswer = htmlspecialchars_decode($studentanswer);
-        $pattern = str_replace('/', '\/', $rightanswer);
-        $regexp = '/^' . $pattern . '$/u';
-
-        // Make the match insensitive if requested to, not sure this is necessary.
-        if (!$this->casesensitive) {
-            $regexp .= 'i';
-        }
-
-        if (@preg_match($regexp, trim($studentanswer))) {
-            return true;
-        } else {
-            return false;
-        }
+        $regexp = '/^' . $rightanswer . '$/u';
+        $correctanswer = $this->special_string_comparison($studentanswer, $rightanswer);
+        return $correctanswer;
     }
     /**
      * get an array with information about marking of gap in the form
@@ -444,6 +421,21 @@ class qtype_guessit_question extends question_graded_automatically_with_countbac
     }
 
     /**
+     * Compares two strings to check if they are exactly equal, including special characters like periods.
+     *
+     * @param string $studentAnswer The student's answer to be compared.
+     * @param string $rightAnswer The correct answer to be compared against.
+     *
+     * @return bool.
+     */
+    public function special_string_comparison($studentanswer, $rightanswer) {
+        // Escape the period in $studentanswer so it matches it as a literal punctuation mark, not as a regex wildcard.
+        $pattern = '/^' . preg_quote($studentanswer, '/') . '$/';
+        // If $rightanswer matches the literal pattern of $studentanswer, return true (strings are equal according to the rule).
+        return preg_match($pattern, $rightanswer) === 1;
+    }
+
+    /**
      * Create the appropriate behaviour for an attempt at this question,
      * given the desired (archetypal) behaviour.
      *
@@ -453,10 +445,10 @@ class qtype_guessit_question extends question_graded_automatically_with_countbac
      */
     public function make_behaviour(question_attempt $qa, $preferredbehaviour) {
         GLOBAL $CFG;
-        // If guessit behaviour has been installed, make all default behaviours default to guessit.
-            if (file_exists($CFG->dirroot.'/question/behaviour/guessit/')) {
-                return question_engine::make_behaviour('guessit', $qa, 'adaptive');
-            }
+        // If guessit behaviour has been installed, make all behaviours default to guessit.
+        if (file_exists($CFG->dirroot.'/question/behaviour/guessit/')) {
+            return question_engine::make_behaviour('guessit', $qa, 'adaptive');
+        }
         return question_engine::make_archetypal_behaviour($preferredbehaviour, $qa);
     }
 }

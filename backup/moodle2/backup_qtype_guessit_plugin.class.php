@@ -20,7 +20,7 @@
  * @package qtype_guessit
  * @subpackage guessit
  * @copyright  2024 Joseph Rézeau <moodle@rezeau.org>
- * @copyright  based on work by 2017 Marcus Green
+ * @copyright  based on GapFill by 2017 Marcus Green
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class backup_qtype_guessit_plugin extends backup_qtype_plugin {
