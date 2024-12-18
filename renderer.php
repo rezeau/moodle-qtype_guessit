@@ -94,6 +94,7 @@ class qtype_guessit_renderer extends qtype_renderer {
         /* fraction is the mark associated with this field, always 1 or 0 for this question type */
         /** @var \qtype_guessit_question $question */
         $question = $qa->get_question();
+        $casesensitive = $question->casesensitive;
         $fieldname = $question->field($place);
         $studentanswer = $qa->get_last_qt_var($fieldname) ?? '';
         $studentanswer = htmlspecialchars_decode($studentanswer);
@@ -205,6 +206,7 @@ class qtype_guessit_renderer extends qtype_renderer {
      */
     public function specific_feedback(question_attempt $qa) {
         $question = $qa->get_question();
+        $casesensitive = $question->casesensitive;
         // Get $rightanswer.
         $rightanswer = '';
         foreach ($question->answers as $answer) {
@@ -223,7 +225,10 @@ class qtype_guessit_renderer extends qtype_renderer {
             $i++;
         }
         $studentanswer = rtrim($studentanswer, ',');
-
+        if (!$question->casesensitive == 1) {
+            $studentanswer = core_text::strtolower($studentanswer, 'UTF-8');
+            $rightanswer = core_text::strtolower($rightanswer, 'UTF-8');
+        }
         return $this->format_specific_feedback ($rightanswer, $studentanswer);
     }
 
@@ -273,7 +278,7 @@ class qtype_guessit_renderer extends qtype_renderer {
         if (!$hasonlyascii) {
             $cleanstudentanswer = $this->removeDiacritics($studentanswer);
         }
-
+        
         // Initialize variables.
         $markup = '';
         $eq = '=';
