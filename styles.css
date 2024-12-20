@@ -4,7 +4,7 @@
     background: white;
 }
 
-/* the gap where answers are dropped/keyed in */
+/* the gap where answers are keyed in */
 .que.guessit input[type=text],
 .que.guessit .specific-feedback {
     font-family: 'Roboto Mono', 'Lucida Console', Courier, monospace;
@@ -68,4 +68,26 @@
 
 .que.guessit .specific-feedback.input-wrapper {
   margin-right: 4px;
+}
+
+.que.guessit .help {
+  color: #00f!important;
+  font-family: 'Roboto Mono','Lucida Console',Courier,monospace;
+  font-size: 1.2em;
+}
+
+.que.guessit .numpartscorrect {
+    display: none;
+}
+
+.que.guessit .im-feedback {
+  background-color: #f0f8ff;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  margin-left: -5px;
+  padding-left: 10px;
+}
+
+.que.guessit .formulation {
+  background-color: #f0f8ff;
 }
