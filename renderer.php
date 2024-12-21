@@ -52,12 +52,12 @@ class qtype_guessit_renderer extends qtype_renderer {
         $this->page->requires->js_call_amd('qtype_guessit/autogrow', 'init');
         $this->displayoptions = $options;
         $question = $qa->get_question();
-        $laststep = $qa->get_reverse_step_iterator();
         $output = "";
         $answeroptions = '';
         $questiontext = '';
+        // Check that all gaps have been filled in.
+        $complete = $this->check_complete_answer($qa);
         $markedgaps = $question->get_markedgaps($qa, $options);
-
         foreach ($question->textfragments as $place => $fragment) {
             if ($place > 0) {
                 $questiontext .= '<div class="input-wrapper">';
@@ -73,7 +73,7 @@ class qtype_guessit_renderer extends qtype_renderer {
             // For guessit rendering.
             $output .= $questiontext;
 
-        if ($qa->get_state() == question_state::$invalid) {
+        if ($qa->get_state() == question_state::$invalid || !$complete) {
             $output .= html_writer::nonempty_tag('div', $question->get_validation_error(['answer' => $output]),
              ['class' => 'validationerror']);
         }
@@ -205,6 +205,11 @@ class qtype_guessit_renderer extends qtype_renderer {
      * @return string
      */
     public function specific_feedback(question_attempt $qa) {
+        // Check that all gaps have been filled in.
+        $complete = $this->check_complete_answer($qa);        
+        if (!$complete) {
+            return;
+        }
         $question = $qa->get_question();
         $casesensitive = $question->casesensitive;
         // Get $rightanswer.
@@ -390,4 +395,17 @@ class qtype_guessit_renderer extends qtype_renderer {
         }
         return $formattedfeedback;
     }
+
+    protected function check_complete_answer($qa) {
+        // Check that all gaps have been filled in.
+        $currentresponses = $qa->get_last_qt_data();
+        $notcomplete = false;        
+        foreach ($currentresponses as $currentresponse) {
+            if ($currentresponse == '') {
+                return false;
+            }
+        }
+        return true;
+    }
+
 }
