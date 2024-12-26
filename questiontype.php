@@ -55,7 +55,7 @@ class qtype_guessit extends question_type {
      * @return array
      */
     public function extra_question_fields() {
-        return ['question_guessit', 'casesensitive', 'gapsizedisplay'];
+        return ['question_guessit', 'casesensitive', 'gapsizedisplay', 'nbpreventriesbeforehelp'];
     }
 
 
@@ -248,11 +248,13 @@ class qtype_guessit extends question_type {
             $options->incorrectfeedback = '';
             $options->casesensitive = '';
             $options->gapsizedisplay = '';
+            $options->nbpreventriesbeforehelp = '';
             $options->id = $DB->insert_record('question_guessit', $options);
         }
 
         $options->casesensitive = $question->casesensitive;
         $options->gapsizedisplay = $question->gapsizedisplay;
+        $options->nbpreventriesbeforehelp = $question->nbpreventriesbeforehelp;
 
         $DB->update_record('question_guessit', $options);
     }
@@ -381,6 +383,8 @@ class qtype_guessit extends question_type {
                 "</casesensitive>\n";
         $output .= '    <gapsizedisplay>' . $question->options->gapsizedisplay .
                 "</gapsizedisplay>\n";
+        $output .= '    <nbpreventriesbeforehelp>' . $question->options->nbpreventriesbeforehelp .
+                "</nbpreventriesbeforehelp>\n";
         $output .= '    <!-- guessit release:'
                 . $guessitinfo->release . ' version:' . $guessitinfo->versiondisk . ' Moodle version:'
                 . $CFG->version . ' release:' . $CFG->release

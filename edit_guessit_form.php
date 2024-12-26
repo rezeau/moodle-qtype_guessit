@@ -95,8 +95,19 @@ class qtype_guessit_edit_form extends question_edit_form {
 
         /* Makes marking case sensitive so Cat is not the same as cat */
         $mform->addElement('advcheckbox', 'casesensitive', get_string('casesensitive', 'qtype_guessit'));
-         $mform->addHelpButton('casesensitive', 'casesensitive', 'qtype_guessit');
+        $mform->addHelpButton('casesensitive', 'casesensitive', 'qtype_guessit');
 
+        // Select how many prevtries before help is available.
+        $options = [
+            0 => 'None',
+            6 => '6',
+            10 => '10',
+            14 => '14',
+            18 => '18',
+        ];
+        $mform->addElement('select', 'nbpreventriesbeforehelp', 
+                get_string('nbpreventriesbeforehelp', 'qtype_guessit'), $options);
+        $mform->addHelpButton('nbpreventriesbeforehelp', 'nbpreventriesbeforehelp', 'qtype_guessit');
     }
     /**
      * Setup form elements that are very unlikely to change
