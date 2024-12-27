@@ -223,11 +223,14 @@ class qtype_guessit_renderer extends qtype_renderer {
         $studentanswer = '';
         $i = 0;
         foreach ($qa->get_step_iterator() as $step) {
-            $response = $step->get_qt_data();
-            if (!empty($response) && $i > 0) {
-                $studentanswer .= implode(',', $response).',';
+            // If help button has been clicked, do not add current response to list.
+            if (!$step->has_behaviour_var('helpme')) {
+                $response = $step->get_qt_data();
+                if (!empty($response) && $i > 0) {
+                    $studentanswer .= implode(',', $response).',';
+                }
+                $i++;
             }
-            $i++;
         }
         $studentanswer = rtrim($studentanswer, ',');
         if (!$question->casesensitive == 1) {
