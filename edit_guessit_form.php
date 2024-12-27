@@ -100,6 +100,7 @@ class qtype_guessit_edit_form extends question_edit_form {
         // Select how many prevtries before help is available.
         $options = [
             0 => 'None',
+            4 => '4',
             6 => '6',
             10 => '10',
             14 => '14',

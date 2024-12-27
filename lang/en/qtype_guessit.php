@@ -48,6 +48,7 @@ $string['guessit'] = 'guessit.';
 $string['incorrect'] = 'Feedback for incorrect.';
 $string['moreoptions'] = 'More Options.';
 $string['moretries'] = 'Help will be available after {$a} more tries!';
+$string['moretry'] = 'Help will be available after 1 more try!';
 $string['nbprevtriesbeforehelp'] = 'How many tries before giving help';
 $string['nbprevtriesbeforehelp_help'] = 'Help for How many tries before giving help';
 $string['or'] = 'or';
