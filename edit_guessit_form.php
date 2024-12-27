@@ -105,9 +105,9 @@ class qtype_guessit_edit_form extends question_edit_form {
             14 => '14',
             18 => '18',
         ];
-        $mform->addElement('select', 'nbpreventriesbeforehelp', 
-                get_string('nbpreventriesbeforehelp', 'qtype_guessit'), $options);
-        $mform->addHelpButton('nbpreventriesbeforehelp', 'nbpreventriesbeforehelp', 'qtype_guessit');
+        $mform->addElement('select', 'nbtriesbeforehelp', 
+                get_string('nbtriesbeforehelp', 'qtype_guessit'), $options);
+        $mform->addHelpButton('nbtriesbeforehelp', 'nbtriesbeforehelp', 'qtype_guessit');
     }
     /**
      * Setup form elements that are very unlikely to change

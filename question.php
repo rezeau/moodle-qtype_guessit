@@ -49,7 +49,7 @@ class qtype_guessit_question extends question_graded_automatically_with_countbac
      */
     public $gapsizedisplay;
 
-    public $nbpreventriesbeforehelp;
+    public $nbtriesbeforehelp;
     /**
      * The size of the biggest gap (used when fixedgapsize is true
      * @var int
