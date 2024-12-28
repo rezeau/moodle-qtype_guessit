@@ -76,10 +76,6 @@
   font-size: 1.2em;
 }
 
-.que.guessit .numpartscorrect {
-    display: none;
-}
-
 .que.guessit .im-feedback {
   background-color: #f0f8ff;
   padding-top: 5px;
