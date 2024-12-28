@@ -49,7 +49,12 @@ class qtype_guessit_question extends question_graded_automatically_with_countbac
      */
     public $gapsizedisplay;
 
+    /**
+     * The number of tries before getting help
+     * @var int
+     */
     public $nbtriesbeforehelp;
+
     /**
      * The size of the biggest gap (used when fixedgapsize is true
      * @var int
@@ -378,7 +383,6 @@ class qtype_guessit_question extends question_graded_automatically_with_countbac
      * @return boolean
      */
     public function compare_response_with_answer($studentanswer, $rightanswer) {
-        $regexp = '/^' . $rightanswer . '$/u';
         $correctanswer = $this->special_string_comparison($studentanswer, $rightanswer);
         return $correctanswer;
     }

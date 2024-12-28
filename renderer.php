@@ -206,7 +206,7 @@ class qtype_guessit_renderer extends qtype_renderer {
      */
     public function specific_feedback(question_attempt $qa) {
         // Check that all gaps have been filled in.
-        $complete = $this->check_complete_answer($qa);        
+        $complete = $this->check_complete_answer($qa);
         if (!$complete) {
             return;
         }
@@ -286,7 +286,7 @@ class qtype_guessit_renderer extends qtype_renderer {
         if (!$hasonlyascii) {
             $cleanstudentanswer = $this->removeDiacritics($studentanswer);
         }
-        
+
         // Initialize variables.
         $markup = '';
         $eq = '=';
@@ -399,10 +399,16 @@ class qtype_guessit_renderer extends qtype_renderer {
         return $formattedfeedback;
     }
 
+    /**
+     * Determines if all gaps in the answer have been filled.
+     *
+     * @param object $qa The question attempt object.
+     * @return bool True if all gaps are filled, false otherwise.
+     */
     protected function check_complete_answer($qa) {
         // Check that all gaps have been filled in.
         $currentresponses = $qa->get_last_qt_data();
-        $notcomplete = false;        
+        $notcomplete = false;
         foreach ($currentresponses as $currentresponse) {
             if ($currentresponse == '') {
                 return false;
