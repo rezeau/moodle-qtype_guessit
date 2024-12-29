@@ -20,35 +20,13 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+import { handleKeydownEvent } from './keydownHandler';
 /**
- * @module qtype_guessit/autogrow
- *
- * This script makes input fields with a class of "auto-grow-input" automatically resize
- * as the user types.
+ * Initialize the auto-grow input functionality.
  */
-define(['jquery'], function() {
-
-    /**
-     * Initialize the auto-grow input functionality.
-     */
-    function init() {
-        document.querySelectorAll('input[class*="auto-grow-input"]').forEach(function(e) {
-            e.addEventListener("input", function() {
-                e.style.width = "auto"; // Reset width
-                e.style.width = (e.scrollWidth + 1) + "px"; // Set the width to the content size plus 1 px for adjustment.
-            });
-            e.addEventListener("keydown", (event) => {
-                if (event.key === " ") {
-                    event.preventDefault(); // Prevent space from being entered
-                }
-            });
-            // Adjust the input width on page load (for pre-filled values)
-            e.dispatchEvent(new Event('input'));
-        });
-    }
-
-    // Expose the init function so it can be called from PHP
-    return {
-        init: init
-    };
-});
+export function init() {
+    document.querySelectorAll('input[class*="auto-grow-input"]').forEach(function (element) {
+        handleKeydownEvent(element);
+    });
+    window.console.log('Hello, world!');
+}
