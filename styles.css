@@ -77,7 +77,8 @@
 }
 
 .que.guessit .im-feedback {
-  background-color: #f0f8ff;
+  font-size: 1.2em;
+  background-color: #f0f8ff;  
   padding-top: 5px;
   padding-bottom: 5px;
   margin-left: -5px;
@@ -86,4 +87,12 @@
 
 .que.guessit .formulation {
   background-color: #f0f8ff;
+}
+
+.que.guessit hr {  
+  border: none;
+  height: 1px;
+  background-color: burlywood;
+  margin-top: 2px;
+  margin-bottom: 2px;
 }
