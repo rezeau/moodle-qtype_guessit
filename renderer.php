@@ -49,7 +49,7 @@ class qtype_guessit_renderer extends qtype_renderer {
      * @return string HTML fragment.
      */
     public function formulation_and_controls(question_attempt $qa, question_display_options $options) {
-        $this->page->requires->js_call_amd('qtype_guessit/autogrow', 'init');
+        $this->page->requires->js_call_amd('qtype_guessit/gapsnavigation', 'init');
         $this->displayoptions = $options;
         $question = $qa->get_question();
         $output = "";
@@ -372,7 +372,9 @@ class qtype_guessit_renderer extends qtype_renderer {
         $formattedfeedback = "";
         $lengthrightanswer = count($arrayrightanswer);
         $studentanswers = array_chunk($arraystudentanswer, $lengthrightanswer);
+        $triescounter = 1;
         foreach ($studentanswers as $outerindex => $subarray) {
+            $formattedfeedback .= '<b>' . $triescounter . '</b>&nbsp;';
             // Loop through the inner array.
             foreach ($subarray as $innerindex => $value) {
                 $colorclass = '';
@@ -394,7 +396,8 @@ class qtype_guessit_renderer extends qtype_renderer {
                 $formattedfeedback .= '<div class="specific-feedback input-wrapper '.$colorclass.'">'.
                     $studentanswer. '<span class="feedback-markup">'.$markupcode. '</span></div>';
             }
-            $formattedfeedback .= '<div></div>';
+            $triescounter ++;
+            $formattedfeedback .= '<hr/>';
         }
         return $formattedfeedback;
     }
