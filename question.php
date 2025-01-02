@@ -105,16 +105,13 @@ class qtype_guessit_question extends question_graded_automatically_with_countbac
     public $textfragments;
 
     /**
-     * get the length of the correct answer and if the | is used
-     * the length of the longest of the correct answers
+     * get the length of the correct answer
      * @param string $rightanswer
      * @return number
      */
     public function get_size($rightanswer) {
-        $rightanswer = htmlspecialchars_decode($rightanswer);
-        $words = explode("|", $rightanswer);
-        $maxlen = max(array_map('strlen', $words));
-        return $maxlen;
+        $rightanswer = htmlspecialchars_decode($rightanswer);        
+        return strlen($rightanswer);
     }
 
     /**

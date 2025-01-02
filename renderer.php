@@ -155,6 +155,10 @@ class qtype_guessit_renderer extends qtype_renderer {
             $autogrowinput = ' auto-grow-input ';
         }
         $inputattributes['class'] = 'typetext guessit '. $autogrowinput. $inputclass;
+        if ($fraction == 1) {
+            $size = $question->get_size($rightanswer);
+            $inputattributes['size'] = $size;
+        }
         $inputattributes['spellcheck'] = 'false';
         $markupcode = "";
         if ($studentanswer !== $rightanswer) {
