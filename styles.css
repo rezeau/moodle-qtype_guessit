@@ -22,6 +22,11 @@
     padding-right: 5px;
 }
 
+.que.guessit .specific-feedback {
+    cursor: default;
+}
+
+
 .que.guessit div.answeroptions {
     margin-bottom: 15px;
 }

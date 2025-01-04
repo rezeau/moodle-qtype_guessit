@@ -212,7 +212,7 @@ class qtype_guessit_renderer extends qtype_renderer {
         // Check that all gaps have been filled in.
         $complete = $this->check_complete_answer($qa);
         if (!$complete) {
-            return;
+            return get_string('pleaseenterananswer', 'qtype_guessit');;
         }
         $question = $qa->get_question();
         $casesensitive = $question->casesensitive;
@@ -225,12 +225,12 @@ class qtype_guessit_renderer extends qtype_renderer {
 
         // Get $studentanswer.
         $studentanswer = '';
-        $i = 0;
-        foreach ($qa->get_step_iterator() as $step) {
+        $i = 1;
+        foreach ($qa->get_reverse_step_iterator() as $step) {
             // If help button has been clicked, do not add current response to list.
             if (!$step->has_behaviour_var('helpme')) {
                 $response = $step->get_qt_data();
-                if (!empty($response) && $i > 0) {
+                if (!empty($response)) {
                     $studentanswer .= implode(',', $response).',';
                 }
                 $i++;
@@ -241,7 +241,8 @@ class qtype_guessit_renderer extends qtype_renderer {
             $studentanswer = core_text::strtolower($studentanswer, 'UTF-8');
             $rightanswer = core_text::strtolower($rightanswer, 'UTF-8');
         }
-        return $this->format_specific_feedback ($rightanswer, $studentanswer);
+        $prevtries = $qa->get_last_behaviour_var('_try', 0);
+        return $this->format_specific_feedback ($prevtries, $rightanswer, $studentanswer);
     }
 
     /**
@@ -252,6 +253,7 @@ class qtype_guessit_renderer extends qtype_renderer {
      * @return string
      */
     protected function num_parts_correct(question_attempt $qa) {
+        $complete = $this->check_complete_answer($qa);
         $a = new stdClass();
         list($a->num, $a->outof) = $qa->get_question()->get_num_parts_right(
             $qa->get_last_qt_data()
@@ -366,19 +368,19 @@ class qtype_guessit_renderer extends qtype_renderer {
 
     /**
      * Format rightanswer and studentanswer nicely for specific feedback disply.
+     * @param number $prevtries
      * @param string $rightanswer
      * @param string $studentanswer
      * @return string $formattedfeedback
      */
-    private function format_specific_feedback($rightanswer, $studentanswer) {
+    private function format_specific_feedback($prevtries, $rightanswer, $studentanswer) {
         $arrayrightanswer = explode(',', $rightanswer);
         $arraystudentanswer = explode(',', $studentanswer);
-        $formattedfeedback = "";
         $lengthrightanswer = count($arrayrightanswer);
         $studentanswers = array_chunk($arraystudentanswer, $lengthrightanswer);
-        $triescounter = 1;
+        $triescounter = 0;
         foreach ($studentanswers as $outerindex => $subarray) {
-            $formattedfeedback .= '<b>' . $triescounter . '</b>&nbsp;';
+            $formattedfeedback .= '<b>' . ($prevtries - $triescounter) . '</b>&nbsp;';
             // Loop through the inner array.
             foreach ($subarray as $innerindex => $value) {
                 $colorclass = '';
@@ -409,15 +411,15 @@ class qtype_guessit_renderer extends qtype_renderer {
     /**
      * Determines if all gaps in the answer have been filled.
      *
-     * @param object $qa The question attempt object.
+     * @param question_attempt $qa The question attempt object.
      * @return bool True if all gaps are filled, false otherwise.
      */
-    protected function check_complete_answer($qa) {
+    protected function check_complete_answer(question_attempt $qa) {
         // Check that all gaps have been filled in.
         $currentresponses = $qa->get_last_qt_data();
         $notcomplete = false;
         foreach ($currentresponses as $currentresponse) {
-            if ($currentresponse == '') {
+            if ($currentresponse === '') {
                 return false;
             }
         }

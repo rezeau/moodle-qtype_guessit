@@ -110,7 +110,7 @@ class qtype_guessit_question extends question_graded_automatically_with_countbac
      * @return number
      */
     public function get_size($rightanswer) {
-        $rightanswer = htmlspecialchars_decode($rightanswer);        
+        $rightanswer = htmlspecialchars_decode($rightanswer);
         return strlen($rightanswer);
     }
 
@@ -178,6 +178,9 @@ class qtype_guessit_question extends question_graded_automatically_with_countbac
      * @return string
      */
     public function get_validation_error(array $response) {
+        if ($this->is_gradable_response($response)) {
+            return '';
+        }
         return get_string('pleaseenterananswer', 'qtype_guessit');
     }
 
@@ -294,30 +297,6 @@ class qtype_guessit_question extends question_graded_automatically_with_countbac
     }
 
     /**
-     * Given a response, reset the parts that are wrong to a blank string.
-     * Relevent when usinginteractive with multiple tries behaviour
-     * @param array $response a response
-     * @return array a cleaned up response with the wrong bits reset.
-     */
-    public function clear_wrong_from_response(array $response) {
-        foreach (array_keys($this->places) as $place) {
-            if (!array_key_exists($this->field($place), $response)) {
-                continue;
-            }
-            $studentanswer = $response[$this->field($place)];
-            $rightanswer = $this->get_right_choice_for($place);
-            if (!$this->casesensitive == 1) {
-                $studentanswer = core_text::strtolower($studentanswer);
-                $rightanswer = core_text::strtolower($rightanswer);
-            }
-            if (!$this->compare_response_with_answer($studentanswer, $rightanswer)) {
-                $response[$this->field($place)] = '';
-            }
-        }
-        return $response;
-    }
-
-    /**
      * Calculate grade and returns an array in the form
      * array(2) (
      * [0] => (int) 1
@@ -341,31 +320,8 @@ class qtype_guessit_question extends question_graded_automatically_with_countbac
      * @return number
      */
     public function compute_final_grade($responses, $totaltries) {
-        $totalscore = 0;
-        foreach (array_keys($this->places) as $place) {
-            $fieldname = $this->field($place);
-            $lastwrongindex = -1;
-            $finallyright = false;
-            foreach ($responses as $i => $response) {
-                $rcfp = $this->get_right_choice_for($place);
-                /* break out the loop if response does not contain the key */
-                if (!array_key_exists($fieldname, $response)) {
-                    continue;
-                }
-                $resp = $response[$fieldname];
-                if (!$this->compare_response_with_answer($resp, $rcfp)) {
-                    $lastwrongindex = $i;
-                    $finallyright = false;
-                } else {
-                    $finallyright = true;
-                }
-            }
-
-            if ($finallyright) {
-                $totalscore += max(0, 1 - ($lastwrongindex + 1) * $this->penalty);
-            }
-        }
-        return $totalscore / $this->gapcount;
+        // Grade is not used in this question type.
+        return;
     }
 
     /**
@@ -376,7 +332,6 @@ class qtype_guessit_question extends question_graded_automatically_with_countbac
      *
      * @param string $studentanswer
      * @param string $rightanswer
-     * @param boolean $disableregex
      * @return boolean
      */
     public function compare_response_with_answer($studentanswer, $rightanswer) {
@@ -425,8 +380,8 @@ class qtype_guessit_question extends question_graded_automatically_with_countbac
     /**
      * Compares two strings to check if they are exactly equal, including special characters like periods.
      *
-     * @param string $studentAnswer The student's answer to be compared.
-     * @param string $rightAnswer The correct answer to be compared against.
+     * @param string $studentanswer The student's answer to be compared.
+     * @param string $rightanswer The correct answer to be compared against.
      *
      * @return bool.
      */
