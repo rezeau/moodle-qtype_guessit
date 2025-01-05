@@ -63,4 +63,6 @@ $string['privacy:null_reason'] = 'The guessit question type does not effect or s
 $string['questionsmissing'] = 'You have not included any words to be found in your question text';
 $string['questiontext'] = "Question text";
 $string['questiontext_help'] = "Put square brackets [...] around the words to be guessed.";
+$string['removespecificfeedback'] = "Remove specific feedback";
+$string['removespecificfeedback_help'] = "Remove specific feedback when all gaps have been correctly filled in.";
 $string['yougotnrightcount'] = 'You found {$a->num} {$a->gaporgaps} out of {$a->outof}.';

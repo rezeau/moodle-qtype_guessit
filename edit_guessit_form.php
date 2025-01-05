@@ -109,6 +109,10 @@ class qtype_guessit_edit_form extends question_edit_form {
         $mform->addElement('select', 'nbtriesbeforehelp',
                 get_string('nbtriesbeforehelp', 'qtype_guessit'), $options);
         $mform->addHelpButton('nbtriesbeforehelp', 'nbtriesbeforehelp', 'qtype_guessit');
+
+        /* Remove specific feedback once all gaps correctly filled in. */
+        $mform->addElement('advcheckbox', 'removespecificfeedback', get_string('removespecificfeedback', 'qtype_guessit'));
+        $mform->addHelpButton('removespecificfeedback', 'removespecificfeedback', 'qtype_guessit');
     }
     /**
      * Setup form elements that are very unlikely to change
