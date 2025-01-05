@@ -55,7 +55,7 @@ class qtype_guessit extends question_type {
      * @return array
      */
     public function extra_question_fields() {
-        return ['question_guessit', 'casesensitive', 'gapsizedisplay', 'nbtriesbeforehelp', 'removespecificfeedback'];
+        return ['question_guessit', 'casesensitive', 'gapsizedisplay', 'nbtriesbeforehelp', 'removespecificfeedback', 'wordle'];
     }
 
 
@@ -250,6 +250,7 @@ class qtype_guessit extends question_type {
             $options->gapsizedisplay = '';
             $options->nbtriesbeforehelp = '';
             $options->removespecificfeedback = '';
+            $options->wordle = '';
             $options->id = $DB->insert_record('question_guessit', $options);
         }
 
@@ -257,6 +258,7 @@ class qtype_guessit extends question_type {
         $options->gapsizedisplay = $question->gapsizedisplay;
         $options->nbtriesbeforehelp = $question->nbtriesbeforehelp;
         $options->removespecificfeedback = $question->removespecificfeedback;
+        $options->wordle = $question->wordle;
 
         $DB->update_record('question_guessit', $options);
     }
@@ -389,6 +391,8 @@ class qtype_guessit extends question_type {
                 "</nbtriesbeforehelp>\n";
         $output .= '    <removespecificfeedback>' . $question->options->removespecificfeedback .
                 "</removespecificfeedback>\n";
+        $output .= '    <wordle>' . $question->options->wordle .
+                "</wordle>\n";
         $output .= '    <!-- guessit release:'
                 . $guessitinfo->release . ' version:' . $guessitinfo->versiondisk . ' Moodle version:'
                 . $CFG->version . ' release:' . $CFG->release

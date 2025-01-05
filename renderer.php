@@ -217,6 +217,7 @@ class qtype_guessit_renderer extends qtype_renderer {
         $question = $qa->get_question();
         $casesensitive = $question->casesensitive;
         $removespecificfeedback = $question->removespecificfeedback;
+        $wordle = $question->wordle;
         $nbcorrect = $qa->get_question()->get_num_parts_right(
             $qa->get_last_qt_data()
         );

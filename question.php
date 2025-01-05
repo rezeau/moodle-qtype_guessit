@@ -92,6 +92,12 @@ class qtype_guessit_question extends question_graded_automatically_with_countbac
     public $removespecificfeedback;
 
     /**
+     * Wordle Option: Guess a word.
+     * @var bool
+     */
+    public $wordle;
+
+    /**
      * array of strings as correct question answers
      * @var rray
      */

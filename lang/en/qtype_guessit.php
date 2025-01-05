@@ -65,4 +65,6 @@ $string['questiontext'] = "Question text";
 $string['questiontext_help'] = "Put square brackets [...] around the words to be guessed.";
 $string['removespecificfeedback'] = "Remove specific feedback";
 $string['removespecificfeedback_help'] = "Remove specific feedback when all gaps have been correctly filled in.";
+$string['wordle'] = "Wordle Option: Guess a word";
+$string['wordle_help'] = "Check this option if you want the player to have to guess single words of 4 to 8 letters instead of sentences.";
 $string['yougotnrightcount'] = 'You found {$a->num} {$a->gaporgaps} out of {$a->outof}.';
