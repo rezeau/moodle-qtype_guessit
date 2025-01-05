@@ -209,12 +209,6 @@ class qtype_guessit_renderer extends qtype_renderer {
      * @return string
      */
     public function specific_feedback(question_attempt $qa) {
-        $nbcorrect = $qa->get_question()->get_num_parts_right(
-            $qa->get_last_qt_data()
-        );
-        if ($nbcorrect[0] === $nbcorrect[1]) {
-            return '';
-        }
         // Check that all gaps have been filled in.
         $complete = $this->check_complete_answer($qa);
         if (!$complete) {
@@ -222,6 +216,13 @@ class qtype_guessit_renderer extends qtype_renderer {
         }
         $question = $qa->get_question();
         $casesensitive = $question->casesensitive;
+        $removespecificfeedback = $question->removespecificfeedback;
+        $nbcorrect = $qa->get_question()->get_num_parts_right(
+            $qa->get_last_qt_data()
+        );
+        if (($nbcorrect[0] === $nbcorrect[1]) && $removespecificfeedback == 1) {
+            return '';
+        }
         // Get $rightanswer.
         $rightanswer = '';
         foreach ($question->answers as $answer) {
@@ -265,7 +266,7 @@ class qtype_guessit_renderer extends qtype_renderer {
         if ($nbcorrect[0] === $nbcorrect[1]) {
             return '';
         }
-        
+
         $a = new stdClass();
         list($a->num, $a->outof) = $qa->get_question()->get_num_parts_right(
             $qa->get_last_qt_data()

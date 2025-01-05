@@ -27,7 +27,7 @@
 defined('MOODLE_INTERNAL') || die();
 
 $plugin->component = 'qtype_guessit';
-$plugin->version = 2025010100;
+$plugin->version = 2025010500;
 $plugin->requires = 2022040100;  // Moodle 4.0.
 $plugin->release = '1.0';
 $plugin->supported = [401, 405];

@@ -86,11 +86,16 @@ class qtype_guessit_question extends question_graded_automatically_with_countbac
     public $casesensitive;
 
     /**
+     * Remove specific feedback when all gaps have been correctly filled in.
+     * @var bool
+     */
+    public $removespecificfeedback;
+
+    /**
      * array of strings as correct question answers
      * @var rray
      */
     public $answers = [];
-
 
     /**
      * @var array place number => group number of the places in the question
