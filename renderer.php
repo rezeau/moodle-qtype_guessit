@@ -209,6 +209,12 @@ class qtype_guessit_renderer extends qtype_renderer {
      * @return string
      */
     public function specific_feedback(question_attempt $qa) {
+        $nbcorrect = $qa->get_question()->get_num_parts_right(
+            $qa->get_last_qt_data()
+        );
+        if ($nbcorrect[0] === $nbcorrect[1]) {
+            return '';
+        }
         // Check that all gaps have been filled in.
         $complete = $this->check_complete_answer($qa);
         if (!$complete) {
@@ -253,7 +259,13 @@ class qtype_guessit_renderer extends qtype_renderer {
      * @return string
      */
     protected function num_parts_correct(question_attempt $qa) {
-        $complete = $this->check_complete_answer($qa);
+        $nbcorrect = $qa->get_question()->get_num_parts_right(
+            $qa->get_last_qt_data()
+        );
+        if ($nbcorrect[0] === $nbcorrect[1]) {
+            return '';
+        }
+        
         $a = new stdClass();
         list($a->num, $a->outof) = $qa->get_question()->get_num_parts_right(
             $qa->get_last_qt_data()
