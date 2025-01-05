@@ -38,26 +38,43 @@ export function init() {
       input.readOnly  = true; // Make the input readonly.
       input.style.cursor = "not-allowed"; // Set the cursor style.
     });
+    document.querySelectorAll('[id^="question-"]').forEach(question => {
+        const gaps = question.querySelectorAll('input[type="text"][name*="p"]');
+        const checkButton = question.querySelector('button[type="submit"].submit');
 
-    // Get all the gaps in this question
-    const allGaps = document.querySelectorAll('input[class*="guessit"]');
-    allGaps.forEach(function (element){
-         // Prevent space from being entered
-        element.addEventListener("keydown", (event) => {
-            if (event.key === ' ') {
-                event.preventDefault();
+        gaps.forEach((element, index) => {
+            // Prevent space from being entered and conditionally move focus
+            element.addEventListener("keydown", (event) => {
+                if (event.key === ' ' || (event.key === 'Tab' && !event.shiftKey)) {
+                    event.preventDefault();
+                    // Only move to the next gap if the current one is not empty
+                    if (element.value.trim() !== '') {
+                        let nextIndex = index + 1;
+                    // Skip over any gaps with class "correct"
+                    while (nextIndex < gaps.length && gaps[nextIndex].classList.contains('correct')) {
+                        nextIndex++;
+                    }
+                    if (nextIndex < gaps.length) {
+                        // Move to the next non-"correct" gap
+                        gaps[nextIndex].focus();
+                        } else if (checkButton) {
+                            // If it's the last gap in the question, move focus to the "Check" button
+                            checkButton.focus();
+                        }
+                    }
+                }
+            });
+            if (element.classList.contains('auto-grow-input')) {
+                // Enable the input fields auto-grow feature (if set in the question options)
+                element.addEventListener("input", function () {
+                    element.style.width = "auto"; // Reset width
+                    // Set the width to the content size plus 1 px for adjustment.
+                    element.style.width = (element.scrollWidth + 1) + "px";
+                });
+                // Trigger the event on page load to adjust the input width for pre-filled values
+                element.dispatchEvent(new Event('input'));
             }
         });
-        if (element.classList.contains('auto-grow-input')) {
-            // Enable the input fields auto-grow feature (if set in the question options)
-            element.addEventListener("input", function () {
-                element.style.width = "auto"; // Reset width
-                // Set the width to the content size plus 1 px for adjustment.
-                element.style.width = (element.scrollWidth + 1) + "px";
-            });
-            // Trigger the event on page load to adjust the input width for pre-filled values
-            element.dispatchEvent(new Event('input'));
-        }
     });
 
 }
