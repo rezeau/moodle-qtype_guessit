@@ -29,8 +29,11 @@ class qtype_guessit_renderer extends qtype_renderer {
      * responses that would be correct if submitted
      * @var array
      */
-
     public $correctresponses = [];
+
+    public $studentletters = [];
+
+
 
     /**
      * all the options that controls how a question is displayed
@@ -94,22 +97,30 @@ class qtype_guessit_renderer extends qtype_renderer {
         /* fraction is the mark associated with this field, always 1 or 0 for this question type */
         /** @var \qtype_guessit_question $question */
         $question = $qa->get_question();
+        $rightanswers = $question->answers;
+        
         $casesensitive = $question->casesensitive;
+        $wordle = $question->wordle;
         $fieldname = $question->field($place);
         $studentanswer = $qa->get_last_qt_var($fieldname) ?? '';
         $studentanswer = htmlspecialchars_decode($studentanswer);
         $rightanswer = $question->get_right_choice_for($place);
+
         if (!$question->casesensitive == 1) {
             $studentanswer = core_text::strtolower($studentanswer, 'UTF-8');
             $rightanswer = core_text::strtolower($rightanswer, 'UTF-8');
         }
         $size = 0;
-        if ($question->gapsizedisplay === 'gapsizematchword') {
-            $size = $question->get_size($rightanswer);
-        } else if ($question->gapsizedisplay === 'gapsizefixed') {
-            $size = $question->maxgapsize;
-        } else if ($question->gapsizedisplay === 'gapsizegrow') {
-            $size = 6;
+        if ($wordle == 0) {
+            if ($question->gapsizedisplay === 'gapsizematchword') {
+                $size = $question->get_size($rightanswer);
+            } else if ($question->gapsizedisplay === 'gapsizefixed') {
+                $size = $question->maxgapsize;
+            } else if ($question->gapsizedisplay === 'gapsizegrow') {
+                $size = 6;
+            }
+        } else {
+            $size = 2;
         }
         /* $options->correctness is really about it being ready to mark, */
         $inputclass = "";
@@ -122,13 +133,22 @@ class qtype_guessit_renderer extends qtype_renderer {
             } else if ($fraction == 1) {
                 array_push($this->correctresponses, $response[$fieldname]);
                 if (($response[$fieldname] != '')) {
-                    $inputclass = $this->get_input_class($markedgaps, $qa, $fraction, $fieldname);
+                    $inputclass = 'correct';
                 }
             } else if ($fraction == 0) {
-                if (preg_match('/^' . preg_quote($studentanswer[0], '/') . '/i', $rightanswer)) {
-                    $inputclass = 'partiallycorrect';
+                if ($wordle == 0) {
+                    if (preg_match('/^' . preg_quote($studentanswer[0], '/') . '/i', $rightanswer)) {
+                        $inputclass = 'partiallycorrect';
+                    } else {
+                        $inputclass = 'incorrect';
+                    }
                 } else {
-                    $inputclass = $this->feedback_class($fraction);
+                    $isletterinletters = $this->get_wordle_letter_states($rightanswers, $studentanswer);
+                    if ($isletterinletters) {
+                        $inputclass = 'misplacedletter';
+                    } else {
+                        $inputclass = 'incorrect';
+                    }
                 }
             }
         }
@@ -144,7 +164,6 @@ class qtype_guessit_renderer extends qtype_renderer {
             'size' => $size,
         ];
         /* When previewing after a quiz is complete */
-        // Papijo use this readonly state to not display feedback ???
         if ($options->readonly) {
             $readonly = ['disabled' => 'true'];
             $inputattributes = array_merge($inputattributes, $readonly);
@@ -161,7 +180,7 @@ class qtype_guessit_renderer extends qtype_renderer {
         }
         $inputattributes['spellcheck'] = 'false';
         $markupcode = "";
-        if ($studentanswer !== $rightanswer) {
+        if ($studentanswer !== $rightanswer && $wordle == 0) {
             $markupcode = $this->get_markup_string ($studentanswer, $rightanswer);
         }
         return html_writer::empty_tag('input', $inputattributes) . '<span class="markup">'.$markupcode.'</span>';
@@ -215,8 +234,9 @@ class qtype_guessit_renderer extends qtype_renderer {
             return get_string('pleaseenterananswer', 'qtype_guessit');;
         }
         $question = $qa->get_question();
+        $rightanswers = $question->answers;
         $casesensitive = $question->casesensitive;
-        $removespecificfeedback = $question->removespecificfeedback;
+        $removespecificfeedback = $question->removespecificfeedback;        
         $wordle = $question->wordle;
         $nbcorrect = $qa->get_question()->get_num_parts_right(
             $qa->get_last_qt_data()
@@ -250,7 +270,7 @@ class qtype_guessit_renderer extends qtype_renderer {
             $rightanswer = core_text::strtolower($rightanswer, 'UTF-8');
         }
         $prevtries = $qa->get_last_behaviour_var('_try', 0);
-        return $this->format_specific_feedback ($prevtries, $rightanswer, $studentanswer);
+        return $this->format_specific_feedback ($prevtries, $rightanswer, $studentanswer, $rightanswers, $wordle);
     }
 
     /**
@@ -387,7 +407,7 @@ class qtype_guessit_renderer extends qtype_renderer {
      * @param string $studentanswer
      * @return string $formattedfeedback
      */
-    private function format_specific_feedback($prevtries, $rightanswer, $studentanswer) {
+    private function format_specific_feedback($prevtries, $rightanswer, $studentanswer, $rightanswers, $wordle) {
         $arrayrightanswer = explode(',', $rightanswer);
         $arraystudentanswer = explode(',', $studentanswer);
         $lengthrightanswer = count($arrayrightanswer);
@@ -400,15 +420,26 @@ class qtype_guessit_renderer extends qtype_renderer {
                 $colorclass = '';
                 $studentanswer = $value;
                 $rightanswer = $arrayrightanswer[$innerindex];
-                $markupcode = $this->get_markup_string ($studentanswer, $rightanswer);
+                if ($wordle == 0) {
+                    $markupcode = $this->get_markup_string ($studentanswer, $rightanswer);
+                }
                 if ($studentanswer) {
                     if ($studentanswer === $rightanswer) {
                         $colorclass = 'correct';
                         $markupcode = '';
-                    } else if (preg_match('/^' . preg_quote($studentanswer[0], '/') . '/i', $rightanswer)) {
+                    } else if ($wordle == 0) {
+                        if (preg_match('/^' . preg_quote($studentanswer[0], '/') . '/i', $rightanswer)) {
                         $colorclass = 'partiallycorrect';
+                        } else {
+                            $colorclass = 'incorrect';
+                        }
                     } else {
-                        $colorclass = 'incorrect';
+                        $isletterinletters = $this->get_wordle_letter_states($rightanswers, $studentanswer);
+                        if ($isletterinletters) {
+                            $colorclass = 'misplacedletter';
+                        } else {
+                            $colorclass = 'incorrect';
+                        }
                     }
                 } else {
                     $studentanswer = '&nbsp;';
@@ -440,4 +471,18 @@ class qtype_guessit_renderer extends qtype_renderer {
         return true;
     }
 
+    public function get_wordle_letter_states ($rightanswers, $studentanswer) {
+        $rightletters = '';        
+        foreach ($rightanswers as $answer) {
+            $rightletters .= $answer->answer;
+        }
+        // Convert both to the same case to ensure case-insensitive comparison
+        $studentanswer = strtolower($studentanswer);
+        $rightletters = strtolower($rightletters);
+        // Use strpos to check if the letter exists in the word
+        if (strpos($rightletters, $studentanswer) !== false) {
+            return true;
+        }
+    }
+    
 }
