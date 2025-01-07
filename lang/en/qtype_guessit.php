@@ -69,5 +69,5 @@ $string['removespecificfeedback'] = "Remove specific feedback";
 $string['removespecificfeedback_help'] = "Remove specific feedback when all gaps have been correctly filled in.";
 $string['wordle'] = "Wordle Option: Guess a word";
 $string['wordle_help'] = "Check this option if you want the player to have to guess single words of 4 to 8 letters instead of sentences.";
-$string['yougotnrightcount'] = 'You found {$a->num} {$a->gaporgaps} out of {$a->outof}.';
 $string['yougotnlettersrightcount'] = 'You found {$a->num} {$a->gaporgaps} out of {$a->outof}.';
+$string['yougotnrightcount'] = 'You found {$a->num} {$a->gaporgaps} out of {$a->outof}.';

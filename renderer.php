@@ -31,9 +31,12 @@ class qtype_guessit_renderer extends qtype_renderer {
      */
     public $correctresponses = [];
 
+    /**
+     * Used in wordle option: stores correct (2) partiallycorrect (1) and incorrect (0)
+     * values for each letter in student response.
+     * @var string
+     */
     public $letterstates = '';
-
-
 
     /**
      * all the options that controls how a question is displayed
@@ -116,7 +119,7 @@ class qtype_guessit_renderer extends qtype_renderer {
         $rightanswer = $question->get_right_choice_for($place);
         $wordle = $question->wordle;
         $rightanswers = $question->answers;
-        $studentresponse = $qa->get_last_qt_data();        
+        $studentresponse = $qa->get_last_qt_data();
 
         if (!$question->casesensitive == 1) {
             $studentanswer = core_text::strtolower($studentanswer, 'UTF-8');
@@ -141,7 +144,7 @@ class qtype_guessit_renderer extends qtype_renderer {
             $gap = $markedgaps['p' . $place];
             $fraction = $gap['fraction'];
             $response = $qa->get_last_qt_data();
-            
+
             if (empty($studentanswer)) {
                 $inputclass = '';
             } else if ($wordle == 0) {
@@ -439,11 +442,11 @@ class qtype_guessit_renderer extends qtype_renderer {
     private function format_specific_feedback($prevtries, $rightanswer, $studentanswer, $rightanswers, $wordle) {
         $arrayrightanswer = explode(',', $rightanswer);
         $arraystudentanswer = explode(',', $studentanswer);
-        $lengthrightanswer = count($arrayrightanswer);        
+        $lengthrightanswer = count($arrayrightanswer);
         $index = 0;
         $studentanswers = array_chunk($arraystudentanswer, $lengthrightanswer);
         $triescounter = 0;
-        
+
         foreach ($studentanswers as $outerindex => $subarray) {
             $formattedfeedback .= '<b>' . ($prevtries - $triescounter) . '</b>&nbsp;';
             // Loop through the inner array.
@@ -452,16 +455,16 @@ class qtype_guessit_renderer extends qtype_renderer {
                 $studentanswer = $value;
                 $rightanswer = $arrayrightanswer[$innerindex];
                 if ($wordle == 0) {
-                    $markupcode = $this->get_markup_string ($studentanswer, $rightanswer);                
+                    $markupcode = $this->get_markup_string ($studentanswer, $rightanswer);
                     if ($studentanswer) {
                         if ($studentanswer === $rightanswer) {
                             $colorclass = 'correct';
                             $markupcode = '';
                         } else if (preg_match('/^' . preg_quote($studentanswer[0], '/') . '/i', $rightanswer)) {
                                 $colorclass = 'partiallycorrect';
-                            } else {
-                                $colorclass = 'incorrect';
-                            }
+                        } else {
+                            $colorclass = 'incorrect';
+                        }
                     } else {
                         $studentanswer = '&nbsp;';
                     }
@@ -507,39 +510,46 @@ class qtype_guessit_renderer extends qtype_renderer {
         return true;
     }
 
+    /**
+     * Used in wordle option: stores correct (2) partiallycorrect (1) and incorrect (0)
+     * values for each letter in student response.
+     * @param string $rightletters
+     * @param string $studentletters
+     * @return string $marking
+     */
     public function get_wordle_letter_states($rightletters, $studentletters) {
-        $originalArray = str_split($rightletters);
-        $responseArray = str_split($studentletters);
+        $originalarray = str_split($rightletters);
+        $responsearray = str_split($studentletters);
         $marking = "";
-        
-        // Array to keep track of used characters in the rightletters
+
+        // Array to keep track of used characters in the rightletters.
         $used = array_fill(0, strlen($rightletters), false);
 
-        // First pass: check for exact matches
+        // First pass: check for exact matches.
         for ($i = 0; $i < strlen($rightletters); $i++) {
-            if ($originalArray[$i] === $responseArray[$i]) {
+            if ($originalarray[$i] === $responsearray[$i]) {
                 $marking .= "2";
-                $used[$i] = true; // Mark this character as used
+                $used[$i] = true; // Mark this character as used.
             } else {
-                $marking .= "0"; // Placeholder, will update in the second pass
+                $marking .= "0"; // Placeholder, will update in the second pass.
             }
         }
-        // Second pass: check for characters in the wrong position
+        // Second pass: check for characters in the wrong position.
         for ($i = 0; $i < strlen($studentletters); $i++) {
-            if ($marking[$i] === "0") { // Only consider characters not already matched
+            if ($marking[$i] === "0") { // Only consider characters not already matched.
                 $found = false;
                 for ($j = 0; $j < strlen($rightletters); $j++) {
-                    if (!$used[$j] && $responseArray[$i] === $originalArray[$j]) {
-                        $marking[$i] = "1"; // Character present in original but wrong position
-                        $used[$j] = true; // Mark this character as used
+                    if (!$used[$j] && $responsearray[$i] === $originalarray[$j]) {
+                        $marking[$i] = "1"; // Character present in original but wrong position.
+                        $used[$j] = true; // Mark this character as used.
                         $found = true;
                         break;
                     }
                 }
                 if (!$found) {
-                    $marking[$i] = "0"; // If not found, keep as "0"
+                    $marking[$i] = "0"; // If not found, keep as "0".
                 }
-            } 
+            }
         }
         return $marking;
     }
