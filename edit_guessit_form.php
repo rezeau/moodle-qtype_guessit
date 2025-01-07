@@ -116,7 +116,7 @@ class qtype_guessit_edit_form extends question_edit_form {
 
         /* Guess onoe word only a la Wordle instead of a phrase/set of words. */
         $mform->addElement('advcheckbox', 'wordle', get_string('wordle', 'qtype_guessit'));
-        $mform->addHelpButton('wordle', 'wordle', 'qtype_guessit');        
+        $mform->addHelpButton('wordle', 'wordle', 'qtype_guessit');
     }
     /**
      * Setup form elements that are very unlikely to change
