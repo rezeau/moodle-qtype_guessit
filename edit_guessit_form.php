@@ -86,15 +86,23 @@ class qtype_guessit_edit_form extends question_edit_form {
     protected function get_options(MoodleQuickform $mform) {
         $mform->addElement('header', 'feedbackheader', get_string('options', 'question'));
 
+        /* Guess onoe word only a la Wordle instead of a phrase/set of words. */
+        $mform->addElement('advcheckbox', 'wordle', get_string('wordle', 'qtype_guessit'));
+        $mform->addHelpButton('wordle', 'wordle', 'qtype_guessit');
+
         $gapsizedisplaytypes = ["gapsizegrow" =>
             get_string('gapsize_grow', 'qtype_guessit'), "gapsizematchword" => get_string('gapsize_matchword',
             'qtype_guessit'), "gapsizefixed" => get_string('gapsize_fixed', 'qtype_guessit'),
             ];
         $mform->addElement('select', 'gapsizedisplay', get_string('gapsize_display', 'qtype_guessit'), $gapsizedisplaytypes);
+        // Hide the field 'gapsizedisplay' if 'wordle' is selected
+        $mform->hideIf('gapsizedisplay', 'wordle', 'checked');
         $mform->addHelpButton('gapsizedisplay', 'gapsize_display', 'qtype_guessit');
 
         /* Makes marking case sensitive so Cat is not the same as cat */
         $mform->addElement('advcheckbox', 'casesensitive', get_string('casesensitive', 'qtype_guessit'));
+        // Hide the field 'casesensitive' if 'wordle' is selected
+        $mform->hideIf('casesensitive', 'wordle', 'checked');
         $mform->addHelpButton('casesensitive', 'casesensitive', 'qtype_guessit');
 
         // Select how many prevtries before help is available.
@@ -108,15 +116,13 @@ class qtype_guessit_edit_form extends question_edit_form {
         ];
         $mform->addElement('select', 'nbtriesbeforehelp',
                 get_string('nbtriesbeforehelp', 'qtype_guessit'), $options);
+        // Hide the field 'nbtriesbeforehelp' if 'wordle' is selected
+        $mform->hideIf('nbtriesbeforehelp', 'wordle', 'checked');
         $mform->addHelpButton('nbtriesbeforehelp', 'nbtriesbeforehelp', 'qtype_guessit');
 
         /* Remove specific feedback once all gaps correctly filled in. */
         $mform->addElement('advcheckbox', 'removespecificfeedback', get_string('removespecificfeedback', 'qtype_guessit'));
         $mform->addHelpButton('removespecificfeedback', 'removespecificfeedback', 'qtype_guessit');
-
-        /* Guess onoe word only a la Wordle instead of a phrase/set of words. */
-        $mform->addElement('advcheckbox', 'wordle', get_string('wordle', 'qtype_guessit'));
-        $mform->addHelpButton('wordle', 'wordle', 'qtype_guessit');
     }
     /**
      * Setup form elements that are very unlikely to change

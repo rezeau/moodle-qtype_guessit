@@ -49,9 +49,7 @@
 /* Misplaced letter in Wordle */
 .que.guessit .misplacedletter,
 .que.guessit input.misplacedletter {
-  background-color: #ffff99;
-  border: 1px solid #aaaa53;
-  color: #777732;
+  background-color: blue;
 }
 
 /* Showing markup. top & left determined by position of input element. 

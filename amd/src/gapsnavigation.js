@@ -21,10 +21,9 @@
  */
 
 /**
- * @module qtype_guessit/autogrow
+ * @module qtype_guessit/gapsnavigation
  *
- * This script makes OK input fields with a class of "auto-grow-input" automatically resize
- * as the user types.
+ * This script controls navigation in the GuessIt game.
  */
 
 /**
