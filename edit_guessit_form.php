@@ -108,17 +108,23 @@ class qtype_guessit_edit_form extends question_edit_form {
         // Select how many prevtries before help is available.
         $options = [
             0 => 'None',
-            4 => '4',
             6 => '6',
+            8 => '8',
             10 => '10',
-            14 => '14',
-            18 => '18',
+            12 => '12'
         ];
         $mform->addElement('select', 'nbtriesbeforehelp',
                 get_string('nbtriesbeforehelp', 'qtype_guessit'), $options);
         // Hide the field 'nbtriesbeforehelp' if 'wordle' is selected
         $mform->hideIf('nbtriesbeforehelp', 'wordle', 'checked');
         $mform->addHelpButton('nbtriesbeforehelp', 'nbtriesbeforehelp', 'qtype_guessit');
+        
+        // Maximum number of tries to guess the word (Wordle option)
+        $mform->addElement('select', 'nbmaxtrieswordle',
+                get_string('nbmaxtrieswordle', 'qtype_guessit'), $options);
+        // Hide the field 'nbmaxtrieswordle' if 'wordle' is NOT selected
+        $mform->hideIf('nbmaxtrieswordle', 'wordle', 'not checked');
+        $mform->addHelpButton('nbmaxtrieswordlehelp', 'nbmaxtrieswordlehelp', 'qtype_guessit');
 
         /* Remove specific feedback once all gaps correctly filled in. */
         $mform->addElement('advcheckbox', 'removespecificfeedback', get_string('removespecificfeedback', 'qtype_guessit'));

@@ -55,7 +55,7 @@ class qtype_guessit extends question_type {
      * @return array
      */
     public function extra_question_fields() {
-        return ['question_guessit', 'casesensitive', 'gapsizedisplay', 'nbtriesbeforehelp', 'removespecificfeedback', 'wordle'];
+        return ['question_guessit', 'casesensitive', 'gapsizedisplay', 'nbtriesbeforehelp', 'nbmaxtrieswordle', 'removespecificfeedback', 'wordle'];
     }
 
 
@@ -249,6 +249,7 @@ class qtype_guessit extends question_type {
             $options->casesensitive = '';
             $options->gapsizedisplay = '';
             $options->nbtriesbeforehelp = '';
+            $options->nbmaxtrieswordle = '';
             $options->removespecificfeedback = '';
             $options->wordle = '';
             $options->id = $DB->insert_record('question_guessit', $options);
@@ -257,6 +258,7 @@ class qtype_guessit extends question_type {
         $options->casesensitive = $question->casesensitive;
         $options->gapsizedisplay = $question->gapsizedisplay;
         $options->nbtriesbeforehelp = $question->nbtriesbeforehelp;
+        $options->nbmaxtrieswordle = $question->nbmaxtrieswordle;
         $options->removespecificfeedback = $question->removespecificfeedback;
         $options->wordle = $question->wordle;
 
@@ -389,6 +391,8 @@ class qtype_guessit extends question_type {
                 "</gapsizedisplay>\n";
         $output .= '    <nbtriesbeforehelp>' . $question->options->nbtriesbeforehelp .
                 "</nbtriesbeforehelp>\n";
+        $output .= '    <nbmaxtrieswordle>' . $question->options->nbmaxtrieswordle .
+                "</nbmaxtrieswordle>\n";
         $output .= '    <removespecificfeedback>' . $question->options->removespecificfeedback .
                 "</removespecificfeedback>\n";
         $output .= '    <wordle>' . $question->options->wordle .

@@ -11,8 +11,7 @@
         <FIELD NAME="casesensitive" TYPE="int" LENGTH="1" NOTNULL="false" DEFAULT="0" SEQUENCE="false" COMMENT="make marking case sensitive"/>
         <FIELD NAME="gapsizedisplay" TYPE="char" LENGTH="20" NOTNULL="false" DEFAULT="1" SEQUENCE="false" COMMENT="select gaps size display in the renderer"/>
         <FIELD NAME="nbtriesbeforehelp" TYPE="int" LENGTH="1" NOTNULL="false" DEFAULT="0" SEQUENCE="false" COMMENT="Select how many prevtries before help is available."/>
-        <FIELD NAME="nbmaxtrieswordle" TYPE="int" LENGTH="1" NOTNULL="false" DEFAULT="0" SEQUENCE="false" COMMENT="Maximum number of tries to guess the word (Wordle option)"/>
-        <FIELD NAME="wordlenbtries" TYPE="int" LENGTH="1" NOTNULL="false" DEFAULT="0" SEQUENCE="false" COMMENT="Maximum number of tries to guess the word (Wordle option)"/>
+        <FIELD NAME="nbmaxtrieswordle" TYPE="int" LENGTH="1" NOTNULL="false" DEFAULT="0" SEQUENCE="false" COMMENT="Maximum number of tries to guess the word (Wordle option)"/>        
         <FIELD NAME="removespecificfeedback" TYPE="int" LENGTH="1" NOTNULL="false" DEFAULT="0" SEQUENCE="false" COMMENT="Remove specific feedback when all gaps have been correctly filled in."/>
         <FIELD NAME="wordle" TYPE="int" LENGTH="1" NOTNULL="false" DEFAULT="0" SEQUENCE="false" COMMENT="guess one word a la wordle instead of one phrase (set of words)"/>
         <FIELD NAME="correctfeedback" TYPE="text" NOTNULL="false" SEQUENCE="false"/>
