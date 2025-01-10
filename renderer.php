@@ -29,9 +29,7 @@ class qtype_guessit_renderer extends qtype_renderer {
      * responses that would be correct if submitted
      * @var array
      */
-    public $correctresponses = [];
-
-    /**
+    public $correctresponses = [];/**
      * Used in wordle option: stores correct (2) partiallycorrect (1) and incorrect (0)
      * values for each letter in student response.
      * @var string
@@ -91,7 +89,7 @@ class qtype_guessit_renderer extends qtype_renderer {
             foreach ($studentresponse as $answer) {
                 $studentletters .= $answer;
             }
-            if ($studentletters !== '') {
+            if ($studentletters !== '' && $complete) {
                 $this->letterstates = $this->get_wordle_letter_states($rightletters, $studentletters);
             }
         }
@@ -135,7 +133,8 @@ class qtype_guessit_renderer extends qtype_renderer {
         $studentanswer = $qa->get_last_qt_var($fieldname) ?? '';
         $studentanswer = htmlspecialchars_decode($studentanswer);
         $rightanswer = $question->get_right_choice_for($place);
-
+        // Check that all gaps have been filled in.
+        $complete = $this->check_complete_answer($qa);
         if (!$question->casesensitive == 1) {
             $studentanswer = core_text::strtolower($studentanswer, 'UTF-8');
             $rightanswer = core_text::strtolower($rightanswer, 'UTF-8');
@@ -153,7 +152,7 @@ class qtype_guessit_renderer extends qtype_renderer {
             $size = 2;
         }
         /* $options->correctness is really about it being ready to mark, */
-        if (empty($studentanswer)) {
+        if (empty($studentanswer) || !$complete) {
                 $inputclass = '';
         } else {
             if (!$question->wordle) {
@@ -484,5 +483,4 @@ class qtype_guessit_renderer extends qtype_renderer {
         }
         return $marking;
     }
-
 }

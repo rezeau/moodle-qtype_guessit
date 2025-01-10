@@ -105,23 +105,24 @@ class qtype_guessit_edit_form extends question_edit_form {
         $mform->hideIf('casesensitive', 'wordle', 'checked');
         $mform->addHelpButton('casesensitive', 'casesensitive', 'qtype_guessit');
 
-        // Select how many prevtries before help is available.
-        $options = [
+        // Prepare number of tries option.
+        $nbtries = [
             0 => 'None',
             6 => '6',
             8 => '8',
             10 => '10',
             12 => '12',
         ];
+        // Select how many prevtries before help is available.
         $mform->addElement('select', 'nbtriesbeforehelp',
-                get_string('nbtriesbeforehelp', 'qtype_guessit'), $options);
+                get_string('nbtriesbeforehelp', 'qtype_guessit'), $nbtries);
         // Hide the field 'nbtriesbeforehelp' if 'wordle' is selected.
         $mform->hideIf('nbtriesbeforehelp', 'wordle', 'checked');
         $mform->addHelpButton('nbtriesbeforehelp', 'nbtriesbeforehelp', 'qtype_guessit');
 
         // Maximum number of tries to guess the word (Wordle option).
         $mform->addElement('select', 'nbmaxtrieswordle',
-                get_string('nbmaxtrieswordle', 'qtype_guessit'), $options);
+                get_string('nbmaxtrieswordle', 'qtype_guessit'), $nbtries);
         // Hide the field 'nbmaxtrieswordle' if 'wordle' is NOT selected.
         $mform->hideIf('nbmaxtrieswordle', 'wordle', 'not checked');
         $mform->addHelpButton('nbmaxtrieswordlehelp', 'nbmaxtrieswordlehelp', 'qtype_guessit');
