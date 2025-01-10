@@ -95,13 +95,13 @@ class qtype_guessit_edit_form extends question_edit_form {
             'qtype_guessit'), "gapsizefixed" => get_string('gapsize_fixed', 'qtype_guessit'),
             ];
         $mform->addElement('select', 'gapsizedisplay', get_string('gapsize_display', 'qtype_guessit'), $gapsizedisplaytypes);
-        // Hide the field 'gapsizedisplay' if 'wordle' is selected
+        // Hide the field 'gapsizedisplay' if 'wordle' is selected.
         $mform->hideIf('gapsizedisplay', 'wordle', 'checked');
         $mform->addHelpButton('gapsizedisplay', 'gapsize_display', 'qtype_guessit');
 
         /* Makes marking case sensitive so Cat is not the same as cat */
         $mform->addElement('advcheckbox', 'casesensitive', get_string('casesensitive', 'qtype_guessit'));
-        // Hide the field 'casesensitive' if 'wordle' is selected
+        // Hide the field 'casesensitive' if 'wordle' is selected.
         $mform->hideIf('casesensitive', 'wordle', 'checked');
         $mform->addHelpButton('casesensitive', 'casesensitive', 'qtype_guessit');
 
@@ -111,18 +111,18 @@ class qtype_guessit_edit_form extends question_edit_form {
             6 => '6',
             8 => '8',
             10 => '10',
-            12 => '12'
+            12 => '12',
         ];
         $mform->addElement('select', 'nbtriesbeforehelp',
                 get_string('nbtriesbeforehelp', 'qtype_guessit'), $options);
-        // Hide the field 'nbtriesbeforehelp' if 'wordle' is selected
+        // Hide the field 'nbtriesbeforehelp' if 'wordle' is selected.
         $mform->hideIf('nbtriesbeforehelp', 'wordle', 'checked');
         $mform->addHelpButton('nbtriesbeforehelp', 'nbtriesbeforehelp', 'qtype_guessit');
-        
-        // Maximum number of tries to guess the word (Wordle option)
+
+        // Maximum number of tries to guess the word (Wordle option).
         $mform->addElement('select', 'nbmaxtrieswordle',
                 get_string('nbmaxtrieswordle', 'qtype_guessit'), $options);
-        // Hide the field 'nbmaxtrieswordle' if 'wordle' is NOT selected
+        // Hide the field 'nbmaxtrieswordle' if 'wordle' is NOT selected.
         $mform->hideIf('nbmaxtrieswordle', 'wordle', 'not checked');
         $mform->addHelpButton('nbmaxtrieswordlehelp', 'nbmaxtrieswordlehelp', 'qtype_guessit');
 

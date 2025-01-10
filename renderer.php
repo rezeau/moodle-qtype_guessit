@@ -38,8 +38,16 @@ class qtype_guessit_renderer extends qtype_renderer {
      */
     public $letterstates = '';
 
+    /**
+     * Lists all the correct answers in the question.
+     * @var array
+     */
     public $rightanswers = [];
 
+    /**
+     * Used in wordle option: stores the number of nbmisplacedletters
+     * @var int
+     */
     public $nbmisplacedletters;
 
     /**
@@ -64,27 +72,28 @@ class qtype_guessit_renderer extends qtype_renderer {
         foreach ($question->answers as $answer) {
             array_push($this->rightanswers, $answer->answer);
         }
-        $this->wordle = $question->wordle;
-        $this->$nbmisplacedletters = 0;
-        if ($this->wordle) {
+        $this->nbmisplacedletters = 0;
+        if ($question->wordle) {
             $this->page->requires->js_call_amd('qtype_guessit/wordlenavigation', 'init');
         } else {
             $this->page->requires->js_call_amd('qtype_guessit/gapsnavigation', 'init');
         }
         $this->displayoptions = $options;
         $output = "";
-        ///$answeroptions = '';
         $questiontext = '';
         // Check that all gaps have been filled in.
         $complete = $this->check_complete_answer($qa);
         $markedgaps = $question->get_markedgaps($qa, $options);
         $studentresponse = $qa->get_last_qt_data();
-        if ($this->wordle) {
+        if ($question->wordle) {
+            $studentletters = '';
             $rightletters = implode('', $this->rightanswers);
             foreach ($studentresponse as $answer) {
                 $studentletters .= $answer;
             }
-            $this->letterstates = $this->get_wordle_letter_states($rightletters, $studentletters);
+            if ($studentletters !== '') {
+                $this->letterstates = $this->get_wordle_letter_states($rightletters, $studentletters);
+            }
         }
         foreach ($question->textfragments as $place => $fragment) {
             if ($place > 0) {
@@ -126,15 +135,13 @@ class qtype_guessit_renderer extends qtype_renderer {
         $studentanswer = $qa->get_last_qt_var($fieldname) ?? '';
         $studentanswer = htmlspecialchars_decode($studentanswer);
         $rightanswer = $question->get_right_choice_for($place);
-        $rightanswers = $question->answers;
-        $studentresponse = $qa->get_last_qt_data();
 
         if (!$question->casesensitive == 1) {
             $studentanswer = core_text::strtolower($studentanswer, 'UTF-8');
             $rightanswer = core_text::strtolower($rightanswer, 'UTF-8');
         }
         $size = 0;
-        if (!$this->wordle) {
+        if (!$question->wordle) {
             if ($question->gapsizedisplay === 'gapsizematchword') {
                 $size = $question->get_size($rightanswer);
             } else if ($question->gapsizedisplay === 'gapsizefixed') {
@@ -144,31 +151,23 @@ class qtype_guessit_renderer extends qtype_renderer {
             }
         } else {
             $size = 2;
-            $index = (int)substr($fieldname, 1) - 1;
         }
         /* $options->correctness is really about it being ready to mark, */
-        $inputclass = "";        
-        $gap = $markedgaps['p' . $place];
-        $fraction = $gap['fraction'];
-        $response = $qa->get_last_qt_data();
         if (empty($studentanswer)) {
                 $inputclass = '';
-            } else {
-            if (!$this->wordle) {
+        } else {
+            if (!$question->wordle) {
                 if (empty($studentanswer)) {
                     $inputclass = '';
-                } else if ($fraction == 1) {
-                    if (($response[$fieldname] != '')) {
+                } else if ($studentanswer === $rightanswer) {
                         $inputclass = 'correct';
-                    }
-                } else if ($fraction == 0) {
-                    if (preg_match('/^' . preg_quote($studentanswer[0], '/') . '/i', $rightanswer)) {
+                } else if (preg_match('/^' . preg_quote($studentanswer[0], '/') . '/i', $rightanswer)) {
                         $inputclass = 'partiallycorrect';
-                    } else {
-                        $inputclass = 'incorrect';
-                    }
+                } else {
+                    $inputclass = 'incorrect';
                 }
             } else {
+                $index = (int)substr($fieldname, 1) - 1;
                 $letterstate = $this->letterstates[$index];
                 switch ($letterstate) {
                     case 2:
@@ -182,7 +181,6 @@ class qtype_guessit_renderer extends qtype_renderer {
                         break;
                 }
             }
-            $index++;
         }
 
         $qprefix = $qa->get_qt_field_name('');
@@ -206,13 +204,13 @@ class qtype_guessit_renderer extends qtype_renderer {
             $autogrowinput = ' auto-grow-input ';
         }
         $inputattributes['class'] = 'typetext guessit '. $autogrowinput. $inputclass;
-        if ($fraction == 1) {
+        if ($studentanswer === $rightanswer) {
             $size = $question->get_size($rightanswer);
             $inputattributes['size'] = $size;
         }
         $inputattributes['spellcheck'] = 'false';
         $markupcode = "";
-        if ($studentanswer !== $rightanswer && !$this->wordle) {
+        if ($studentanswer !== $rightanswer && !$question->wordle) {
             $markupcode = $this->get_markup_string ($studentanswer, $rightanswer);
         }
         return html_writer::empty_tag('input', $inputattributes) . '<span class="markup">'.$markupcode.'</span>';
@@ -243,31 +241,32 @@ class qtype_guessit_renderer extends qtype_renderer {
 
         // Format the feedback to display.
         $formattedfeedback = '<b>' . $prevtries . '- </b>';
+        $markupcode = '';
         for ($index = 0; $index < count($this->rightanswers); $index++) {
-            if (!$this->wordle) {
+            if (!$question->wordle) {
                 $markupcode = $this->get_markup_string ($studentanswers[$index], $this->rightanswers[$index]);
                 if ($studentanswers[$index] === $this->rightanswers[$index]) {
                     $colorclass = 'correct';
                     $markupcode = '';
-                } else if (preg_match('/^' . preg_quote($studentanswers[$index][0], '/') . '/i', $rightanswer[$index])) {
+                } else if (preg_match('/^' . preg_quote($studentanswers[$index][0], '/') . '/i', $this->rightanswers[$index])) {
                         $colorclass = 'partiallycorrect';
                 } else {
                     $colorclass = 'incorrect';
                 }
             } else {
                     $letterstate = $this->letterstates[$index];
-                    switch ($letterstate) {
-                        case 2:
-                            $colorclass = 'correct';
-                            break;
-                        case 1:
-                            $colorclass = 'partiallycorrect';
-                            $this->$nbmisplacedletters++;
-                            break;
-                        case 0:
-                            $colorclass = 'incorrect';
-                            break;
-                    }
+                switch ($letterstate) {
+                    case 2:
+                        $colorclass = 'correct';
+                        break;
+                    case 1:
+                        $colorclass = 'partiallycorrect';
+                        $this->nbmisplacedletters++;
+                        break;
+                    case 0:
+                        $colorclass = 'incorrect';
+                        break;
+                }
             }
             $formattedfeedback .= '<div class="specific-feedback input-wrapper '.$colorclass.'">'.
             $studentanswers[$index]. '<span class="feedback-markup">'.$markupcode. '</span></div>';
@@ -300,7 +299,7 @@ class qtype_guessit_renderer extends qtype_renderer {
         list($a->num, $a->outof) = $qa->get_question()->get_num_parts_right(
                 $qa->get_last_qt_data()
             );
-        if (!$this->wordle) {
+        if (!$question->wordle) {
             if (is_null($a->outof)) {
                 return '';
             } else {
@@ -317,8 +316,8 @@ class qtype_guessit_renderer extends qtype_renderer {
             } else {
                 $a->letterorletters = get_string('letter_singular', 'qtype_guessit');
             }
-            $a->nbmisplacedletters = $this->$nbmisplacedletters;
-            if ($this->$nbmisplacedletters == 0 || $this->$nbmisplacedletters > 1) {
+            $a->nbmisplacedletters = $this->nbmisplacedletters;
+            if ($this->nbmisplacedletters == 0 || $this->nbmisplacedletters > 1) {
                 $a->misplacedletterorletters = get_string('misplacedletter_plural', 'qtype_guessit');
             } else {
                 $a->misplacedletterorletters = get_string('misplacedletter_singular', 'qtype_guessit');
@@ -449,6 +448,7 @@ class qtype_guessit_renderer extends qtype_renderer {
      * @return string $marking
      */
     public function get_wordle_letter_states($rightletters, $studentletters) {
+        $studentletters;
         $originalarray = str_split($rightletters);
         $responsearray = str_split($studentletters);
         $marking = "";

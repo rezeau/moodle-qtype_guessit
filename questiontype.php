@@ -55,7 +55,8 @@ class qtype_guessit extends question_type {
      * @return array
      */
     public function extra_question_fields() {
-        return ['question_guessit', 'casesensitive', 'gapsizedisplay', 'nbtriesbeforehelp', 'nbmaxtrieswordle', 'removespecificfeedback', 'wordle'];
+        return ['question_guessit', 'casesensitive', 'gapsizedisplay', 'nbtriesbeforehelp',
+                'nbmaxtrieswordle', 'removespecificfeedback', 'wordle'];
     }
 
 

@@ -59,7 +59,7 @@ class qtype_guessit_question extends question_graded_automatically_with_countbac
      * The number of tries to guess the word (Wordle option)
      * @var int
      */
-    public $nbmaxtrieswordle
+    public $nbmaxtrieswordle;
     /**
      * The size of the biggest gap (used when fixedgapsize is true
      * @var int
