@@ -98,6 +98,7 @@ class qtype_guessit_edit_form extends question_edit_form {
         // Hide the field 'gapsizedisplay' if 'wordle' is selected.
         $mform->hideIf('gapsizedisplay', 'wordle', 'checked');
         $mform->addHelpButton('gapsizedisplay', 'gapsize_display', 'qtype_guessit');
+        $mform->setDefault('gapsizedisplay', 'gapsizegrow');
 
         /* Makes marking case sensitive so Cat is not the same as cat */
         $mform->addElement('advcheckbox', 'casesensitive', get_string('casesensitive', 'qtype_guessit'));
@@ -119,13 +120,15 @@ class qtype_guessit_edit_form extends question_edit_form {
         // Hide the field 'nbtriesbeforehelp' if 'wordle' is selected.
         $mform->hideIf('nbtriesbeforehelp', 'wordle', 'checked');
         $mform->addHelpButton('nbtriesbeforehelp', 'nbtriesbeforehelp', 'qtype_guessit');
+        $mform->setDefault('nbtriesbeforehelp', 0);
 
         // Maximum number of tries to guess the word (Wordle option).
         $mform->addElement('select', 'nbmaxtrieswordle',
                 get_string('nbmaxtrieswordle', 'qtype_guessit'), $nbtries);
         // Hide the field 'nbmaxtrieswordle' if 'wordle' is NOT selected.
         $mform->hideIf('nbmaxtrieswordle', 'wordle', 'not checked');
-        $mform->addHelpButton('nbmaxtrieswordlehelp', 'nbmaxtrieswordlehelp', 'qtype_guessit');
+        $mform->addHelpButton('nbmaxtrieswordle', 'nbmaxtrieswordle', 'qtype_guessit');
+        $mform->setDefault('nbmaxtrieswordle', 0);
 
         /* Remove specific feedback once all gaps correctly filled in. */
         $mform->addElement('advcheckbox', 'removespecificfeedback', get_string('removespecificfeedback', 'qtype_guessit'));

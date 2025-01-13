@@ -60,6 +60,13 @@ class qtype_guessit_question extends question_graded_automatically_with_countbac
      * @var int
      */
     public $nbmaxtrieswordle;
+
+    /**
+     * True if the number of tries reaches nbmaxtrieswordle (Wordle option)
+     * @var int
+     */
+    public $maxreached;
+
     /**
      * The size of the biggest gap (used when fixedgapsize is true
      * @var int
@@ -71,6 +78,7 @@ class qtype_guessit_question extends question_graded_automatically_with_countbac
      * @var string
      */
     public $correctfeedback = '';
+
     /**
      * its a whole number, it's only called fraction because it is referred to that in core
      * code
@@ -353,44 +361,6 @@ class qtype_guessit_question extends question_graded_automatically_with_countbac
     public function compare_response_with_answer($studentanswer, $rightanswer) {
         $correctanswer = $this->special_string_comparison($studentanswer, $rightanswer);
         return $correctanswer;
-    }
-    /**
-     * get an array with information about marking of gap in the form
-     * array(1) (  [p1] => array(3)(
-     * [value] => (string) 0
-     *  [fraction] => (int) 1
-     * ))
-     *
-     * @param question_attempt $qa
-     * @param question_display_options $options
-     * @return array
-     */
-    public function get_markedgaps(question_attempt $qa, question_display_options $options) {
-        $markedgaps = [];
-        $question = $qa->get_question();
-        $correctgaps = [];
-        foreach (array_keys($question->textfragments) as $place) {
-            if ($place < 1) {
-                continue;
-            }
-            $fieldname = $question->field($place);
-            $rightanswer = $question->get_right_choice_for($place);
-            if (($options->correctness) || ( $options->numpartscorrect)) {
-                $response = $qa->get_last_qt_data();
-
-                if (array_key_exists($fieldname, $response)) {
-                    if ($question->is_correct_response($response[$fieldname], $rightanswer)) {
-                        $markedgaps[$fieldname]['value'] = $response[$fieldname];
-                        $markedgaps[$fieldname]['fraction'] = 1;
-                        $correctgaps[] = $response[$fieldname];
-                    } else {
-                        $markedgaps[$fieldname]['value'] = $response[$fieldname];
-                        $markedgaps[$fieldname]['fraction'] = 0;
-                    }
-                }
-            }
-        }
-        return $markedgaps;
     }
 
     /**
