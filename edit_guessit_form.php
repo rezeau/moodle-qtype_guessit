@@ -169,10 +169,19 @@ class qtype_guessit_edit_form extends question_edit_form {
      */
     public function validation($fromform, $data) {
         $errors = [];
+        $wordle = $fromform['wordle'];
         /* don't save the form if there are no fields defined */
         $gaps = qtype_guessit::get_gaps('[]', $fromform['questiontext']['text']);
         if (count($gaps) == 0) {
-            $errors['questiontext'] = get_string('questionsmissing', 'qtype_guessit');
+            $errors['questiontext'] = '<b>' . get_string('questionsmissing', 'qtype_guessit') . '</b>';
+        }
+        if ($wordle) {
+            foreach ($gaps as $gap) {
+                if (preg_match('/[^A-Z]/', $gap) ) {
+                    $errors['questiontext'] = '<b>' . get_string('wordlecapitalsonly', 'qtype_guessit') . '</b>';
+                    break;
+                }
+            }
         }
         if ($errors) {
             return $errors;

@@ -74,12 +74,6 @@ class qtype_guessit_question extends question_graded_automatically_with_countbac
     public $maxgapsize;
 
     /**
-     * Feedback when the response is entirely correct
-     * @var string
-     */
-    public $correctfeedback = '';
-
-    /**
      * its a whole number, it's only called fraction because it is referred to that in core
      * code
      * @var int
@@ -177,21 +171,10 @@ class qtype_guessit_question extends question_graded_automatically_with_countbac
      * Has the user put something in every gap?
      * @param array $response
      * @return boolean
+     * Replaced by check_complete_answer() in the renderer.
      */
     public function is_complete_response(array $response) {
-        $gapsfilled = 0;
-        $iscomplete = true;
-        foreach ($this->answers as $rightanswer) {
-            $studentanswer = array_shift($response);
-            if (!($studentanswer == "") ) {
-                $gapsfilled++;
-            }
-        }
-
-        if ($gapsfilled < $this->gapcount) {
-            $iscomplete = false;
-        }
-        return $iscomplete;
+        return;
     }
 
     /**
@@ -202,10 +185,7 @@ class qtype_guessit_question extends question_graded_automatically_with_countbac
      * @return string
      */
     public function get_validation_error(array $response) {
-        if ($this->is_gradable_response($response)) {
-            return '';
-        }
-        return get_string('pleaseenterananswer', 'qtype_guessit');
+        return; // Not used by guessit.
     }
 
     /**
@@ -269,28 +249,6 @@ class qtype_guessit_question extends question_graded_automatically_with_countbac
     }
 
     /**
-     * called from within renderer in interactive mode
-     *
-     * @param string $studentanswer
-     * @param string $rightanswer
-     * @return boolean
-     */
-    public function is_correct_response($studentanswer, $rightanswer) {
-        if (!$this->casesensitive == 1) {
-            $studentanswer = core_text::strtolower($studentanswer, 'UTF-8');
-            $rightanswer = core_text::strtolower($rightanswer, 'UTF-8');
-        }
-
-        if ($this->compare_response_with_answer($studentanswer, $rightanswer)) {
-            return true;
-        } else if (($studentanswer == "") ) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    /**
      *
      * @param array $response Passed in from the submitted form
      * @return array
@@ -313,7 +271,7 @@ class qtype_guessit_question extends question_graded_automatically_with_countbac
                 $studentanswer = core_text::strtolower($studentanswer, 'UTF-8');
                 $rightanswer = core_text::strtolower($rightanswer, 'UTF-8');
             }
-            if ($this->compare_response_with_answer($studentanswer, $rightanswer)) {
+            if ($studentanswer === $rightanswer) {
                 $numright++;
             }
         }
@@ -346,36 +304,6 @@ class qtype_guessit_question extends question_graded_automatically_with_countbac
     public function compute_final_grade($responses, $totaltries) {
         // Grade is not used in this question type.
         return;
-    }
-
-    /**
-     * Compare the answer given with the correct answer, does it match?
-     * To normalise white spaces add
-     * $studentanswer = preg_replace('/\s+/', ' ', $studentanswer);
-     *  before if($disableregex etc etc
-     *
-     * @param string $studentanswer
-     * @param string $rightanswer
-     * @return boolean
-     */
-    public function compare_response_with_answer($studentanswer, $rightanswer) {
-        $correctanswer = $this->special_string_comparison($studentanswer, $rightanswer);
-        return $correctanswer;
-    }
-
-    /**
-     * Compares two strings to check if they are exactly equal, including special characters like periods.
-     *
-     * @param string $studentanswer The student's answer to be compared.
-     * @param string $rightanswer The correct answer to be compared against.
-     *
-     * @return bool.
-     */
-    public function special_string_comparison($studentanswer, $rightanswer) {
-        // Escape the period in $studentanswer so it matches it as a literal punctuation mark, not as a regex wildcard.
-        $pattern = '/^' . preg_quote($studentanswer, '/') . '$/';
-        // If $rightanswer matches the literal pattern of $studentanswer, return true (strings are equal according to the rule).
-        return preg_match($pattern, $rightanswer) === 1;
     }
 
     /**

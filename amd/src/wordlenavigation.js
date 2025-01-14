@@ -29,8 +29,9 @@
 /**
  * Initialize the input gaps functionalities.
  */
-export function init() {
+export function init() {//**
 /* eslint-disable no-unused-vars */
+/* eslint-disable no-console */
 
     // Make correctly filled in gaps readonly
     const correctGaps = document.querySelectorAll('input.correct');
@@ -99,6 +100,10 @@ export function init() {
                         checkButton.focus();
                     }
                 }
+            });
+            element.addEventListener("input", function () {
+                    console.log('element.value ' + element.value);
+                    element.value = element.value.toUpperCase();
             });
         });
     });

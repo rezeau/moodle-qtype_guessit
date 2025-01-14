@@ -29,11 +29,13 @@ class qtype_guessit_renderer extends qtype_renderer {
      * responses that would be correct if submitted
      * @var array
      */
-    public $correctresponses = [];/**
-                                   * Used in wordle option: stores correct (2) partiallycorrect (1) and incorrect (0)
-                                   * values for each letter in student response.
-                                   * @var string
-                                   */
+    public $correctresponses = [];
+
+    /**
+     * Used in wordle option: stores correct (2) partiallycorrect (1) and incorrect (0)
+     * values for each letter in student response.
+     * @var string
+     */
     public $letterstates = '';
 
     /**
@@ -52,7 +54,7 @@ class qtype_guessit_renderer extends qtype_renderer {
      * all the options that controls how a question is displayed
      * more about the question engine than this specific question type
      *
-     * @var all the options that controls how a question is displayed
+     * @var all the options that control how a question is displayed
      */
     public $displayoptions;
 
@@ -83,7 +85,8 @@ class qtype_guessit_renderer extends qtype_renderer {
             }
         }
         foreach ($question->answers as $answer) {
-            array_push($this->rightanswers, $answer->answer);
+            $rightanswer = $answer->answer;
+            array_push($this->rightanswers, $rightanswer);
         }
         $this->nbmisplacedletters = 0;
         if ($wordle) {
@@ -121,11 +124,6 @@ class qtype_guessit_renderer extends qtype_renderer {
         }
         // For guessit rendering.
         $output .= $questiontext;
-
-        if ($qa->get_state() == question_state::$invalid || !$complete) {
-            $output .= html_writer::nonempty_tag('div', $question->get_validation_error(['answer' => $output]),
-             ['class' => 'validationerror']);
-        }
         $output = html_writer::tag('div', $output, ['class' => 'qtext']);
         $output .= $trieslefttxt;
         return $output;
@@ -156,9 +154,11 @@ class qtype_guessit_renderer extends qtype_renderer {
         }
         // Check that all gaps have been filled in.
         $complete = $this->check_complete_answer($qa);
-        if (!$question->casesensitive == 1) {
-            $studentanswer = core_text::strtolower($studentanswer, 'UTF-8');
-            $rightanswer = core_text::strtolower($rightanswer, 'UTF-8');
+        if (!$wordle) {
+            if (!$question->casesensitive == 1) {
+                $studentanswer = core_text::strtolower($studentanswer, 'UTF-8');
+                $rightanswer = core_text::strtolower($rightanswer, 'UTF-8');
+            }
         }
         $size = 0;
         if (!$wordle) {
@@ -307,11 +307,12 @@ class qtype_guessit_renderer extends qtype_renderer {
         // Check that all gaps have been filled in.
         $complete = $this->check_complete_answer($qa);
         if (!$complete) {
-            return '';
+            return;
         }
         $question = $qa->get_question();
         $wordle = $question->wordle;
         $removespecificfeedback = $question->removespecificfeedback;
+        $formattxt = '<br><span class="que guessit giveword">';
         $nbcorrect = $qa->get_question()->get_num_parts_right(
                 $qa->get_last_qt_data()
             );
@@ -323,7 +324,7 @@ class qtype_guessit_renderer extends qtype_renderer {
                 "wordsfoundintry" => get_string('wordsfoundintry', 'qtype_guessit'),
                 "wordsfoundintries" => get_string('wordsfoundintries', 'qtype_guessit', $prevtries),
             ];
-            $formattxt = '<br><span class="que guessit giveword">';
+
             if ($wordle) {
                 if ($removespecificfeedback) {
                     return '';
@@ -379,7 +380,7 @@ class qtype_guessit_renderer extends qtype_renderer {
                     $trieslefttxt .= get_string('nbtriesleft_singular', 'qtype_guessit');
                 }
             } else {
-                return $trieslefttxt . get_string('wordnotfound', 'qtype_guessit', $prevtries) . '</div>';
+                return $formattxt . get_string('wordnotfound', 'qtype_guessit', $prevtries) . '</div>';
             }
             return get_string('yougotnlettersrightcount', 'qtype_guessit', $a) . $trieslefttxt;
         }

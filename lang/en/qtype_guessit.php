@@ -77,6 +77,7 @@ $string['wordfoundintries'] = 'Word found in {$a} tries.';
 $string['wordfoundintry'] = 'Word found in 1 try only! Well-done!';
 $string['wordle'] = 'Wordle Option: Guess a word';
 $string['wordle_help'] = 'Check this option if you want the player to have to guess single words of 4 to 8 letters instead of sentences.';
+$string['wordlecapitalsonly'] = 'ERROR! In the Wordle option, gaps must consist only of CAPITAL LETTERS (A-Z) and no accents';
 $string['wordnotfound'] = 'Word not found in {$a} tries!';
 $string['wordsfoundintries'] = 'All words found in {$a} tries.';
 $string['wordsfoundintry'] = 'All words found in 1 try only! Well-done!';
