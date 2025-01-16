@@ -54,17 +54,24 @@ class qtype_guessit_edit_form extends question_edit_form {
         $mform = $this->form_setup($mform);
 
         $mform->addElement('html', '<div id="questiontext" >');
-        $mform->addElement('editor', 'questiontext', get_string('questiontext', 'question'), ['rows' => 10],
+        $mform->addElement('editor', 'questiontext', get_string('instructions', 'qtype_guessit'), ['rows' => 10],
                 $this->editoroptions);
         $mform->addElement('html', '</div>');
 
         $mform->setType('questiontext', PARAM_RAW);
-        $mform->addHelpButton('questiontext', 'questiontext', 'qtype_guessit');
+        $mform->addHelpButton('questiontext', 'instructions', 'qtype_guessit');
 
         $mform->removeelement('generalfeedback');
 
         // Default mark will be set to 1 * number of fields.
         $mform->removeelement('defaultmark');
+
+        $mform->addElement('text', 'guessitgaps', get_string('guessitgaps', 'qtype_guessit'), 'maxlength="254" size="50"');
+        $mform->setDefault('guessitgaps', '');
+        /* todo add rule required later */
+        ///$mform->addRule('guessitgaps', get_string('wordssmissing', 'qtype_guessit'), 'required', null, 'client');
+        $mform->setType('guessitgaps', PARAM_TEXT);
+        $mform->addHelpButton('guessitgaps', 'guessitgaps', 'qtype_guessit');
 
         $mform->addElement('editor', 'generalfeedback', get_string('generalfeedback', 'question')
                 , ['rows' => 10], $this->editoroptions);
@@ -168,6 +175,9 @@ class qtype_guessit_edit_form extends question_edit_form {
      * @return boolean
      */
     public function validation($fromform, $data) {
+        // todo suspend validation until the gaps are moved from the question text field
+        // to the guessitgaps field
+        return;
         $errors = [];
         $wordle = $fromform['wordle'];
         /* don't save the form if there are no fields defined */
