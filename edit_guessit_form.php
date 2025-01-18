@@ -67,9 +67,8 @@ class qtype_guessit_edit_form extends question_edit_form {
         $mform->removeelement('defaultmark');
 
         $mform->addElement('text', 'guessitgaps', get_string('guessitgaps', 'qtype_guessit'), 'maxlength="254" size="50"');
-        $mform->setDefault('guessitgaps', '');
-        /* todo add rule required later */
-        ///$mform->addRule('guessitgaps', get_string('wordssmissing', 'qtype_guessit'), 'required', null, 'client');
+        $mform->setDefault('guessitgaps', '');        
+        $mform->addRule('guessitgaps', get_string('wordssmissing', 'qtype_guessit'), 'required', null, 'client');
         $mform->setType('guessitgaps', PARAM_TEXT);
         $mform->addHelpButton('guessitgaps', 'guessitgaps', 'qtype_guessit');
 
@@ -165,33 +164,24 @@ class qtype_guessit_edit_form extends question_edit_form {
         }
         return $question;
     }
+
     /**
      * Check the question text is valid, specifically that
      * it contains at lease one gap (text surrounded by delimiters
      * as in [cat]
      *
      * @param array $fromform
-     * @param array $data
+     * @param array $files
      * @return boolean
      */
-    public function validation($fromform, $data) {
-        // todo suspend validation until the gaps are moved from the question text field
-        // to the guessitgaps field
-        return true;
+    public function validation($fromform, $files) {
         $errors = [];
-        $wordle = $fromform['wordle'];
-        /* don't save the form if there are no fields defined */
-        $gaps = qtype_guessit::get_gaps('[]', $fromform['questiontext']['text']);
-        if (count($gaps) == 0) {
-            $errors['questiontext'] = '<b>' . get_string('questionsmissing', 'qtype_guessit') . '</b>';
-        }
-        if ($wordle) {
-            foreach ($gaps as $gap) {
-                if (preg_match('/[^A-Z]/', $gap) ) {
-                    $errors['questiontext'] = '<b>' . get_string('wordlecapitalsonly', 'qtype_guessit') . '</b>';
-                    break;
-                }
-            }
+        $wordle = $fromform['wordle'];        
+        $guessitgaps = $fromform['guessitgaps'];
+        if ($wordle) {        
+            if (preg_match('/[^A-Z]/', $guessitgaps) ) {
+                $errors['guessitgaps'] = get_string('wordlecapitalsonly', 'qtype_guessit');
+            };
         }
         if ($errors) {
             return $errors;

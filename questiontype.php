@@ -83,8 +83,6 @@ class qtype_guessit extends question_type {
         if (empty($questiondata->options->answers)) {
             return;
         }
-        // Remove html comments as they can contain delimiters, e.g. <!--[if !supportLists] .
-        $question->questiontext = preg_replace('/<!--(.|\s)*?-->/', '', $question->questiontext);
 
         foreach ($questiondata->options->answers as $a) {
             if (strstr($a->fraction, '1') == false) {
@@ -134,20 +132,6 @@ class qtype_guessit extends question_type {
                 $counter++;
             }
         }
-
-        /* Will put empty places '' where there is no text content.
-         * l for left delimiter r for right delimiter
-         */
-        $l = substr('[]', 0, 1);
-        $r = substr('[]', 1, 1);
-
-        $nongapregex = '/\\' . $l . '.*?\\' . $r . '/';
-        $nongaptext = preg_split($nongapregex, $question->questiontext, -1, PREG_SPLIT_DELIM_CAPTURE);
-        $i = 0;
-        while (!empty($nongaptext)) {
-            $question->textfragments[$i] = array_shift($nongaptext);
-            $i++;
-        }
     }
 
     /**
@@ -158,7 +142,7 @@ class qtype_guessit extends question_type {
      * @return object
      */
     public function save_question($question, $form) {
-        $gaps = $this->get_gaps('[]', $form->questiontext['text'], $form->guessitgaps);
+        $gaps = $this->get_gaps($form->guessitgaps, $form->wordle);
         /* count the number of gaps
          * this is used to set the maximum
          * value for the whole question. Value for
@@ -169,49 +153,19 @@ class qtype_guessit extends question_type {
     }
 
     /**
-     * chop the delimit string into a two element array
-     * this might be better done on initialisation
-     *
-     * @param string $delimitchars
-     * @return array
-     */
-    public static function get_delimit_array($delimitchars) {
-        $delimitarray = [];
-        $delimitarray["l"] = substr($delimitchars, 0, 1);
-        $delimitarray["r"] = substr($delimitchars, 1, 1);
-        return $delimitarray;
-    }
-
-    /**
      * it really does need to be static
      *
      * @param string $delimitchars
      * @param string $questiontext
      * @return array
      */
-    public static function get_gaps($delimitchars, $questiontext, $guessitgaps) {
-        /* l for left delimiter r for right delimiter
-         * defaults to []
-         * e.g. l=[ and r=] where question is
-         * The [cat] sat on the [mat]
-         */
-        $delim = self::get_delimit_array($delimitchars);
-        $fieldregex = '/.*?\\' . $delim["l"] . '(.*?)\\' . $delim["r"] . '/';
-        $matches = [];
-        //$gaps = [];
-        // Convert the string into an array
-        $gaps = explode(' ', $guessitgaps);
-        preg_match_all($fieldregex, $questiontext, $matches);
-        echo '$questiontext ' . $questiontext;
-        echo '$matches[1]<pre>';
-        print_r($matches[1]);
-        echo '</pre>';
-        echo '$form->guessitgaps = ' . $guessitgaps;
-        echo '$gaps<pre>';
-        print_r($gaps);
-        echo '</pre>';
-        ///die;
-        ////return $matches[1];
+    public static function get_gaps($guessitgaps, $wordle) {
+        // Convert the string into an array        
+        if ($wordle) {
+            $gaps = str_split($guessitgaps);
+        } else {
+            $gaps = explode(' ', $guessitgaps);
+        }
         return $gaps;
     }
 
@@ -224,16 +178,9 @@ class qtype_guessit extends question_type {
         /* Save the extra data to your database tables from the
           $question object, which has all the post data from editquestion.html */
 
-        // Remove html comments as they can contain delimiters, e.g. <!--[if !supportLists] .
-        ////$question->questiontext = preg_replace('/<!--(.|\s)*?-->/', '', $question->questiontext);
-
-        $gaps = $this->get_gaps('[]', $question->questiontext, $question->guessitgaps);
+        $gaps = $this->get_gaps($question->guessitgaps, $question->wordle);
         /* answerwords are the text within gaps */
         $answerfields = $this->get_answer_fields($gaps, $question);
-        echo '$answerfields<pre>';
-        print_r($answerfields);
-        echo '</pre>';
-        ///die;
         global $DB;
 
         $context = $question->context;

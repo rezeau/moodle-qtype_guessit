@@ -119,12 +119,6 @@ class qtype_guessit_question extends question_graded_automatically_with_countbac
     public $places = [];
 
     /**
-     * @var array of strings, one longer than $places, which is achieved by
-     * indexing from 0. The bits of question text that go between the placeholders.
-     */
-    public $textfragments;
-
-    /**
      * get the length of the correct answer
      * @param string $rightanswer
      * @return number
@@ -242,6 +236,7 @@ class qtype_guessit_question extends question_graded_automatically_with_countbac
      *
      * @return array
      */
+     // todo
     public function get_correct_response() {
         $response = [];
         foreach ($this->places as $place => $rightanswer) {

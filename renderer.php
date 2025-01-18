@@ -90,14 +90,11 @@ class qtype_guessit_renderer extends qtype_renderer {
         foreach ($question->answers as $answer) {
             $rightanswer = $answer->answer;
             array_push($this->rightanswers, $rightanswer);
-            //if ($count > 0) {
-                $questiontext .= '<div class="input-wrapper">';
-                    $questiontext .= $this->embedded_element($qa, $count, $options, $wordlemaxreached);
-                    $questiontext .= '</div>';
-            //}
+            $questiontext .= '<div class="input-wrapper">';
+                $questiontext .= $this->embedded_element($qa, $count, $options, $wordlemaxreached);
+                $questiontext .= '</div>' . ' ';
             $count++;
         }
-        $this->nbmisplacedletters = 0;
         if ($wordle) {
             $this->page->requires->js_call_amd('qtype_guessit/wordlenavigation', 'init');
         } else {
@@ -117,6 +114,9 @@ class qtype_guessit_renderer extends qtype_renderer {
             }
             if ($studentletters !== '' && $complete) {
                 $this->letterstates = $this->get_wordle_letter_states($rightletters, $studentletters);
+                echo '118 ----------------- $this->letterstates<pre>';
+                print_r($this->letterstates);
+                echo '</pre>';
             }
         }
         
@@ -186,7 +186,9 @@ class qtype_guessit_renderer extends qtype_renderer {
                 }
             } else if (!$wordlemaxreached) {
                 $index = (int)substr($fieldname, 1) - 1;
+                echo '<br>$this->letterstates = ' . $this->letterstates;
                 $letterstate = $this->letterstates[$index];
+                echo '<br>$index =  '.$index.' and $letterstate = ' . $letterstate;
                 switch ($letterstate) {
                     case 2:
                         $inputclass = 'correct';
@@ -274,7 +276,8 @@ class qtype_guessit_renderer extends qtype_renderer {
                     $colorclass = 'incorrect';
                 }
             } else {
-                    $letterstate = $this->letterstates[$index];
+                $letterstate = $this->letterstates[$index];
+                echo'<br>*******281*** $letterstate = ' . $letterstate;
                 switch ($letterstate) {
                     case 2:
                         $colorclass = 'correct';
