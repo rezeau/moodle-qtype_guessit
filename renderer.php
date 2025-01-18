@@ -69,7 +69,9 @@ class qtype_guessit_renderer extends qtype_renderer {
     public function formulation_and_controls(question_attempt $qa, question_display_options $options) {
         $this->displayoptions = $options;
         $question = $qa->get_question();
+        $questiontext = $question->questiontext;
         $answers = $question->answers;
+        $nbanswers = count($answers);
         $wordle = $question->wordle;
         $wordlemaxreached = 0;
         $trieslefttxt = '';
@@ -84,9 +86,16 @@ class qtype_guessit_renderer extends qtype_renderer {
                 $trieslefttxt .= get_string('nbtriesleft_plural', 'qtype_guessit', $nbmaxtrieswordle);
             }
         }
+        $count = 1;
         foreach ($question->answers as $answer) {
             $rightanswer = $answer->answer;
             array_push($this->rightanswers, $rightanswer);
+            //if ($count > 0) {
+                $questiontext .= '<div class="input-wrapper">';
+                    $questiontext .= $this->embedded_element($qa, $count, $options, $wordlemaxreached);
+                    $questiontext .= '</div>';
+            //}
+            $count++;
         }
         $this->nbmisplacedletters = 0;
         if ($wordle) {
@@ -95,7 +104,7 @@ class qtype_guessit_renderer extends qtype_renderer {
             $this->page->requires->js_call_amd('qtype_guessit/gapsnavigation', 'init');
         }
         $output = "";
-        $questiontext = '';
+        
         // Check that all gaps have been filled in.
         $complete = $this->check_complete_answer($qa);
 
@@ -110,18 +119,7 @@ class qtype_guessit_renderer extends qtype_renderer {
                 $this->letterstates = $this->get_wordle_letter_states($rightletters, $studentletters);
             }
         }
-
-        foreach ($question->textfragments as $place => $fragment) {
-            if ($place > 0) {
-                $questiontext .= '<div class="input-wrapper">';
-                $questiontext .= $this->embedded_element($qa, $place, $options, $wordlemaxreached);
-                $questiontext .= '</div>';
-            }
-            // Format the non entry field parts of the question text.
-            // This will also ensure images get displayed.
-            $questiontext .= $question->format_text($fragment, $question->questiontextformat,
-                $qa, 'question', 'questiontext', $question->id);
-        }
+        
         // For guessit rendering.
         $output .= $questiontext;
         $output = html_writer::tag('div', $output, ['class' => 'qtext']);

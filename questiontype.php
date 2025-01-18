@@ -55,8 +55,7 @@ class qtype_guessit extends question_type {
      * @return array
      */
     public function extra_question_fields() {
-        return ['question_guessit', 'casesensitive', 'gapsizedisplay', 'nbtriesbeforehelp',
-                'nbmaxtrieswordle', 'removespecificfeedback', 'wordle'];
+        return ['question_guessit', 'guessitgaps', 'casesensitive', 'gapsizedisplay', 'nbtriesbeforehelp', 'nbmaxtrieswordle', 'removespecificfeedback', 'wordle'];
     }
 
 
@@ -159,7 +158,7 @@ class qtype_guessit extends question_type {
      * @return object
      */
     public function save_question($question, $form) {
-        $gaps = $this->get_gaps('[]', $form->questiontext['text']);
+        $gaps = $this->get_gaps('[]', $form->questiontext['text'], $form->guessitgaps);
         /* count the number of gaps
          * this is used to set the maximum
          * value for the whole question. Value for
@@ -190,7 +189,7 @@ class qtype_guessit extends question_type {
      * @param string $questiontext
      * @return array
      */
-    public static function get_gaps($delimitchars, $questiontext) {
+    public static function get_gaps($delimitchars, $questiontext, $guessitgaps) {
         /* l for left delimiter r for right delimiter
          * defaults to []
          * e.g. l=[ and r=] where question is
@@ -199,8 +198,21 @@ class qtype_guessit extends question_type {
         $delim = self::get_delimit_array($delimitchars);
         $fieldregex = '/.*?\\' . $delim["l"] . '(.*?)\\' . $delim["r"] . '/';
         $matches = [];
+        //$gaps = [];
+        // Convert the string into an array
+        $gaps = explode(' ', $guessitgaps);
         preg_match_all($fieldregex, $questiontext, $matches);
-        return $matches[1];
+        echo '$questiontext ' . $questiontext;
+        echo '$matches[1]<pre>';
+        print_r($matches[1]);
+        echo '</pre>';
+        echo '$form->guessitgaps = ' . $guessitgaps;
+        echo '$gaps<pre>';
+        print_r($gaps);
+        echo '</pre>';
+        ///die;
+        ////return $matches[1];
+        return $gaps;
     }
 
     /**
@@ -213,11 +225,15 @@ class qtype_guessit extends question_type {
           $question object, which has all the post data from editquestion.html */
 
         // Remove html comments as they can contain delimiters, e.g. <!--[if !supportLists] .
-        $question->questiontext = preg_replace('/<!--(.|\s)*?-->/', '', $question->questiontext);
+        ////$question->questiontext = preg_replace('/<!--(.|\s)*?-->/', '', $question->questiontext);
 
-        $gaps = $this->get_gaps('[]', $question->questiontext);
+        $gaps = $this->get_gaps('[]', $question->questiontext, $question->guessitgaps);
         /* answerwords are the text within gaps */
         $answerfields = $this->get_answer_fields($gaps, $question);
+        echo '$answerfields<pre>';
+        print_r($answerfields);
+        echo '</pre>';
+        ///die;
         global $DB;
 
         $context = $question->context;
@@ -247,6 +263,7 @@ class qtype_guessit extends question_type {
             $options->correctfeedback = '';
             $options->partiallycorrectfeedback = '';
             $options->incorrectfeedback = '';
+            $options->guessitgaps = '';
             $options->casesensitive = '';
             $options->gapsizedisplay = '';
             $options->nbtriesbeforehelp = '';
@@ -256,6 +273,7 @@ class qtype_guessit extends question_type {
             $options->id = $DB->insert_record('question_guessit', $options);
         }
 
+        $options->guessitgaps = $question->guessitgaps;
         $options->casesensitive = $question->casesensitive;
         $options->gapsizedisplay = $question->gapsizedisplay;
         $options->nbtriesbeforehelp = $question->nbtriesbeforehelp;
@@ -386,6 +404,8 @@ class qtype_guessit extends question_type {
         /*convert json into an object */
 
         $output = parent::export_to_xml($question, $format);
+        $output .= '    <guessitgaps>' . $question->options->guessitgaps .
+                "</guessitgaps>\n";
         $output .= '    <casesensitive>' . $question->options->casesensitive .
                 "</casesensitive>\n";
         $output .= '    <gapsizedisplay>' . $question->options->gapsizedisplay .

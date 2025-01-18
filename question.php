@@ -86,6 +86,8 @@ class qtype_guessit_question extends question_graded_automatically_with_countbac
      */
     public $gapcount;
 
+    public $guessitgaps;
+
     /**
      * By default Cat is treated the same as cat. Setting it to 1 will make it case sensitive
      * @var bool

@@ -177,7 +177,7 @@ class qtype_guessit_edit_form extends question_edit_form {
     public function validation($fromform, $data) {
         // todo suspend validation until the gaps are moved from the question text field
         // to the guessitgaps field
-        return;
+        return true;
         $errors = [];
         $wordle = $fromform['wordle'];
         /* don't save the form if there are no fields defined */

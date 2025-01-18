@@ -52,7 +52,7 @@ class backup_qtype_guessit_plugin extends backup_qtype_plugin {
 
         // Now create the qtype own structures.
         $guessit = new backup_nested_element('guessit', ['id'], [
-            'casesensitive', 'gapsizedisplay', 'nbtriesbeforehelp', 'nbmaxtrieswordle', 'correctfedback', 'correctfeddbackformat',
+            'guessitgaps', 'casesensitive', 'gapsizedisplay', 'nbtriesbeforehelp', 'nbmaxtrieswordle', 'correctfedback', 'correctfeddbackformat',
             'partiallycorrectfeedback', 'partiallycorrectfeedbackformat', 'incorrectfeedback', 'incorrectfeedbackformat']);
 
         // Now the own qtype tree.
