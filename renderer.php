@@ -75,21 +75,37 @@ class qtype_guessit_renderer extends qtype_renderer {
         $wordle = $question->wordle;
         $wordlemaxreached = 0;
         $trieslefttxt = '';
+
+        // Check that all gaps have been filled in.
+        $complete = $this->check_complete_answer($qa);
+
+        foreach ($question->answers as $answer) {
+            $rightanswer = $answer->answer;
+            array_push($this->rightanswers, $rightanswer);
+        }
         if ($wordle) {
             $nbmaxtrieswordle = $question->nbmaxtrieswordle;
             $prevtries = $qa->get_last_behaviour_var('_try', 0);
             $wordlemaxreached = ($prevtries === $nbmaxtrieswordle);
-            // Display nb tries left when starting a new wordle (?).
+            // Display nb tries left when starting a new wordle.
             if ($prevtries === 0) {
                 $startingtriesleft = $nbmaxtrieswordle;
                 $trieslefttxt = '<span class="que guessit giveword">';
                 $trieslefttxt .= get_string('nbtriesleft_plural', 'qtype_guessit', $nbmaxtrieswordle);
+            } else {
+                $studentresponse = $qa->get_last_qt_data();
+                $studentletters = '';
+                $rightletters = implode('', $this->rightanswers);
+                foreach ($studentresponse as $answer) {
+                    $studentletters .= $answer;
+                }
+                if ($studentletters !== '' && $complete) {
+                    $this->letterstates = $this->get_wordle_letter_states($rightletters, $studentletters);
+                }
             }
         }
         $count = 1;
         foreach ($question->answers as $answer) {
-            $rightanswer = $answer->answer;
-            array_push($this->rightanswers, $rightanswer);
             $questiontext .= '<div class="input-wrapper">';
                 $questiontext .= $this->embedded_element($qa, $count, $options, $wordlemaxreached);
                 $questiontext .= '</div>' . ' ';
@@ -101,26 +117,6 @@ class qtype_guessit_renderer extends qtype_renderer {
             $this->page->requires->js_call_amd('qtype_guessit/gapsnavigation', 'init');
         }
         $output = "";
-        
-        // Check that all gaps have been filled in.
-        $complete = $this->check_complete_answer($qa);
-
-        $studentresponse = $qa->get_last_qt_data();
-        if ($wordle) {
-            $studentletters = '';
-            $rightletters = implode('', $this->rightanswers);
-            foreach ($studentresponse as $answer) {
-                $studentletters .= $answer;
-            }
-            if ($studentletters !== '' && $complete) {
-                $this->letterstates = $this->get_wordle_letter_states($rightletters, $studentletters);
-                echo '118 ----------------- $this->letterstates<pre>';
-                print_r($this->letterstates);
-                echo '</pre>';
-            }
-        }
-        
-        // For guessit rendering.
         $output .= $questiontext;
         $output = html_writer::tag('div', $output, ['class' => 'qtext']);
         $output .= $trieslefttxt;
@@ -186,9 +182,7 @@ class qtype_guessit_renderer extends qtype_renderer {
                 }
             } else if (!$wordlemaxreached) {
                 $index = (int)substr($fieldname, 1) - 1;
-                echo '<br>$this->letterstates = ' . $this->letterstates;
                 $letterstate = $this->letterstates[$index];
-                echo '<br>$index =  '.$index.' and $letterstate = ' . $letterstate;
                 switch ($letterstate) {
                     case 2:
                         $inputclass = 'correct';
@@ -277,7 +271,6 @@ class qtype_guessit_renderer extends qtype_renderer {
                 }
             } else {
                 $letterstate = $this->letterstates[$index];
-                echo'<br>*******281*** $letterstate = ' . $letterstate;
                 switch ($letterstate) {
                     case 2:
                         $colorclass = 'correct';
