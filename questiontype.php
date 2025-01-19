@@ -25,9 +25,6 @@
 
  */
 defined('MOODLE_INTERNAL') || die();
-global $CFG;
-require_once($CFG->libdir . '/questionlib.php');
-require_once($CFG->dirroot . '/question/engine/lib.php');
 
 /**
  *
@@ -50,14 +47,15 @@ class qtype_guessit extends question_type {
     public function can_analyse_responses() {
           return false;
     }
+
     /**
      * data used by export_to_xml (among other things possibly
      * @return array
      */
     public function extra_question_fields() {
-        return ['question_guessit', 'guessitgaps', 'casesensitive', 'gapsizedisplay', 'nbtriesbeforehelp', 'nbmaxtrieswordle', 'removespecificfeedback', 'wordle'];
+        return ['question_guessit', 'guessitgaps', 'casesensitive', 'gapsizedisplay',
+        'nbtriesbeforehelp', 'nbmaxtrieswordle', 'removespecificfeedback', 'wordle'];
     }
-
 
     /**
      * Called during question editing
@@ -69,7 +67,6 @@ class qtype_guessit extends question_type {
         $question->options = $DB->get_record('question_guessit', ['question' => $question->id], '*', MUST_EXIST);
         parent::get_question_options($question);
     }
-
 
     /**
      * called when previewing or at runtime in a quiz
@@ -85,23 +82,12 @@ class qtype_guessit extends question_type {
         }
 
         foreach ($questiondata->options->answers as $a) {
-            if (strstr($a->fraction, '1') == false) {
-                /* if this is a wronganswer/distractor strip any
-                 * backslashes, this allows escaped backslashes to
-                 * be used i.e. \, and not displayed in the draggable
-                 * area
-                 */
-                $a->answer = stripslashes($a->answer);
-            }
             /* answer in this context means correct answers, i.e. where
              * fraction contains a 1 */
             if (strpos($a->fraction, '1') !== false) {
                 $question->answers[$a->id] = new question_answer($a->id, $a->answer, $a->fraction,
                         $a->feedback, $a->feedbackformat);
                 $question->gapcount++;
-                if (!$forceplaintextanswers) {
-                    $question->answers[$a->id]->answerformat = $a->answerformat;
-                }
             }
         }
     }
@@ -160,7 +146,7 @@ class qtype_guessit extends question_type {
      * @return array
      */
     public static function get_gaps($guessitgaps, $wordle) {
-        // Convert the string into an array        
+        // Convert the string into an array.
         if ($wordle) {
             $gaps = str_split($guessitgaps);
         } else {
@@ -207,9 +193,6 @@ class qtype_guessit extends question_type {
         if (!$options) {
             $options = new stdClass();
             $options->question = $question->id;
-            $options->correctfeedback = '';
-            $options->partiallycorrectfeedback = '';
-            $options->incorrectfeedback = '';
             $options->guessitgaps = '';
             $options->casesensitive = '';
             $options->gapsizedisplay = '';
@@ -255,9 +238,6 @@ class qtype_guessit extends question_type {
                 $answer->question = $question->id;
                 $answer->answer = $field['value'];
                 $answer->feedback = '';
-                $answer->correctfeedback = '';
-                $answer->partiallycorrectfeedback = '';
-                $answer->incorrectfeedback = '';
                 $answer->fraction = $field['fraction'];
                 $answer->id = $DB->insert_record('question_answers', $answer);
             }

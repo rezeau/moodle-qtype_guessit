@@ -81,17 +81,4 @@ class restore_qtype_guessit_plugin extends restore_qtype_plugin {
         }
     }
 
-    /**
-     * Return the contents of this qtype to be processed by the links decoder
-     */
-    public static function define_decode_contents() {
-
-        $contents = [];
-
-        $fields = ['correctfeedback', 'partiallycorrectfeedback', 'incorrectfeedback'];
-        $contents[] = new restore_decode_content('question_guessit', $fields, 'question_guessit');
-
-        return $contents;
-    }
-
 }

@@ -52,8 +52,8 @@ class backup_qtype_guessit_plugin extends backup_qtype_plugin {
 
         // Now create the qtype own structures.
         $guessit = new backup_nested_element('guessit', ['id'], [
-            'guessitgaps', 'casesensitive', 'gapsizedisplay', 'nbtriesbeforehelp', 'nbmaxtrieswordle', 'correctfedback', 'correctfeddbackformat',
-            'partiallycorrectfeedback', 'partiallycorrectfeedbackformat', 'incorrectfeedback', 'incorrectfeedbackformat']);
+            'guessitgaps', 'casesensitive', 'gapsizedisplay', 'nbtriesbeforehelp',
+            'nbmaxtrieswordle', 'removespecificfeedback', 'wordle']);
 
         // Now the own qtype tree.
         $pluginwrapper->add_child($guessit);
@@ -66,15 +66,4 @@ class backup_qtype_guessit_plugin extends backup_qtype_plugin {
         return $plugin;
     }
 
-    /**
-     * Returns one array with filearea => mappingname elements for the qtype
-     *
-     * files to be processed both in backup and restore.
-     */
-    public static function get_qtype_fileareas() {
-        return [
-            'correctfeedback' => 'question_created',
-            'partiallycorrectfeedback' => 'question_created',
-            'incorrectfeedback' => 'question_created'];
-    }
 }

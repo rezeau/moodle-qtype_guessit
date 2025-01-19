@@ -86,6 +86,10 @@ class qtype_guessit_question extends question_graded_automatically_with_countbac
      */
     public $gapcount;
 
+    /**
+     * The question gaps
+     * @var string
+     */
     public $guessitgaps;
 
     /**
@@ -108,7 +112,7 @@ class qtype_guessit_question extends question_graded_automatically_with_countbac
 
     /**
      * array of strings as correct question answers
-     * @var rray
+     * @var array
      */
     public $answers = [];
 
@@ -167,7 +171,7 @@ class qtype_guessit_question extends question_graded_automatically_with_countbac
      * Has the user put something in every gap?
      * @param array $response
      * @return boolean
-     * Replaced by check_complete_answer() in the renderer.
+     * Not used. Replaced by check_complete_answer() in the renderer.
      */
     public function is_complete_response(array $response) {
         return;
@@ -236,7 +240,6 @@ class qtype_guessit_question extends question_graded_automatically_with_countbac
      *
      * @return array
      */
-     // todo
     public function get_correct_response() {
         $response = [];
         foreach ($this->places as $place => $rightanswer) {

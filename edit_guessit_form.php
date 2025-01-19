@@ -67,7 +67,7 @@ class qtype_guessit_edit_form extends question_edit_form {
         $mform->removeelement('defaultmark');
 
         $mform->addElement('text', 'guessitgaps', get_string('guessitgaps', 'qtype_guessit'), 'maxlength="254" size="50"');
-        $mform->setDefault('guessitgaps', '');        
+        $mform->setDefault('guessitgaps', '');
         $mform->addRule('guessitgaps', get_string('wordssmissing', 'qtype_guessit'), 'required', null, 'client');
         $mform->setType('guessitgaps', PARAM_TEXT);
         $mform->addHelpButton('guessitgaps', 'guessitgaps', 'qtype_guessit');
@@ -176,9 +176,9 @@ class qtype_guessit_edit_form extends question_edit_form {
      */
     public function validation($fromform, $files) {
         $errors = [];
-        $wordle = $fromform['wordle'];        
+        $wordle = $fromform['wordle'];
         $guessitgaps = $fromform['guessitgaps'];
-        if ($wordle) {        
+        if ($wordle) {
             if (preg_match('/[^A-Z]/', $guessitgaps) ) {
                 $errors['guessitgaps'] = get_string('wordlecapitalsonly', 'qtype_guessit');
             };
