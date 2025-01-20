@@ -25,8 +25,6 @@
  */
 defined('MOODLE_INTERNAL') || die();
 $string['blank'] = 'blank';
-$string['casesensitive'] = 'Case Sensitive';
-$string['casesensitive_help'] = 'When this is checked, if the correct answer is CAT, cat will be flagged as a wrong answer';
 $string['correct'] = 'Feedback for correct.';
 $string['correctanswer'] = 'Well done!';
 $string['displayguessit'] = 'guessit';

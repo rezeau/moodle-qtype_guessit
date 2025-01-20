@@ -57,7 +57,7 @@ class qtype_guessit extends question_type {
      * @return array
      */
     public function extra_question_fields() {
-        return ['question_guessit', 'guessitgaps', 'casesensitive', 'gapsizedisplay',
+        return ['question_guessit', 'guessitgaps', 'gapsizedisplay',
         'nbtriesbeforehelp', 'nbmaxtrieswordle', 'removespecificfeedback', 'wordle'];
     }
 
@@ -200,7 +200,6 @@ class qtype_guessit extends question_type {
             $options = new stdClass();
             $options->question = $question->id;
             $options->guessitgaps = '';
-            $options->casesensitive = '';
             $options->gapsizedisplay = '';
             $options->nbtriesbeforehelp = '';
             $options->nbmaxtrieswordle = '';
@@ -210,7 +209,6 @@ class qtype_guessit extends question_type {
         }
 
         $options->guessitgaps = $question->guessitgaps;
-        $options->casesensitive = $question->casesensitive;
         $options->gapsizedisplay = $question->gapsizedisplay;
         $options->nbtriesbeforehelp = $question->nbtriesbeforehelp;
         $options->nbmaxtrieswordle = $question->nbmaxtrieswordle;
@@ -326,8 +324,6 @@ class qtype_guessit extends question_type {
         $output = parent::export_to_xml($question, $format);
         $output .= '    <guessitgaps>' . $question->options->guessitgaps .
                 "</guessitgaps>\n";
-        $output .= '    <casesensitive>' . $question->options->casesensitive .
-                "</casesensitive>\n";
         $output .= '    <gapsizedisplay>' . $question->options->gapsizedisplay .
                 "</gapsizedisplay>\n";
         $output .= '    <nbtriesbeforehelp>' . $question->options->nbtriesbeforehelp .

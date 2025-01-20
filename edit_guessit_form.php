@@ -106,12 +106,6 @@ class qtype_guessit_edit_form extends question_edit_form {
         $mform->addHelpButton('gapsizedisplay', 'gapsize_display', 'qtype_guessit');
         $mform->setDefault('gapsizedisplay', 'gapsizegrow');
 
-        /* Makes marking case sensitive so Cat is not the same as cat */
-        $mform->addElement('advcheckbox', 'casesensitive', get_string('casesensitive', 'qtype_guessit'));
-        // Hide the field 'casesensitive' if 'wordle' is selected.
-        $mform->hideIf('casesensitive', 'wordle', 'checked');
-        $mform->addHelpButton('casesensitive', 'casesensitive', 'qtype_guessit');
-
         // Prepare number of tries option.
         $nbtries = [
             0 => 'None',

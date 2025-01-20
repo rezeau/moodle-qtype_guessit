@@ -93,12 +93,6 @@ class qtype_guessit_question extends question_graded_automatically_with_countbac
     public $guessitgaps;
 
     /**
-     * By default Cat is treated the same as cat. Setting it to 1 will make it case sensitive
-     * @var bool
-     */
-    public $casesensitive;
-
-    /**
      * Remove specific feedback when all gaps have been correctly filled in.
      * @var bool
      */
@@ -266,10 +260,6 @@ class qtype_guessit_question extends question_graded_automatically_with_countbac
             $studentanswer = $response[$this->field($place)];
             if (!array_key_exists($this->field($place), $response)) {
                 continue;
-            }
-            if (!$this->casesensitive == 1) {
-                $studentanswer = core_text::strtolower($studentanswer, 'UTF-8');
-                $rightanswer = core_text::strtolower($rightanswer, 'UTF-8');
             }
             if ($studentanswer === $rightanswer) {
                 $numright++;

@@ -122,7 +122,6 @@ class qtype_guessit_renderer extends qtype_renderer {
         /** @var \qtype_guessit_question $question */
         $question = $qa->get_question();
         $wordle = $question->wordle;
-        $casesensitive = $question->casesensitive;
         $fieldname = $question->field($place);
         $studentanswer = $qa->get_last_qt_var($fieldname) ?? '';
 
@@ -134,12 +133,6 @@ class qtype_guessit_renderer extends qtype_renderer {
         }
         // Check that all gaps have been filled in.
         $complete = $this->check_complete_answer($qa);
-        if (!$wordle) {
-            if (!$question->casesensitive == 1) {
-                $studentanswer = core_text::strtolower($studentanswer, 'UTF-8');
-                $rightanswer = core_text::strtolower($rightanswer, 'UTF-8');
-            }
-        }
         $size = 0;
         if (!$wordle) {
             if ($question->gapsizedisplay === 'gapsizematchword') {
@@ -220,13 +213,16 @@ class qtype_guessit_renderer extends qtype_renderer {
      * @return string
      */
     public function specific_feedback(question_attempt $qa) {
+        $question = $qa->get_question();
+        // No need to use specific feedback for the wordle option.
+        if ($question->wordle) {
+            return '';
+        }
         // Check that all gaps have been filled in.
         $complete = $this->check_complete_answer($qa);
         if (!$complete) {
             return get_string('pleaseenterananswer', 'qtype_guessit');;
         }
-        $question = $qa->get_question();
-        $wordle = $question->wordle;
         $removespecificfeedback = $question->removespecificfeedback;
         $nbcorrect = $qa->get_question()->get_num_parts_right(
             $qa->get_last_qt_data()
@@ -234,40 +230,33 @@ class qtype_guessit_renderer extends qtype_renderer {
         if (($nbcorrect[0] === $nbcorrect[1]) && $removespecificfeedback == 1) {
             return '';
         }
+        // Go through all student responses.
+        $allresponses = $this->get_all_responses($qa);
+        $nbtries = count($allresponses);
         $prevtries = $qa->get_last_behaviour_var('_try', 0);
-        $studentanswers = array_values($qa->get_last_qt_data());
-
-        // Format the feedback to display.
-        $formattedfeedback = '<b>' . $prevtries . '- </b>';
-        $markupcode = '';
-        for ($index = 0; $index < count($this->correctresponses); $index++) {
-            if (!$wordle) {
-                $markupcode = $this->get_markup_string ($studentanswers[$index], $this->correctresponses[$index]);
-                if ($studentanswers[$index] === $this->correctresponses[$index]) {
+        $formattedfeedback = '';
+        for ($i = 0; $i < $nbtries; $i++) {
+            $studentanswers = array_values($allresponses[$i]);
+            // Format the feedback to display.
+            $formattedfeedback .= '<b>' . ($nbtries - $i)  . '- </b>';
+            $markupcode = '';
+            for ($index = 0; $index < count($this->correctresponses); $index++) {
+                $studentanswer = $studentanswers[$index];
+                $rightanswer = $this->correctresponses[$index];
+                $markupcode = $this->get_markup_string ($studentanswer, $rightanswer);
+                if ($studentanswer === $rightanswer) {
                     $colorclass = 'correct';
                     $markupcode = '';
-                } else if (preg_match('/^' . preg_quote($studentanswers[$index][0], '/') . '/i', $this->correctresponses[$index])) {
+                } else if (preg_match('/^' . preg_quote($studentanswer[0], '/') . '/i',
+                    $this->correctresponses[$index])) {
                         $colorclass = 'partiallycorrect';
                 } else {
                     $colorclass = 'incorrect';
                 }
-            } else {
-                $letterstate = $this->letterstates[$index];
-                switch ($letterstate) {
-                    case 2:
-                        $colorclass = 'correct';
-                        break;
-                    case 1:
-                        $colorclass = 'partiallycorrect';
-                        $this->nbmisplacedletters++;
-                        break;
-                    case 0:
-                        $colorclass = 'incorrect';
-                        break;
-                }
+                $formattedfeedback .= '<div class="specific-feedback input-wrapper '.$colorclass.'">'.
+                $studentanswer. '<span class="feedback-markup">'.$markupcode. '</span></div>';
             }
-            $formattedfeedback .= '<div class="specific-feedback input-wrapper '.$colorclass.'">'.
-            $studentanswers[$index]. '<span class="feedback-markup">'.$markupcode. '</span></div>';
+            $formattedfeedback  .= '<hr />';
         }
         return $formattedfeedback;
     }
@@ -412,7 +401,7 @@ class qtype_guessit_renderer extends qtype_renderer {
                 $cleanstudentletter = ''; // Default or fallback value.
             }
             // Logic to generate the markup.
-            if ($studentletter === $answerletter) {
+            if (($studentletter === $answerletter)) {
                 $markup .= $eq; // Exact match.
             } else if ($cleanstudentletter === $cleananswerletter) {
                 $markup .= $answerletter;
@@ -520,4 +509,24 @@ class qtype_guessit_renderer extends qtype_renderer {
         }
         return $marking;
     }
+
+    /**
+     * Retrieves all responses for a given question attempt.
+     *
+     * @param question_attempt $qa The question attempt object.
+     * @return array An array of responses, each with 'name' and 'value', ordered by sequence.
+     * @throws dml_exception If a database error occurs.
+     */
+    public function get_all_responses(question_attempt $qa) {
+        $responses = [];
+        foreach ($qa->get_reverse_step_iterator() as $step) {
+            if ($step->has_behaviour_var('submit') &&
+                    $step->get_state() != question_state::$invalid) {
+                $responses[] = $step->get_qt_data();
+            }
+        }
+        return $responses;
+    }
+
+
 }
