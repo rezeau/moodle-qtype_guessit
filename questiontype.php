@@ -22,9 +22,12 @@
  * @copyright  2024 Joseph Rézeau <moodle@rezeau.org>
  * @copyright  based on GapFill by 2018 Marcus Green <marcusavgreen@gmail.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
-
  */
+
 defined('MOODLE_INTERNAL') || die();
+global $CFG;
+require_once($CFG->libdir . '/questionlib.php');
+require_once($CFG->dirroot . '/question/engine/lib.php');
 
 /**
  *
@@ -33,7 +36,8 @@ defined('MOODLE_INTERNAL') || die();
  * Load from database, and initialise class
  * A "fill in the gaps" cloze style question type
  * @package    qtype_guessit
- * @copyright  2018 Marcus Green
+ * @copyright  2024 Joseph Rézeau <moodle@rezeau.org>
+ * @copyright  based on GapFill by 2018 Marcus Green <marcusavgreen@gmail.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class qtype_guessit extends question_type {
@@ -121,11 +125,16 @@ class qtype_guessit extends question_type {
     }
 
     /**
-     * Sets the default mark as 1* the number of gaps
-     * Does not allow setting any other value per space/field at the moment
-     * @param stdClass $question
-     * @param \stdClass $form
-     * @return object
+     * Saves the question with gap-based default marks.
+     *
+     * Calculates the number of gaps from the form data and sets the
+     * default mark accordingly. Delegates the saving process to the
+     * parent `save_question` method.
+     *
+     * @param stdClass $question The question data to save.
+     * @param stdClass $form     The form data containing user input.
+     *
+     * @return mixed The result from the parent `save_question` method.
      */
     public function save_question($question, $form) {
         $gaps = $this->get_gaps($form->guessitgaps, $form->wordle);
@@ -141,8 +150,8 @@ class qtype_guessit extends question_type {
     /**
      * it really does need to be static
      *
-     * @param string $delimitchars
-     * @param string $questiontext
+     * @param string $guessitgaps
+     * @param int $wordle
      * @return array
      */
     public static function get_gaps($guessitgaps, $wordle) {
@@ -156,19 +165,16 @@ class qtype_guessit extends question_type {
     }
 
     /**
-     * Save the answers and optionsassociated with this question.
+     * Save the answers and options associated with this question.
      * @param stdClass $question
      * @return boolean to indicate success or failure.
      **/
     public function save_question_options($question) {
         /* Save the extra data to your database tables from the
           $question object, which has all the post data from editquestion.html */
-
-        $gaps = $this->get_gaps($question->guessitgaps, $question->wordle);
-        /* answerwords are the text within gaps */
-        $answerfields = $this->get_answer_fields($gaps, $question);
         global $DB;
-
+        $gaps = $this->get_gaps($question->guessitgaps, $question->wordle);
+        $answerfields = $this->get_answer_fields($gaps, $question);
         $context = $question->context;
         // Fetch old answer ids so that we can reuse them.
         $this->update_question_answers($question, $answerfields);
@@ -250,35 +256,22 @@ class qtype_guessit extends question_type {
 
     /**
      * Set up all the answer fields with respective fraction (mark values)
-     * This is used to update the question_answers table. Answerwords has
-     * been pulled from within the delimitchars e.g. the cat within [cat]
-     * Wronganswers (distractors) has been pulled from a comma delimited edit
-     * form field
+     * This is used to update the question_answers table.
      *
      * @param array $answerwords
      * @param stdClass $question
      * @return  array
      */
     public function get_answer_fields(array $answerwords, $question) {
-        /* this code runs both on saving from a form and from importing and needs
-         * improving as it mixes pulling information from the question object which
-         * comes from the import and from $question->wronganswers field which
-         * comes from the question_editing form.
-         */
+        /* This code runs both on saving from a form and from importing. */
         $answerfields = [];
         /* this next block runs when importing from xml */
         if (property_exists($question, 'answer')) {
             foreach ($question->answer as $key => $value) {
-                if ($question->fraction[$key] == 0) {
-                    $answerfields[$key]['value'] = $question->answer[$key];
-                    $answerfields[$key]['fraction'] = 0;
-                } else {
-                    $answerfields[$key]['value'] = $question->answer[$key];
-                    $answerfields[$key]['fraction'] = 1;
-                }
+                $answerfields[$key]['value'] = $question->answer[$key];
+                $answerfields[$key]['fraction'] = 1;
             }
         }
-
         /* the rest of this function runs when saving from edit form */
         if (!property_exists($question, 'answer')) {
             foreach ($answerwords as $key => $value) {

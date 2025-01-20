@@ -39,24 +39,10 @@ class qtype_guessit_renderer extends qtype_renderer {
     public $letterstates = '';
 
     /**
-     * Lists all the correct answers in the question.
-     * @var array
-     */
-    public $rightanswers = [];
-
-    /**
      * Used in wordle option: stores the number of nbmisplacedletters
      * @var int
      */
-    public $nbmisplacedletters;
-
-    /**
-     * all the options that controls how a question is displayed
-     * more about the question engine than this specific question type
-     *
-     * @var all the options that control how a question is displayed
-     */
-    public $displayoptions;
+    public $nbmisplacedletters = 0;
 
     /**
      * Generate the display of the formulation part of the question shown at runtime
@@ -67,7 +53,6 @@ class qtype_guessit_renderer extends qtype_renderer {
      * @return string HTML fragment.
      */
     public function formulation_and_controls(question_attempt $qa, question_display_options $options) {
-        $this->displayoptions = $options;
         $question = $qa->get_question();
         $questiontext = $question->questiontext;
         $answers = $question->answers;
@@ -81,7 +66,7 @@ class qtype_guessit_renderer extends qtype_renderer {
 
         foreach ($question->answers as $answer) {
             $rightanswer = $answer->answer;
-            array_push($this->rightanswers, $rightanswer);
+            array_push($this->correctresponses, $rightanswer);
         }
         if ($wordle) {
             $nbmaxtrieswordle = $question->nbmaxtrieswordle;
@@ -95,7 +80,7 @@ class qtype_guessit_renderer extends qtype_renderer {
             } else {
                 $studentresponse = $qa->get_last_qt_data();
                 $studentletters = '';
-                $rightletters = implode('', $this->rightanswers);
+                $rightletters = implode('', $this->correctresponses);
                 foreach ($studentresponse as $answer) {
                     $studentletters .= $answer;
                 }
@@ -129,6 +114,7 @@ class qtype_guessit_renderer extends qtype_renderer {
      * @param question_attempt $qa
      * @param number $place
      * @param question_display_options $options
+     * @param int $wordlemaxreached
      * @return string
      */
     public function embedded_element(question_attempt $qa, $place, question_display_options $options, $wordlemaxreached) {
@@ -208,11 +194,7 @@ class qtype_guessit_renderer extends qtype_renderer {
             'id' => $inputname,
             'size' => $size,
         ];
-        /* When previewing after a quiz is complete */
-        if ($options->readonly) {
-            $readonly = ['disabled' => 'true'];
-            $inputattributes = array_merge($inputattributes, $readonly);
-        }
+
         // Only use autogrowinput if gapsizedisplay is set to gapsizegrow.
         $autogrowinput = '';
         if ($question->gapsizedisplay === 'gapsizegrow') {
@@ -258,13 +240,13 @@ class qtype_guessit_renderer extends qtype_renderer {
         // Format the feedback to display.
         $formattedfeedback = '<b>' . $prevtries . '- </b>';
         $markupcode = '';
-        for ($index = 0; $index < count($this->rightanswers); $index++) {
+        for ($index = 0; $index < count($this->correctresponses); $index++) {
             if (!$wordle) {
-                $markupcode = $this->get_markup_string ($studentanswers[$index], $this->rightanswers[$index]);
-                if ($studentanswers[$index] === $this->rightanswers[$index]) {
+                $markupcode = $this->get_markup_string ($studentanswers[$index], $this->correctresponses[$index]);
+                if ($studentanswers[$index] === $this->correctresponses[$index]) {
                     $colorclass = 'correct';
                     $markupcode = '';
-                } else if (preg_match('/^' . preg_quote($studentanswers[$index][0], '/') . '/i', $this->rightanswers[$index])) {
+                } else if (preg_match('/^' . preg_quote($studentanswers[$index][0], '/') . '/i', $this->correctresponses[$index])) {
                         $colorclass = 'partiallycorrect';
                 } else {
                     $colorclass = 'incorrect';
