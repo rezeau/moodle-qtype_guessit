@@ -86,6 +86,7 @@ class qtype_guessit_renderer extends qtype_renderer {
                 }
                 if ($studentletters !== '' && $complete) {
                     $this->letterstates = $this->get_wordle_letter_states($rightletters, $studentletters);
+                    $this->nbmisplacedletters = substr_count($this->letterstates, '1');
                 }
             }
         }
@@ -529,10 +530,17 @@ class qtype_guessit_renderer extends qtype_renderer {
      */
     public function get_all_responses(question_attempt $qa) {
         $responses = [];
+        $prevtries = $qa->get_last_behaviour_var('_try', 0);
         foreach ($qa->get_reverse_step_iterator() as $step) {
-            if ($step->has_behaviour_var('submit') &&
-                    $step->get_state() != question_state::$invalid) {
+            if ($step->has_behaviour_var('submit') && $step->get_state() != question_state::$invalid) {
                 $responses[] = $step->get_qt_data();
+            }
+        }
+        // This is needed, don't know why.
+        if ($prevtries === 1) {
+            // Sort each inner array by its keys
+            foreach ($responses as &$innerArray) {
+                ksort($innerArray);
             }
         }
         return $responses;
