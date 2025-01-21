@@ -218,6 +218,13 @@ class qtype_guessit_renderer extends qtype_renderer {
         if ($question->wordle) {
             return '';
         }
+        // Try to find the last graded step.
+        $gradedstep = $this->get_graded_step($qa);
+        if ($gradedstep) {
+            if ($gradedstep->has_behaviour_var('helpme') ) {
+                $helptext = $this->get_extra_help($qa);
+            }
+        }
         // Check that all gaps have been filled in.
         $complete = $this->check_complete_answer($qa);
         if (!$complete) {
@@ -235,6 +242,9 @@ class qtype_guessit_renderer extends qtype_renderer {
         $nbtries = count($allresponses);
         $prevtries = $qa->get_last_behaviour_var('_try', 0);
         $formattedfeedback = '';
+        if ($helptext) {
+            $formattedfeedback .= '<div class="que guessit giveword">' . $helptext . '</div>';
+        }
         for ($i = 0; $i < $nbtries; $i++) {
             $studentanswers = array_values($allresponses[$i]);
             // Format the feedback to display.
@@ -528,5 +538,64 @@ class qtype_guessit_renderer extends qtype_renderer {
         return $responses;
     }
 
+    /**
+     * Get graded step.
+     * @param question_attempt $qa a question attempt.
+     */
+    protected function get_graded_step(question_attempt $qa) {
+        foreach ($qa->get_reverse_step_iterator() as $step) {
+            if ($step->has_behaviour_var('_try')) {
+                return $step;
+            }
+        }
+    }
+
+    /**
+     * Provides extra help if requested based on the number of tries.
+     *
+     * @param question_attempt $qa the question attempt to display.
+     * @return string The extra help content or a message indicating remaining tries.
+     */
+    public function get_extra_help(question_attempt $qa) {
+        // Try to find the last graded step.
+        $question = $qa->get_question();
+        $nbtriesbeforehelp = $question->nbtriesbeforehelp;
+        $wordle = $question->wordle;
+        $nbmaxtrieswordle = $question->nbmaxtrieswordle;
+        $prevtries = $qa->get_last_behaviour_var('_try', 0);
+        $output = '';
+        $gradedstep = $this->get_graded_step($qa);
+        $prevstep = $qa->get_last_step_with_behaviour_var('_try');
+        $prevresponse = $prevstep->get_qt_data();
+        if ($prevtries >= $nbtriesbeforehelp) {
+            $isstateimprovable = $qa->get_behaviour()->is_state_improvable($qa->get_state());
+            if (is_null($gradedstep) || !$gradedstep->has_behaviour_var('helpme')) {
+                return '';
+            }
+            $answersarray = $question->answers;
+            $answerlist = '';
+            $counter = 1; // Start counter from 0.
+            $nbanswers = count($answersarray);
+            foreach ($answersarray as $key => $rightansweer) {
+                if ($rightansweer->answer !== $prevresponse['p' . $counter] ) {
+                    $answerlist .= '<b>' . $rightansweer->answer . '</b> ';
+                    break;
+                } else {
+                    $answerlist .= $rightansweer->answer . ' ';
+                }
+                $counter++;
+            }
+            // Trim any extra whitespace at the end.
+            $answerlist = trim($answerlist);
+            $output .= '<span class="que guessit giveword">' . $answerlist . '</span>';
+            return $output;
+        }
+        $triesleft = $nbtriesbeforehelp - $prevtries;
+        if ($triesleft > 1) {
+            return get_string('moretries', 'qtype_guessit', $triesleft);
+        } else {
+            return get_string('moretry', 'qtype_guessit', $triesleft);
+        }
+    }
 
 }

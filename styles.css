@@ -85,15 +85,7 @@
   color: #00f!important;
   font-family: 'Roboto Mono','Lucida Console',Courier,monospace;
   font-size: 1.2em;
-}
-
-.que.guessit .im-feedback {
-  font-size: 1.2em;
-  background-color: #f0f8ff;  
-  padding-top: 5px;
-  padding-bottom: 5px;
-  margin-left: -5px;
-  padding-left: 10px;
+  margin: inherit;
 }
 
 .que.guessit .formulation {
