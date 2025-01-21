@@ -109,6 +109,38 @@ class qtype_guessit_renderer extends qtype_renderer {
         return $output;
     }
 
+
+    /**
+     * Get feedback.
+     *
+     * @param question_attempt $qa the question attempt to display.
+     * @param question_display_options $options controls what should and should not be displayed.
+     * @return string HTML fragment.
+     */
+    public function feedback(question_attempt $qa, question_display_options $options): string {
+        $result = '';
+        if ($options->numpartscorrect) {
+            $result .= html_writer::nonempty_tag('div', $this->num_parts_correct($qa),
+                    ['class' => 'numpartscorrect']);
+        }
+
+        // Try to find the last graded step.
+        $gradedstep = $this->get_graded_step($qa);
+        if ($gradedstep) {
+            if ($gradedstep->has_behaviour_var('helpme') ) {
+                $helptext = $this->get_extra_help($qa);
+            }
+            $result .= '<div class="que guessit giveword">' . $helptext . '</div>';
+        }
+        /// todo check class
+        if ($options->feedback) {
+            $result .= html_writer::nonempty_tag('div', $this->specific_feedback($qa),
+                    ['class' => 'specificfeedback']);
+        }
+
+        return $result;
+    }
+
     /**
      * Construct the gaps, e.g. textentry and set the state accordingly
      *
@@ -155,8 +187,28 @@ class qtype_guessit_renderer extends qtype_renderer {
                     $inputclass = '';
                 } else if ($studentanswer === $rightanswer) {
                         $inputclass = 'correct';
-                } else if (preg_match('/^' . preg_quote($studentanswer[0], '/') . '/i', $rightanswer)) {
+                } else if (preg_match('/^' . preg_quote($studentanswer[0], '/') . '/i', $rightanswer, $matches)) {
                         $inputclass = 'partiallycorrect';
+                    $matches = [];
+                    // Start with an empty pattern
+                    $pattern = '/^';
+                    // Build the regex pattern to match the common prefix
+                    for ($i = 0; $i < min(strlen($rightanswer), strlen($studentanswer)); $i++) {
+                        if ($rightanswer[$i] === $studentanswer[$i]) {
+                            $pattern .= preg_quote($rightanswer[$i], '/');
+                        } else {
+                            break; // Stop when characters no longer match
+                        }
+                    }
+                    $pattern .= '/';
+                    // Use preg_match to find the common prefix
+                    preg_match($pattern, $rightanswer, $matches);
+                    // Set $studentanswer to first correct letters.
+                    /// todo check this
+                    echo '$matches[0] = ' . $matches[0] . ' $studentanswer = ' . $studentanswer;
+                    if ($matches[0] !== '') {
+                        $studentanswer = $matches[0];
+                    }
                 } else {
                     $inputclass = 'incorrect';
                 }
@@ -219,13 +271,6 @@ class qtype_guessit_renderer extends qtype_renderer {
         if ($question->wordle) {
             return '';
         }
-        // Try to find the last graded step.
-        $gradedstep = $this->get_graded_step($qa);
-        if ($gradedstep) {
-            if ($gradedstep->has_behaviour_var('helpme') ) {
-                $helptext = $this->get_extra_help($qa);
-            }
-        }
         // Check that all gaps have been filled in.
         $complete = $this->check_complete_answer($qa);
         if (!$complete) {
@@ -243,9 +288,7 @@ class qtype_guessit_renderer extends qtype_renderer {
         $nbtries = count($allresponses);
         $prevtries = $qa->get_last_behaviour_var('_try', 0);
         $formattedfeedback = '';
-        if ($helptext) {
-            $formattedfeedback .= '<div class="que guessit giveword">' . $helptext . '</div>';
-        }
+        
         for ($i = 0; $i < $nbtries; $i++) {
             $studentanswers = array_values($allresponses[$i]);
             // Format the feedback to display.

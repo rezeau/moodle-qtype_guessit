@@ -30,6 +30,9 @@
  * Initialize the input gaps functionalities.
  */
 export function init() {
+    /* eslint-disable no-unused-vars */
+    /* eslint-disable no-unused-vars */
+    /* eslint-disable no-console */
 
     // Make correctly filled in gaps readonly
     const correctGaps = document.querySelectorAll('input.correct');
@@ -49,18 +52,31 @@ export function init() {
                     // Only move to the next gap if the current one is not empty
                     if (element.value.trim() !== '') {
                         let nextIndex = index + 1;
-                    // Skip over any gaps with class "correct"
-                    while (nextIndex < gaps.length && gaps[nextIndex].classList.contains('correct')) {
-                        nextIndex++;
-                    }
-                    if (nextIndex < gaps.length) {
-                        // Move to the next non-"correct" gap
-                        gaps[nextIndex].focus();
+                        // Skip over any gaps with class "correct"
+                        while (nextIndex < gaps.length && gaps[nextIndex].classList.contains('correct')) {
+                            nextIndex++;
+                        }
+                        if (nextIndex < gaps.length) {
+                            // Move to the next non-"correct" gap
+                            var nextGap = gaps[nextIndex];
+                            nextGap.focus();
+                            var length = nextGap.value.length;
+                            nextGap.setSelectionRange(length, length);
+                            if (gaps[nextIndex].classList.contains('incorrect') ) {
+                                gaps[nextIndex].value = '';
+                                gaps[nextIndex].classList.remove('incorrect');
+                            }
                         } else if (checkButton) {
                             // If it's the last gap in the question, move focus to the "Check" button
                             checkButton.focus();
                         }
                     }
+                }
+            });
+            element.addEventListener("click", () => {
+                if (element.classList.contains('incorrect')) {
+                    element.value = ''; // Empty the incorrect gap value on click
+                    element.classList.remove('incorrect'); // And remove the incorrect class
                 }
             });
             if (element.classList.contains('auto-grow-input')) {
