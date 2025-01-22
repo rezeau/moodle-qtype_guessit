@@ -99,3 +99,8 @@
   margin-top: 2px;
   margin-bottom: 2px;
 }
+
+.que.guessit .numpartscorrect {
+    color: blue;
+    margin-bottom: 0.8em;
+}

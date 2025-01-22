@@ -113,7 +113,7 @@ class qtype_guessit_renderer extends qtype_renderer {
 
 
     /**
-     * Get feedback.
+     * Get feedback. We over-ride the default question feedback display to arrange its elements as we want.
      *
      * @param question_attempt $qa the question attempt to display.
      * @param question_display_options $options controls what should and should not be displayed.
@@ -121,18 +121,23 @@ class qtype_guessit_renderer extends qtype_renderer {
      */
     public function feedback(question_attempt $qa, question_display_options $options): string {
         $result = '';
-        if ($options->numpartscorrect) {
-            $result .= html_writer::nonempty_tag('div', $this->num_parts_correct($qa),
-                    ['class' => 'numpartscorrect']);
-        }
 
+        // Display Help messages if exist.
         // Try to find the last graded step.
         $gradedstep = $this->get_graded_step($qa);
         if ($gradedstep) {
             if ($gradedstep->has_behaviour_var('helpme') ) {
                 $helptext = $this->get_extra_help($qa);
             }
-            $result .= '<div class="que guessit giveword">' . $helptext . '</div>';
+            if ($helptext != '') {
+                echo '$helptext = |' . $helptext . '|';
+                $result .= '<div class="que guessit giveword">' . $helptext . '</div>';
+            }
+        }
+
+        if ($options->numpartscorrect) {
+            $result .= html_writer::nonempty_tag('div', $this->num_parts_correct($qa),
+                    ['class' => 'numpartscorrect']);
         }
 
         if ($options->feedback) {
@@ -338,7 +343,7 @@ class qtype_guessit_renderer extends qtype_renderer {
         $question = $qa->get_question();
         $wordle = $question->wordle;
         $removespecificfeedback = $question->removespecificfeedback;
-        $formattxt = '<br><span class="que guessit giveword">';
+        $formattxt = '<span class="que guessit giveword">';
         $nbcorrect = $qa->get_question()->get_num_parts_right(
                 $qa->get_last_qt_data()
             );
