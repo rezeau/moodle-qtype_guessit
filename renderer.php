@@ -103,7 +103,9 @@ class qtype_guessit_renderer extends qtype_renderer {
             $this->page->requires->js_call_amd('qtype_guessit/gapsnavigation', 'init');
         }
         $output = "";
-        $output .= $questiontext;
+        // This is needed to display images or media etc.
+        $output = $question->format_text($questiontext, $question->questiontextformat,
+                $qa, 'question', 'questiontext', $question->id);
         $output = html_writer::tag('div', $output, ['class' => 'qtext']);
         $output .= $trieslefttxt;
         return $output;
@@ -132,12 +134,16 @@ class qtype_guessit_renderer extends qtype_renderer {
             }
             $result .= '<div class="que guessit giveword">' . $helptext . '</div>';
         }
-        /// todo check class
+
         if ($options->feedback) {
             $result .= html_writer::nonempty_tag('div', $this->specific_feedback($qa),
                     ['class' => 'specificfeedback']);
         }
 
+        if ($options->generalfeedback) {
+            $result .= html_writer::nonempty_tag('div', $this->general_feedback($qa),
+                    ['class' => 'generalfeedback']);
+        }
         return $result;
     }
 
@@ -188,27 +194,28 @@ class qtype_guessit_renderer extends qtype_renderer {
                 } else if ($studentanswer === $rightanswer) {
                         $inputclass = 'correct';
                 } else if (preg_match('/^' . preg_quote($studentanswer[0], '/') . '/i', $rightanswer, $matches)) {
-                        $inputclass = 'partiallycorrect';
-                    $matches = [];
-                    // Start with an empty pattern
-                    $pattern = '/^';
-                    // Build the regex pattern to match the common prefix
+                    $inputclass = 'partiallycorrect';
+                    $newanswer = '';
+                    $foundcasedifference = false; // Flag to stop at the first case mismatch.
+                    // Loop through each character and compare.
                     for ($i = 0; $i < min(strlen($rightanswer), strlen($studentanswer)); $i++) {
-                        if ($rightanswer[$i] === $studentanswer[$i]) {
-                            $pattern .= preg_quote($rightanswer[$i], '/');
+                        // Check if letters are the same (case-insensitive).
+                        if (strtolower($rightanswer[$i]) === strtolower($studentanswer[$i])) {
+                            if ($rightanswer[$i] === $studentanswer[$i]) {
+                                // Append to $newanswer if both letter and case match.
+                                $newanswer .= $rightanswer[$i];
+                            } else if (!$foundcasedifference) {
+                                // If case is different, append the first mismatched letter and stop.
+                                $newanswer = $rightanswer[$i];
+                                $foundcasedifference = true;
+                                break;
+                            }
                         } else {
-                            break; // Stop when characters no longer match
+                            // Stop when letters are different.
+                            break;
                         }
                     }
-                    $pattern .= '/';
-                    // Use preg_match to find the common prefix
-                    preg_match($pattern, $rightanswer, $matches);
-                    // Set $studentanswer to first correct letters.
-                    /// todo check this
-                    echo '$matches[0] = ' . $matches[0] . ' $studentanswer = ' . $studentanswer;
-                    if ($matches[0] !== '') {
-                        $studentanswer = $matches[0];
-                    }
+                    $studentanswer = $newanswer;
                 } else {
                     $inputclass = 'incorrect';
                 }
@@ -288,7 +295,7 @@ class qtype_guessit_renderer extends qtype_renderer {
         $nbtries = count($allresponses);
         $prevtries = $qa->get_last_behaviour_var('_try', 0);
         $formattedfeedback = '';
-        
+
         for ($i = 0; $i < $nbtries; $i++) {
             $studentanswers = array_values($allresponses[$i]);
             // Format the feedback to display.
@@ -581,9 +588,9 @@ class qtype_guessit_renderer extends qtype_renderer {
         }
         // This is needed, don't know why.
         if ($prevtries === 1) {
-            // Sort each inner array by its keys
-            foreach ($responses as &$innerArray) {
-                ksort($innerArray);
+            // Sort each inner array by its keys.
+            foreach ($responses as &$innerarray) {
+                ksort($innerarray);
             }
         }
         return $responses;

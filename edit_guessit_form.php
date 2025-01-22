@@ -51,12 +51,9 @@ class qtype_guessit_edit_form extends question_edit_form {
      */
     protected function definition_inner($mform) {
         global $CFG, $OUTPUT, $SESSION;
-        $mform = $this->form_setup($mform);
-
-        $mform->addElement('html', '<div id="questiontext" >');
+        $mform->removeelement('questiontext');
         $mform->addElement('editor', 'questiontext', get_string('instructions', 'qtype_guessit'), ['rows' => 10],
                 $this->editoroptions);
-        $mform->addElement('html', '</div>');
 
         $mform->setType('questiontext', PARAM_RAW);
         $mform->addHelpButton('questiontext', 'instructions', 'qtype_guessit');
@@ -133,16 +130,6 @@ class qtype_guessit_edit_form extends question_edit_form {
         /* Remove specific feedback once all gaps correctly filled in. */
         $mform->addElement('advcheckbox', 'removespecificfeedback', get_string('removespecificfeedback', 'qtype_guessit'));
         $mform->addHelpButton('removespecificfeedback', 'removespecificfeedback', 'qtype_guessit');
-    }
-    /**
-     * Setup form elements that are very unlikely to change
-     *
-     * @param MoodleQuickForm $mform
-     * @return MoodleQuickForm
-     */
-    protected function form_setup(MoodleQuickForm $mform): MoodleQuickForm {
-        $mform->removeelement('questiontext');
-        return $mform;
     }
 
     /**
