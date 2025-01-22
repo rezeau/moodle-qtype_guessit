@@ -40,14 +40,20 @@ export function init() {
       input.readOnly  = true; // Make the input readonly.
       input.style.cursor = "not-allowed"; // Set the cursor style.
     });
-    document.querySelectorAll('[id^="question-"]').forEach(question => {
-        const gaps = question.querySelectorAll('input[type="text"][name*="p"]');
-        const checkButton = question.querySelector('button[type="submit"].submit');
 
+    // Control keyboard navigation in the gaps
+    document.querySelectorAll('[id^="question-"]').forEach(question => {
+        // Get the list of all the guessit gaps in current question
+        const gaps = question.querySelectorAll('input[type="text"][name*="p"]');
+        // Get the ID of current Check button
+        const checkButton = question.querySelector('button[type="submit"].submit');
+        // Add event listeners to all gaps
+        // element is the current gap itself and index is its index/rank in the gaps list
         gaps.forEach((element, index) => {
-            // Prevent space from being entered and conditionally move focus
             element.addEventListener("keydown", (event) => {
+                // If space or tab keys are pressed do these actions
                 if (event.key === ' ' || (event.key === 'Tab' && !event.shiftKey)) {
+                    // Prevent default behaviour of pressed keys
                     event.preventDefault();
                     // Only move to the next gap if the current one is not empty
                     if (element.value.trim() !== '') {
@@ -61,6 +67,7 @@ export function init() {
                             var nextGap = gaps[nextIndex];
                             nextGap.focus();
                             var length = nextGap.value.length;
+                            // Set caret at the end of the gap contents (value)
                             nextGap.setSelectionRange(length, length);
                             if (gaps[nextIndex].classList.contains('incorrect') ) {
                                 gaps[nextIndex].value = '';
@@ -72,13 +79,34 @@ export function init() {
                         }
                     }
                 }
+                // If shift and tab keys are pressed do these actions
+                if (event.key === 'Tab' && event.shiftKey) {
+                    // Prevent default behaviour of pressed keys
+                    event.preventDefault();
+                    let prevIndex = index - 1;
+                        // Skip over any gaps with class "correct"
+                        while (prevIndex !== -1 && gaps[prevIndex].classList.contains('correct')) {
+                            prevIndex--;
+                        }
+                        if (prevIndex !== -1) {
+                            // Move to the next non-"correct" gap
+                            var prevGap = gaps[prevIndex];
+                            prevGap.focus();
+                            if (gaps[prevIndex].classList.contains('incorrect') ) {
+                                gaps[prevIndex].value = '';
+                                gaps[prevIndex].classList.remove('incorrect');
+                            }
+                        }
+                }
             });
+
             element.addEventListener("click", () => {
                 if (element.classList.contains('incorrect')) {
                     element.value = ''; // Empty the incorrect gap value on click
                     element.classList.remove('incorrect'); // And remove the incorrect class
                 }
             });
+
             if (element.classList.contains('auto-grow-input')) {
                 // Enable the input fields auto-grow feature (if set in the question options)
                 element.addEventListener("input", function () {
