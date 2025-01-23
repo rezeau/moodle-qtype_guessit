@@ -125,12 +125,12 @@ class qtype_guessit_renderer extends qtype_renderer {
         // Display Help messages if exist.
         // Try to find the last graded step.
         $gradedstep = $this->get_graded_step($qa);
+        $helptext = '';
         if ($gradedstep) {
             if ($gradedstep->has_behaviour_var('helpme') ) {
                 $helptext = $this->get_extra_help($qa);
             }
             if ($helptext != '') {
-                echo '$helptext = |' . $helptext . '|';
                 $result .= '<div class="que guessit giveword">' . $helptext . '</div>';
             }
         }

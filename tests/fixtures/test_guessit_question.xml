@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<quiz>
+<!-- question: 835  -->
+  <question type="guessit">
+    <name>
+      <text>Guessit001</text>
+    </name>
+    <questiontext format="html">
+      <text><![CDATA[<p>Guess an English proverb</p>]]></text>
+    </questiontext>
+    <generalfeedback format="html">
+      <text></text>
+    </generalfeedback>
+    <defaultgrade>6</defaultgrade>
+    <penalty>0</penalty>
+    <hidden>0</hidden>
+    <idnumber></idnumber>
+    <guessitgaps>Too many cooks spoil the broth.</guessitgaps>
+    <gapsizedisplay>gapsizegrow</gapsizedisplay>
+    <nbtriesbeforehelp>6</nbtriesbeforehelp>
+    <nbmaxtrieswordle>0</nbmaxtrieswordle>
+    <removespecificfeedback>1</removespecificfeedback>
+    <wordle>0</wordle>
+    <answer fraction="100" format="moodle_auto_format">
+      <text>Too</text>
+      <feedback format="moodle_auto_format">
+        <text></text>
+      </feedback>
+    </answer>
+    <answer fraction="100" format="moodle_auto_format">
+      <text>many</text>
+      <feedback format="moodle_auto_format">
+        <text></text>
+      </feedback>
+    </answer>
+    <answer fraction="100" format="moodle_auto_format">
+      <text>cooks</text>
+      <feedback format="moodle_auto_format">
+        <text></text>
+      </feedback>
+    </answer>
+    <answer fraction="100" format="moodle_auto_format">
+      <text>spoil</text>
+      <feedback format="moodle_auto_format">
+        <text></text>
+      </feedback>
+    </answer>
+    <answer fraction="100" format="moodle_auto_format">
+      <text>the</text>
+      <feedback format="moodle_auto_format">
+        <text></text>
+      </feedback>
+    </answer>
+    <answer fraction="100" format="moodle_auto_format">
+      <text>broth.</text>
+      <feedback format="moodle_auto_format">
+        <text></text>
+      </feedback>
+    </answer>
+    <guessitgaps>Too many cooks spoil the broth.</guessitgaps>
+    <gapsizedisplay>gapsizegrow</gapsizedisplay>
+    <nbtriesbeforehelp>6</nbtriesbeforehelp>
+    <nbmaxtrieswordle>0</nbmaxtrieswordle>
+    <removespecificfeedback>1</removespecificfeedback>
+    <wordle>0</wordle>
+    <!-- guessit release:1.0 version:2025012101 Moodle version:2024100701.04 release:4.5.1+ (Build: 20250103) -->
+  </question>
+
+</quiz>
