@@ -70,17 +70,13 @@ export function init() {//**
                     event.preventDefault(); // Prevent any other characters
                 }
             });
-            // Listen for keydown to capture the key press and keyup to move focus
-            element.addEventListener("keydown", (event) => {
-                // Allow default action to let the letter be typed
-                if ((event.which >= 65 && event.which <= 90) || (event.which >= 97 && event.which <= 122)) {
-                    // Letter will be typed by default, no need to prevent it here
-                }
-            });
-
             element.addEventListener("keyup", (event) => {
                 // After the letter has been typed, move to the next input
-                if ((event.key === 'Tab' || event.which >= 65 && event.which <= 90) || (event.which >= 97 && event.which <= 122)) {
+                // But do not move if tab has been pressed
+                if ((event.which >= 65 && event.which <= 90)
+                        || (event.which >= 97 && event.which <= 122)
+                        && event.which ==! 9 // Tab key
+                        && (element.value.length !== 0)) {
                     let nextIndex = index + 1;
 
                     // Skip over any gaps with class "correct"
@@ -102,7 +98,6 @@ export function init() {//**
                 }
             });
             element.addEventListener("input", function () {
-                    console.log('element.value ' + element.value);
                     element.value = element.value.toUpperCase();
             });
         });
