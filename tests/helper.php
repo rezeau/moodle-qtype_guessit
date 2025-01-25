@@ -52,14 +52,14 @@ class qtype_guessit_test_helper extends question_test_helper {
         $id = 1;
         foreach ($answerwords as $key => $answer) {
             $id++;
-            $answers[$key] = (object) array(
+            $answers[$key] = (object) [
                 'question' => '163',
                 'answer' => $answer,
                 'fraction' => '1',
                 'feedback' => 'Feedback text',
                 'feedbackformat' => '1',
                 'id' => $id,
-            );
+            ];
         }
 
         $fromform = (object) [
@@ -113,14 +113,14 @@ class qtype_guessit_test_helper extends question_test_helper {
         $id = 1;
         foreach ($answerwords as $key => $answer) {
             $id++;
-            $answers[$key] = (object) array(
+            $answers[$key] = (object) [
                 'question' => '999',
                 'answer' => $answer,
                 'fraction' => '1',
                 'feedback' => 'Feedback text',
                 'feedbackformat' => '1',
                 'id' => $id,
-            );
+            ];
         }
 
         $fromform = (object) [

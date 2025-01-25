@@ -44,6 +44,7 @@ class qtype_guessit_renderer extends qtype_renderer {
      */
     public $nbmisplacedletters = 0;
 
+
     /**
      * Generate the display of the formulation part of the question shown at runtime
      * in a quiz.  This is the area that contains the question text with gaps.
@@ -58,7 +59,6 @@ class qtype_guessit_renderer extends qtype_renderer {
         $answers = $question->answers;
         $nbanswers = count($answers);
         $wordle = $question->wordle;
-        $wordlemaxreached = 0;
         $trieslefttxt = '';
 
         // Check that all gaps have been filled in.
@@ -70,30 +70,23 @@ class qtype_guessit_renderer extends qtype_renderer {
         }
         if ($wordle) {
             $nbmaxtrieswordle = $question->nbmaxtrieswordle;
-            $prevtries = $qa->get_last_behaviour_var('_try', 0);
-            $wordlemaxreached = ($prevtries === $nbmaxtrieswordle);
+            ///$prevtries = $qa->get_last_behaviour_var('_try', 0);
             // Display nb tries left when starting a new wordle.
-            if ($prevtries === 0) {
-                $startingtriesleft = $nbmaxtrieswordle;
-                $trieslefttxt = '<span class="que guessit giveword">';
-                $trieslefttxt .= get_string('nbtriesleft_plural', 'qtype_guessit', $nbmaxtrieswordle);
-            } else {
-                $studentresponse = $qa->get_last_qt_data();
-                $studentletters = '';
-                $rightletters = implode('', $this->correctresponses);
-                foreach ($studentresponse as $answer) {
-                    $studentletters .= $answer;
-                }
-                if ($studentletters !== '' && $complete) {
-                    $this->letterstates = $this->get_wordle_letter_states($rightletters, $studentletters);
-                    $this->nbmisplacedletters = substr_count($this->letterstates, '1');
-                }
+            $studentresponse = $qa->get_last_qt_data();
+            $studentletters = '';
+            $rightletters = implode('', $this->correctresponses);
+            foreach ($studentresponse as $answer) {
+                $studentletters .= $answer;
+            }
+            if ($studentletters !== '' && $complete) {
+                $this->letterstates = $this->get_wordle_letter_states($rightletters, $studentletters);
+                $this->nbmisplacedletters = substr_count($this->letterstates, '1');
             }
         }
         $count = 1;
         foreach ($question->answers as $answer) {
             $questiontext .= '<div class="input-wrapper">';
-                $questiontext .= $this->embedded_element($qa, $count, $options, $wordlemaxreached);
+                $questiontext .= $this->embedded_element($qa, $count, $options);
                 $questiontext .= '</div>' . ' ';
             $count++;
         }
@@ -121,7 +114,12 @@ class qtype_guessit_renderer extends qtype_renderer {
      */
     public function feedback(question_attempt $qa, question_display_options $options): string {
         $result = '';
-
+        /*
+        $removespecificfeedback = $question->removespecificfeedback;
+        if ($removespecificfeedback) {
+            return;
+        }
+        */
         // Display Help messages if exist.
         // Try to find the last graded step.
         $gradedstep = $this->get_graded_step($qa);
@@ -158,10 +156,9 @@ class qtype_guessit_renderer extends qtype_renderer {
      * @param question_attempt $qa
      * @param number $place
      * @param question_display_options $options
-     * @param int $wordlemaxreached
      * @return string
      */
-    public function embedded_element(question_attempt $qa, $place, question_display_options $options, $wordlemaxreached) {
+    public function embedded_element(question_attempt $qa, $place, question_display_options $options) {
         /* fraction is the mark associated with this field, always 1 or 0 for this question type */
         /** @var \qtype_guessit_question $question */
         $question = $qa->get_question();
@@ -236,7 +233,6 @@ class qtype_guessit_renderer extends qtype_renderer {
                 }
             }
         }
-
         $qprefix = $qa->get_qt_field_name('');
         $inputname = $qprefix . 'p' . $place;
         $inputattributes = [
@@ -246,6 +242,15 @@ class qtype_guessit_renderer extends qtype_renderer {
             'id' => $inputname,
             'size' => $size,
         ];
+        // If wordle and maxtries reached, disable all input gaps.
+        $prevtries = $qa->get_last_behaviour_var('_try', 0);
+        $gradedstep = $this->get_graded_step($qa);
+        if ($wordle && $prevtries !== 0) {
+            $prevtries = $qa->get_last_behaviour_var('_try', 0);
+            if ($gradedstep->has_behaviour_var('_maxtriesreached', 1) ) {
+                $inputattributes['disabled'] = 'disabled';
+            }
+        }
 
         // Only use autogrowinput if gapsizedisplay is set to gapsizegrow.
         $autogrowinput = '';
@@ -292,7 +297,7 @@ class qtype_guessit_renderer extends qtype_renderer {
         // Go through all student responses.
         $allresponses = $this->get_all_responses($qa);
         $nbtries = count($allresponses);
-        $prevtries = $qa->get_last_behaviour_var('_try', 0);
+        ///$prevtries = $qa->get_last_behaviour_var('_try', 0);
         $formattedfeedback = '';
 
         for ($i = 0; $i < $nbtries; $i++) {
@@ -342,6 +347,9 @@ class qtype_guessit_renderer extends qtype_renderer {
                 $qa->get_last_qt_data()
             );
         $prevtries = $qa->get_last_behaviour_var('_try', 0);
+        if (($nbcorrect[0] === $nbcorrect[1]) && $removespecificfeedback == 1) {
+            return '';
+        }
         if ($nbcorrect[0] === $nbcorrect[1]) {
             $wordsfoundtxt = [
                 "wordfoundintry" => get_string('wordfoundintry', 'qtype_guessit'),
@@ -354,10 +362,11 @@ class qtype_guessit_renderer extends qtype_renderer {
                 if ($removespecificfeedback) {
                     return '';
                 }
+                $rightletters = implode('', $this->correctresponses);
                 if ($prevtries > 1) {
-                    return $formattxt . $wordsfoundtxt['wordfoundintries']. '</span>';
+                    return $formattxt . $wordsfoundtxt['wordfoundintries']. $rightletters. '</span>';
                 } else {
-                    return $formattxt . $wordsfoundtxt['wordfoundintry']. '</span>';
+                    return $formattxt . $wordsfoundtxt['wordfoundintry'].$rightletters. '</span>';
                 }
             } else {
                 if ($prevtries > 1) {
@@ -405,9 +414,7 @@ class qtype_guessit_renderer extends qtype_renderer {
                     $trieslefttxt .= get_string('nbtriesleft_singular', 'qtype_guessit');
                 }
             } else {
-                $rightletters = implode('', $this->correctresponses);            
-                ///echo $rightletters;
-                return $formattxt . get_string('wordnotfound', 'qtype_guessit', $prevtries) . $rightletters. '</div>';
+                return;
             }
             return get_string('yougotnlettersrightcount', 'qtype_guessit', $a) . $trieslefttxt;
         }
@@ -618,16 +625,13 @@ class qtype_guessit_renderer extends qtype_renderer {
     public function get_extra_help(question_attempt $qa) {
         // Try to find the last graded step.
         $question = $qa->get_question();
-        $nbtriesbeforehelp = $question->nbtriesbeforehelp;
-        $wordle = $question->wordle;
-        $nbmaxtrieswordle = $question->nbmaxtrieswordle;
+        $nbtriesbeforehelp = $question->nbtriesbeforehelp;;
         $prevtries = $qa->get_last_behaviour_var('_try', 0);
         $output = '';
         $gradedstep = $this->get_graded_step($qa);
         $prevstep = $qa->get_last_step_with_behaviour_var('_try');
         $prevresponse = $prevstep->get_qt_data();
         if ($prevtries >= $nbtriesbeforehelp) {
-            $isstateimprovable = $qa->get_behaviour()->is_state_improvable($qa->get_state());
             if (is_null($gradedstep) || !$gradedstep->has_behaviour_var('helpme')) {
                 return '';
             }

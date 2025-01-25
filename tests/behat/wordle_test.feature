@@ -59,7 +59,7 @@ Feature: Test all the basic functionality of this guessit question type
     And I set the field with xpath "//input[contains(@id, '1_p4')]" to "z"
     And I set the field with xpath "//input[contains(@id, '1_p5')]" to "a"
     And I press "Check"
-    Then I should see "Word found in 1 try only! Well-done!"
+    Then I should see "Word found in 1 try: PIZZA"
     And I should see "Correct"
     And I should see "Marks for this submission: 5.00/5.00."
     And I press "Submit and finish"
