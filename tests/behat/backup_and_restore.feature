@@ -42,6 +42,7 @@ Feature: Test duplicating a quiz containing guessit and wordle questions
       | Guessit word(s)                   | Too many cooks spoil the broth.   |
     And I press "Cancel"
     And I choose "Edit question" action for "wordle-001" in the question bank
+    And I wait "2" seconds
     Then the following fields match these values:
       | Question name                     | wordle-001                     |
       | Instructions                      | <p>Guess this Italian dish</p> |

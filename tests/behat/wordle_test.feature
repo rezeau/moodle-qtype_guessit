@@ -23,7 +23,7 @@ Feature: Test all the basic functionality of this guessit question type
       | Guessit word(s)                   | PIZZA                          |
       | General feedback                  | Enjoy your pizza!              |
       | Wordle Option: Guess a word       | 1                              |
-      | Maximum number of tries to guess the word | 6                      |
+      | Maximum number of tries to guess the word | 6                      |      
     Then I should see "guessit-001"
 
     # Edit to test lowercase error.

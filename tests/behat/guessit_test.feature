@@ -24,7 +24,7 @@ Feature: Test all the basic functionality of this guessit question type
       | General feedback                  | Well-done!                     |
       | Select Gap Size to display        | Fixed Gap Size                 |
       | How many tries before giving help | 6                              |
-      | Remove specific feedback          | 1                              |
+      | Remove specific feedback          | 0                              |
     Then I should see "guessit-001"
 
     # Preview it.
