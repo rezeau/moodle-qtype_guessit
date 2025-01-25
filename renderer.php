@@ -70,7 +70,6 @@ class qtype_guessit_renderer extends qtype_renderer {
         }
         if ($wordle) {
             $nbmaxtrieswordle = $question->nbmaxtrieswordle;
-            ///$prevtries = $qa->get_last_behaviour_var('_try', 0);
             // Display nb tries left when starting a new wordle.
             $studentresponse = $qa->get_last_qt_data();
             $studentletters = '';
@@ -114,12 +113,6 @@ class qtype_guessit_renderer extends qtype_renderer {
      */
     public function feedback(question_attempt $qa, question_display_options $options): string {
         $result = '';
-        /*
-        $removespecificfeedback = $question->removespecificfeedback;
-        if ($removespecificfeedback) {
-            return;
-        }
-        */
         // Display Help messages if exist.
         // Try to find the last graded step.
         $gradedstep = $this->get_graded_step($qa);
@@ -297,7 +290,6 @@ class qtype_guessit_renderer extends qtype_renderer {
         // Go through all student responses.
         $allresponses = $this->get_all_responses($qa);
         $nbtries = count($allresponses);
-        ///$prevtries = $qa->get_last_behaviour_var('_try', 0);
         $formattedfeedback = '';
 
         for ($i = 0; $i < $nbtries; $i++) {
