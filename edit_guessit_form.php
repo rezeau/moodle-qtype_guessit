@@ -104,24 +104,34 @@ class qtype_guessit_edit_form extends question_edit_form {
         $mform->setDefault('gapsizedisplay', 'gapsizegrow');
 
         // Prepare number of tries option.
-        $nbtries = [
-            0 => 'None',
+        $nbtriesbeforehelp = [
+            0 => get_string('never', 'qtype_guessit'),
             6 => '6',
             8 => '8',
             10 => '10',
             12 => '12',
+            14 => '14',
         ];
         // Select how many prevtries before help is available.
         $mform->addElement('select', 'nbtriesbeforehelp',
-                get_string('nbtriesbeforehelp', 'qtype_guessit'), $nbtries);
+                get_string('nbtriesbeforehelp', 'qtype_guessit'), $nbtriesbeforehelp);
         // Hide the field 'nbtriesbeforehelp' if 'wordle' is selected.
         $mform->hideIf('nbtriesbeforehelp', 'wordle', 'checked');
         $mform->addHelpButton('nbtriesbeforehelp', 'nbtriesbeforehelp', 'qtype_guessit');
         $mform->setDefault('nbtriesbeforehelp', 0);
 
+        $nbmaxtrieswordle = [
+            6 => '6',
+            8 => '8',
+            10 => '10',
+            12 => '12',
+            14 => '14',
+            0 => get_string('unlimited', 'qtype_guessit'),
+        ];
+        
         // Maximum number of tries to guess the word (Wordle option).
         $mform->addElement('select', 'nbmaxtrieswordle',
-                get_string('nbmaxtrieswordle', 'qtype_guessit'), $nbtries);
+                get_string('nbmaxtrieswordle', 'qtype_guessit'), $nbmaxtrieswordle);
         // Hide the field 'nbmaxtrieswordle' if 'wordle' is NOT selected.
         $mform->hideIf('nbmaxtrieswordle', 'wordle', 'not checked');
         $mform->addHelpButton('nbmaxtrieswordle', 'nbmaxtrieswordle', 'qtype_guessit');

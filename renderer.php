@@ -398,7 +398,7 @@ class qtype_guessit_renderer extends qtype_renderer {
                 $a->misplacedletterorletters = get_string('misplacedletter_singular', 'qtype_guessit');
             }
             $trieslefttxt = '';
-            if ($triesleft > 0) {
+            if ($triesleft > 0 && $nbmaxtrieswordle != 99) {
                 $trieslefttxt = '<div class="que guessit giveword">';
                 if ($triesleft > 1 ) {
                     $trieslefttxt .= get_string('nbtriesleft_plural', 'qtype_guessit', $triesleft);
