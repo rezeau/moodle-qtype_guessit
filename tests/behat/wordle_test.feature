@@ -23,7 +23,7 @@ Feature: Test all the basic functionality of this guessit question type
       | Guessit word(s)                   | PIZZA                          |
       | General feedback                  | Enjoy your pizza!              |
       | Wordle Option: Guess a word       | 1                              |
-      | Maximum number of tries to guess the word | 6                      |      
+      | Maximum number of tries           | 6                              |
     Then I should see "guessit-001"
 
     # Edit to test lowercase error.
@@ -44,9 +44,10 @@ Feature: Test all the basic functionality of this guessit question type
     And I set the field with xpath "//input[contains(@id, '1_p2')]" to "p"
     And I set the field with xpath "//input[contains(@id, '1_p3')]" to "z"
     And I set the field with xpath "//input[contains(@id, '1_p4')]" to "z"
-    And I set the field with xpath "//input[contains(@id, '1_p5')]" to "e"    
+    And I set the field with xpath "//input[contains(@id, '1_p5')]" to "e"
     And I press "Check"
-    Then I should see "You've got 2 correctly placed letters and 3 misplaced letters."
+    And I pause
+    Then I should see "You've got 2 correctly placed letters and 2 misplaced letters."
     And I should see "5 tries left"
     And I should see "Partially correct"
     And I should see "Marks for this submission: 2.00/5.00."

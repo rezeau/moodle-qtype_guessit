@@ -1,5 +1,5 @@
 @qtype @qtype_guessit
-Feature: Import and export select guessit questions
+Feature: Import and export guessit questions
   As a teacher
   In order to reuse my guessit questions
   I need to be able to import and export them
@@ -16,7 +16,7 @@ Feature: Import and export select guessit questions
       | teacher | C1     | editingteacher |
 
   @javascript @_file_upload
-  Scenario: Import and export select guessit questions
+  Scenario: Import and export guessit questions
     # Import sample file.
     When I am on the "Course 1" "core_question > course question import" page logged in as teacher
     And I set the field "id_format_xml" to "1"

@@ -131,7 +131,7 @@ class qtype_guessit_test_helper extends question_test_helper {
             'nbtriesbeforehelp' => '0',
             'nbmaxtrieswordle' => '0',
             'removespecificfeedback' => '0',
-            'qtype' => 'guessit',            
+            'qtype' => 'guessit',
             'maxmark' => '1.00000',
             'id' => '999',
             'question' => '999',

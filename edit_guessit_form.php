@@ -128,7 +128,7 @@ class qtype_guessit_edit_form extends question_edit_form {
             14 => '14',
             0 => get_string('unlimited', 'qtype_guessit'),
         ];
-        
+
         // Maximum number of tries to guess the word (Wordle option).
         $mform->addElement('select', 'nbmaxtrieswordle',
                 get_string('nbmaxtrieswordle', 'qtype_guessit'), $nbmaxtrieswordle);

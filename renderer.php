@@ -60,7 +60,6 @@ class qtype_guessit_renderer extends qtype_renderer {
         $nbanswers = count($answers);
         $wordle = $question->wordle;
         $trieslefttxt = '';
-
         // Check that all gaps have been filled in.
         $complete = $this->check_complete_answer($qa);
 
@@ -72,6 +71,8 @@ class qtype_guessit_renderer extends qtype_renderer {
             $nbmaxtrieswordle = $question->nbmaxtrieswordle;
             // Display nb tries left when starting a new wordle.
             $studentresponse = $qa->get_last_qt_data();
+            // This ksort is needed for my online site; maybe because of different PHP version?
+            ksort($studentresponse);
             $studentletters = '';
             $rightletters = implode('', $this->correctresponses);
             foreach ($studentresponse as $answer) {
@@ -534,7 +535,6 @@ class qtype_guessit_renderer extends qtype_renderer {
      * @return string $marking
      */
     public function get_wordle_letter_states($rightletters, $studentletters) {
-        $studentletters;
         $originalarray = str_split($rightletters);
         $responsearray = str_split($studentletters);
         $marking = "";
@@ -568,6 +568,7 @@ class qtype_guessit_renderer extends qtype_renderer {
                 }
             }
         }
+
         return $marking;
     }
 
@@ -587,11 +588,9 @@ class qtype_guessit_renderer extends qtype_renderer {
             }
         }
         // This is needed, don't know why.
-        if ($prevtries === 1) {
-            // Sort each inner array by its keys.
-            foreach ($responses as &$innerarray) {
-                ksort($innerarray);
-            }
+        // Sort each inner array by its keys.
+        foreach ($responses as &$innerarray) {
+            ksort($innerarray);
         }
         return $responses;
     }
