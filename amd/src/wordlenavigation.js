@@ -29,14 +29,14 @@
 /**
  * Initialize the input gaps functionalities.
  */
-export function init() {//**
+export function init() {
 /* eslint-disable no-unused-vars */
 /* eslint-disable no-console */
 
     // Make correctly filled in gaps readonly
     const correctGaps = document.querySelectorAll('input.correct');
     correctGaps.forEach((input) => {
-      input.readOnly  = true; // Make the input readonly.
+      input.readOnly = true; // Make the input readonly.
       input.style.cursor = "not-allowed"; // Set the cursor style.
     });
 
@@ -75,7 +75,7 @@ export function init() {//**
                 // But do not move if tab has been pressed
                 if ((event.which >= 65 && event.which <= 90)
                         || (event.which >= 97 && event.which <= 122)
-                        && event.which ==! 9 // Tab key
+                        && event.which !== 9 // Tab key
                         && (element.value.length !== 0)) {
                     let nextIndex = index + 1;
 
@@ -102,5 +102,4 @@ export function init() {//**
             });
         });
     });
-
 }

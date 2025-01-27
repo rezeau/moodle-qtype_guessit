@@ -47,7 +47,7 @@ Feature: Test all the basic functionality of this guessit question type
     And I set the field with xpath "//input[contains(@id, '1_p1')]" to "Too"
     And I set the field with xpath "//input[contains(@id, '1_p2')]" to "many"
     And I press "Check"
-    Then I should see "You found 5 words out of 6."    
+    Then I should see "You found 5 words out of 6."
     And I set the field with xpath "//input[contains(@id, '1_p6')]" to "brother"
     And I press "Check"
     And I set the field with xpath "//input[contains(@id, '1_p6')]" to "brotherly"

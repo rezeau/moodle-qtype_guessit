@@ -30,14 +30,11 @@
  * Initialize the input gaps functionalities.
  */
 export function init() {
-    /* eslint-disable no-unused-vars */
-    /* eslint-disable no-unused-vars */
-    /* eslint-disable no-console */
 
     // Make correctly filled in gaps readonly
     const correctGaps = document.querySelectorAll('input.correct');
     correctGaps.forEach((input) => {
-      input.readOnly  = true; // Make the input readonly.
+      input.readOnly = true; // Make the input readonly.
       input.style.cursor = "not-allowed"; // Set the cursor style.
     });
 
@@ -69,7 +66,7 @@ export function init() {
                             var length = nextGap.value.length;
                             // Set caret at the end of the gap contents (value)
                             nextGap.setSelectionRange(length, length);
-                            if (gaps[nextIndex].classList.contains('incorrect') ) {
+                            if (gaps[nextIndex].classList.contains('incorrect')) {
                                 gaps[nextIndex].value = '';
                                 gaps[nextIndex].classList.remove('incorrect');
                             }
@@ -92,7 +89,7 @@ export function init() {
                             // Move to the next non-"correct" gap
                             var prevGap = gaps[prevIndex];
                             prevGap.focus();
-                            if (gaps[prevIndex].classList.contains('incorrect') ) {
+                            if (gaps[prevIndex].classList.contains('incorrect')) {
                                 gaps[prevIndex].value = '';
                                 gaps[prevIndex].classList.remove('incorrect');
                             }
@@ -109,7 +106,7 @@ export function init() {
 
             if (element.classList.contains('auto-grow-input')) {
                 // Enable the input fields auto-grow feature (if set in the question options)
-                element.addEventListener("input", function () {
+                element.addEventListener("input", function() {
                     element.style.width = "auto"; // Reset width
                     // Set the width to the content size plus 1 px for adjustment.
                     element.style.width = (element.scrollWidth + 1) + "px";

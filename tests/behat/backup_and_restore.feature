@@ -47,4 +47,3 @@ Feature: Test duplicating a quiz containing guessit and wordle questions
       | Question name                     | wordle-001                     |
       | Instructions                      | <p>Guess this Italian dish</p> |
       | Guessit word(s)                   | PIZZA                          |
-    

@@ -43,61 +43,60 @@
 
 .que.guessit .partiallycorrect,
 .que.guessit input.partiallycorrect {
-    background-color: #ffff99;
+    background-color: #ff9;
 }
 
 /* Misplaced letter in Wordle */
 .que.guessit .misplacedletter,
 .que.guessit input.misplacedletter {
-  background-color: blue;
+    background-color: blue;
 }
 
-/* Showing markup. top & left determined by position of input element. 
+/* Showing markup. top & left determined by position of input element.
 */
 .que.guessit .markup {
-  font-family: "Lucida Console", Courier, monospace; 
-  font-size: 1.2em;
-  margin-left: 5px;
-  position: absolute;
-  top: 22px;
-  left: 0px;
+    font-family: "Lucida Console", Courier, monospace; 
+    font-size: 1.2em;
+    margin-left: 5px;
+    position: absolute;
+    top: 22px;
+    left: 0;
 }
 
 .que.guessit .feedback-markup {
-  font-family: "Lucida Console", Courier, monospace; 
-  margin-left: 5px;
-  position: absolute;
-  top: 22px;
-  left: 0px;
+    font-family: "Lucida Console", Courier, monospace;
+    margin-left: 5px;
+    position: absolute;
+    top: 22px;
+    left: 0px;
 }
 
 .que.guessit .input-wrapper {
-  display: inline-block;
-  position: relative;
-  margin-bottom: 12px;
+    display: inline-block;
+    position: relative;
+    margin-bottom: 12px;
 }
 
 .que.guessit .specific-feedback.input-wrapper {
-  margin-right: 4px;
+    margin-right: 4px;
 }
 
 .que.guessit .giveword {
-  color: #00f!important;
-  font-family: 'Roboto Mono','Lucida Console',Courier,monospace;
-  font-size: 1.2em;
-  margin: inherit;
+    font-family: 'Roboto Mono','Lucida Console',Courier,monospace;
+    font-size: 1.2em;
+    margin: inherit;
 }
 
 .que.guessit .formulation {
-  background-color: #f0f8ff;
+    background-color: #f0f8ff;
 }
 
 .que.guessit hr {  
-  border: none;
-  height: 1px;
-  background-color: burlywood;
-  margin-top: 2px;
-  margin-bottom: 2px;
+    border: none;
+    height: 1px;
+    background-color: burlywood;
+    margin-top: 2px;
+    margin-bottom: 2px;
 }
 
 .que.guessit .numpartscorrect {

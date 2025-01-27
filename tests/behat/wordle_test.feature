@@ -1,5 +1,5 @@
 @qtype @qtype_guessit
-Feature: Test all the basic functionality of this guessit question type
+Feature: Test all the basic functionality of this guessit (wordle) question type
     In order to evaluate students' responses, as a teacher I need to
   create and preview guessit questions with wordle option.
 
@@ -38,7 +38,7 @@ Feature: Test all the basic functionality of this guessit question type
     # Preview a wordle guessit question.
     And I choose "Preview" action for "guessit-001" in the question bank
     Then I should see "Guess this dish name."
-    
+
     # Enter partially correct answer.
     And I set the field with xpath "//input[contains(@id, '1_p1')]" to "i"
     And I set the field with xpath "//input[contains(@id, '1_p2')]" to "p"
