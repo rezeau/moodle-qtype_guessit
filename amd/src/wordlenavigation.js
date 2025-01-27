@@ -30,8 +30,6 @@
  * Initialize the input gaps functionalities.
  */
 export function init() {
-/* eslint-disable no-unused-vars */
-/* eslint-disable no-console */
 
     // Make correctly filled in gaps readonly
     const correctGaps = document.querySelectorAll('input.correct');
@@ -97,7 +95,7 @@ export function init() {
                     }
                 }
             });
-            element.addEventListener("input", function () {
+            element.addEventListener("input", function() {
                     element.value = element.value.toUpperCase();
             });
         });

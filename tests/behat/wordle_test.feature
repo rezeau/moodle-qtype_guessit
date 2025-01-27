@@ -46,7 +46,6 @@ Feature: Test all the basic functionality of this guessit (wordle) question type
     And I set the field with xpath "//input[contains(@id, '1_p4')]" to "z"
     And I set the field with xpath "//input[contains(@id, '1_p5')]" to "e"
     And I press "Check"
-    And I pause
     Then I should see "You've got 2 correctly placed letters and 2 misplaced letters."
     And I should see "5 tries left"
     And I should see "Partially correct"

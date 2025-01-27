@@ -55,7 +55,7 @@
 /* Showing markup. top & left determined by position of input element.
 */
 .que.guessit .markup {
-    font-family: "Lucida Console", Courier, monospace; 
+    font-family: "Lucida Console", Courier, monospace;
     font-size: 1.2em;
     margin-left: 5px;
     position: absolute;
@@ -68,7 +68,7 @@
     margin-left: 5px;
     position: absolute;
     top: 22px;
-    left: 0px;
+    left: 0;
 }
 
 .que.guessit .input-wrapper {
@@ -82,7 +82,7 @@
 }
 
 .que.guessit .giveword {
-    font-family: 'Roboto Mono','Lucida Console',Courier,monospace;
+    font-family: 'Roboto Mono', 'Lucida Console', Courier,monospace;
     font-size: 1.2em;
     margin: inherit;
 }
@@ -91,7 +91,7 @@
     background-color: #f0f8ff;
 }
 
-.que.guessit hr {  
+.que.guessit hr {
     border: none;
     height: 1px;
     background-color: burlywood;
