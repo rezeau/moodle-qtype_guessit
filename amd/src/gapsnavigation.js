@@ -23,7 +23,7 @@
 /**
  * @module qtype_guessit/gapsnavigation
  *
- * This script controls navigation in the GuessIt game.
+ * This script controls the navigation in the GuessIt game.
  */
 
 /**

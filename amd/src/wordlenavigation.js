@@ -23,7 +23,7 @@
 /**
  * @module qtype_guessit/wordlenavigation
  *
- * This script controls navigation in the Wordle game.
+ * This script controls the navigation in the Wordle game.
  */
 
 /**
