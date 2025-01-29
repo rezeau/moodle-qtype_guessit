@@ -37,13 +37,12 @@ Feature: Test duplicating a quiz containing guessit and wordle questions
     And I should see "wordle-001"
     And I choose "Edit question" action for "guessit-001" in the question bank
     Then the following fields match these values:
-      | Question name                     | guessit-001                       |
-      | Instructions                      | <p>Guess this English proverb</p> |
-      | Guessit word(s)                   | Too many cooks spoil the broth.   |
+      | Question name                     | guessit-001                     |
+      | Instructions                      | Guess this English proverb      |
+      | Guessit word(s)                   | Too many cooks spoil the broth. |
     And I press "Cancel"
     And I choose "Edit question" action for "wordle-001" in the question bank
-    And I wait "2" seconds
     Then the following fields match these values:
       | Question name                     | wordle-001                     |
-      | Instructions                      | <p>Guess this Italian dish</p> |
+      | Instructions                      | Guess this Italian dish        |
       | Guessit word(s)                   | PIZZA                          |

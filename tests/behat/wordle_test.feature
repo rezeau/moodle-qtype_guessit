@@ -65,3 +65,46 @@ Feature: Test all the basic functionality of this guessit (wordle) question type
     And I press "Submit and finish"
     And I should see "Enjoy your pizza!"
     And I log out
+
+  @javascript
+  Scenario: Create, edit and preview a wordle question with unlimited number of tries
+    When I am on the "Course 1" "core_question > course question bank" page logged in as teacher
+    And I add a "Guess It" question filling the form with:
+      | Question name                     | guessit-001                    |
+      | Instructions                      | Guess this dish name.          |
+      | Guessit word(s)                   | PIZZA                          |
+      | General feedback                  | Enjoy your pizza!              |
+      | Wordle Option: Guess a word       | 1                              |
+      | Maximum number of tries           | 0                              |
+    Then I should see "guessit-001"
+
+    # Preview a wordle guessit question.
+    And I choose "Preview" action for "guessit-001" in the question bank
+    Then I should see "Guess this dish name."
+
+    # Enter partially correct answer.
+    And I set the field with xpath "//input[contains(@id, '1_p1')]" to "i"
+    And I set the field with xpath "//input[contains(@id, '1_p2')]" to "p"
+    And I set the field with xpath "//input[contains(@id, '1_p3')]" to "z"
+    And I set the field with xpath "//input[contains(@id, '1_p4')]" to "z"
+    And I set the field with xpath "//input[contains(@id, '1_p5')]" to "e"
+    And I press "Check"
+    Then I should see "You've got 2 correctly placed letters and 2 misplaced letters."
+    And I should not see "5 tries left"
+    And I should see "Partially correct"
+    And I should see "Marks for this submission: 2.00/5.00."
+    And I press "Start again"
+
+    # Enter correct answer.
+    And I set the field with xpath "//input[contains(@id, '1_p1')]" to "p"
+    And I set the field with xpath "//input[contains(@id, '1_p2')]" to "i"
+    And I set the field with xpath "//input[contains(@id, '1_p3')]" to "z"
+    And I set the field with xpath "//input[contains(@id, '1_p4')]" to "z"
+    And I set the field with xpath "//input[contains(@id, '1_p5')]" to "a"
+    And I press "Check"
+    Then I should see "Word found in 1 try: PIZZA"
+    And I should see "Correct"
+    And I should see "Marks for this submission: 5.00/5.00."
+    And I press "Submit and finish"
+    And I should see "Enjoy your pizza!"
+    And I log out

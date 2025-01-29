@@ -83,6 +83,7 @@
 
 .que.guessit .giveword {
     font-family: 'Roboto Mono', 'Lucida Console', Courier, monospace;
+    color: blue;
     font-size: 1.2em;
     margin: inherit;
 }

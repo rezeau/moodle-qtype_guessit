@@ -123,7 +123,7 @@ class qtype_guessit_renderer extends qtype_renderer {
                 $helptext = $this->get_extra_help($qa);
             }
             if ($helptext != '') {
-                $result .= '<div class="que guessit giveword">' . $helptext . '</div>';
+                $result .= '<div class="que guessit giveword numpartscorrect">' . $helptext . '</div>';
             }
         }
 
@@ -335,7 +335,7 @@ class qtype_guessit_renderer extends qtype_renderer {
         $question = $qa->get_question();
         $wordle = $question->wordle;
         $removespecificfeedback = $question->removespecificfeedback;
-        $formattxt = '<span class="que guessit giveword">';
+        $formattxt = '<span class="que guessit giveword numpartscorrect">';
         $nbcorrect = $qa->get_question()->get_num_parts_right(
                 $qa->get_last_qt_data()
             );
@@ -386,7 +386,10 @@ class qtype_guessit_renderer extends qtype_renderer {
             }
         } else {
             $nbmaxtrieswordle = $question->nbmaxtrieswordle;
-            $triesleft = $nbmaxtrieswordle - $prevtries;
+            $triesleft = 99;
+            if ($nbmaxtrieswordle !== 0) {
+                $triesleft = $nbmaxtrieswordle - $prevtries;
+            }
             if ($a->num == 0 || $a->num > 1) {
                 $a->letterorletters = get_string('letter_plural', 'qtype_guessit');
             } else {
@@ -399,15 +402,13 @@ class qtype_guessit_renderer extends qtype_renderer {
                 $a->misplacedletterorletters = get_string('misplacedletter_singular', 'qtype_guessit');
             }
             $trieslefttxt = '';
-            if ($triesleft > 0 && $nbmaxtrieswordle != 99) {
-                $trieslefttxt = '<div class="que guessit giveword">';
+            if ($triesleft > 0 && $nbmaxtrieswordle !== 0) {
+                $trieslefttxt = '<div class="que guessit giveword numpartscorrect">';
                 if ($triesleft > 1 ) {
                     $trieslefttxt .= get_string('nbtriesleft_plural', 'qtype_guessit', $triesleft);
                 } else {
                     $trieslefttxt .= get_string('nbtriesleft_singular', 'qtype_guessit');
                 }
-            } else {
-                return;
             }
             return get_string('yougotnlettersrightcount', 'qtype_guessit', $a) . $trieslefttxt;
         }

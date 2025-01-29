@@ -15,7 +15,7 @@ Feature: Test all the basic functionality of this guessit question type
         | teacher | C1     | editingteacher |
 
   @javascript
-  Scenario: Create and preview a guessit question.
+  Scenario: Create and preview a guessit question
     When I am on the "Course 1" "core_question > course question bank" page logged in as teacher
     And I add a "Guess It" question filling the form with:
       | Question name                     | guessit-001                    |
