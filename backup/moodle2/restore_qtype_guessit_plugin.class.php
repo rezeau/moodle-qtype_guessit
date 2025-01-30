@@ -19,7 +19,7 @@
  *
  * @package    qtype_guessit
  * @subpackage backup-moodle2
- * @copyright  2024 Joseph Rézeau <moodle@rezeau.org>
+ * @copyright  2025 Joseph Rézeau <moodle@rezeau.org>
  * @copyright  based on GapFill by 2011 The Open University
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -29,7 +29,7 @@
  *
  * Also used if you click the duplicate quiz button in a course.
  *
- * @copyright  2024 Joseph Rézeau <moodle@rezeau.org>
+ * @copyright  2025 Joseph Rézeau <moodle@rezeau.org>
  * @copyright  based on GapFill by 2017 Marcus Green
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */

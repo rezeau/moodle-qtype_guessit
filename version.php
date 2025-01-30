@@ -19,7 +19,7 @@
  *
  * @package    qtype_guessit
  * @subpackage guessit
- * @copyright  2024 Joseph Rézeau <moodle@rezeau.org>
+ * @copyright  2025 Joseph Rézeau <moodle@rezeau.org>
  * @copyright  based on GapFill by 2024 Marcus Green
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -30,7 +30,7 @@ $plugin->component = 'qtype_guessit';
 $plugin->dependencies = [
     'qbehaviour_guessit'   => 2025012600,
 ];
-$plugin->version = 2025012900;
+$plugin->version = 2025013000;
 $plugin->requires = 2022040100;  // Moodle 4.0.
 $plugin->release = '1.0';
 $plugin->supported = [401, 405];

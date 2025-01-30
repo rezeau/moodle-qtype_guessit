@@ -18,7 +18,7 @@
  * Contains the helper class for the select missing words question type tests.
  *
  * @package    qtype_guessit
- * @copyright  2024 Joseph Rézeau <moodle@rezeau.org>
+ * @copyright  2025 Joseph Rézeau <moodle@rezeau.org>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 defined('MOODLE_INTERNAL') || die();
@@ -28,7 +28,7 @@ require_once($CFG->dirroot . '/question/engine/tests/helpers.php');
  * utilities used by the other test classes
  *
  * @package    qtype_guessit
- * @copyright  2024 Joseph Rézeau <moodle@rezeau.org>
+ * @copyright  2025 Joseph Rézeau <moodle@rezeau.org>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class qtype_guessit_test_helper extends question_test_helper {

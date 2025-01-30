@@ -19,7 +19,7 @@
  *
  * @package qtype_guessit
  * @subpackage guessit
- * @copyright  2024 Joseph Rézeau <moodle@rezeau.org>
+ * @copyright  2025 Joseph Rézeau <moodle@rezeau.org>
  * @copyright  based on GapFill by 2019 Marcus Green <marcusavgreen@gmail.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */

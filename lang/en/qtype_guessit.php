@@ -19,7 +19,7 @@
  *
  * @package qtype_guessit
  * @subpackage guessit
- * @copyright  2024 Joseph Rézeau <moodle@rezeau.org>
+ * @copyright  2025 Joseph Rézeau <moodle@rezeau.org>
  * @copyright  based on GapFill by 2012 Marcus Green <marcusavgreen@gmail.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -43,7 +43,7 @@ $string['guessit'] = 'guessit.';
 $string['guessitgaps'] = 'Guessit word(s)';
 $string['guessitgaps_help'] = 'Enter here the words to be guessed (or one word if wordle option selected)';
 $string['instructions'] = 'Instructions';
-$string['instructions_help'] = 'Use this field to explain to the student how the Guessit game works.';
+$string['instructions_help'] = 'Use this field to explain to the student how the Guessit game works or provide a hint to help guess the word(s). This field is optional';
 $string['letter_plural'] = 'correctly placed letters';
 $string['letter_singular'] = 'correctly placed letter';
 $string['misplacedletter_plural'] = 'misplaced letters';
@@ -67,7 +67,6 @@ $string['pluginnamesummary'] = 'A question type which is more like a game where 
 $string['privacy:null_reason'] = 'The guessit question type does not effect or store any data itself.';
 $string['removespecificfeedback'] = 'Remove specific feedback';
 $string['removespecificfeedback_help'] = 'Remove specific feedback when all gaps have been correctly filled in and the question is submitted.';
-$string['unlimited'] = 'Unlimited';
 $string['wordfoundintries'] = 'Word found in {$a} tries: ';
 $string['wordfoundintry'] = 'Word found in 1 try: ';
 $string['wordle'] = 'Wordle Option: Guess a word';

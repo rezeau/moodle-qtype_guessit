@@ -18,7 +18,7 @@
  * The editing form code for this question type.
  * @package qtype_guessit
  * @subpackage guessit
- * @copyright  2024 Joseph Rézeau <moodle@rezeau.org>
+ * @copyright  2025 Joseph Rézeau <moodle@rezeau.org>
  * @copyright  based on GapFill by 2017 Marcus Green
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -28,7 +28,7 @@ require_once($CFG->dirroot . '/question/type/edit_question_form.php');
 
 /**
  * Editing form for the guessit question type
- * @copyright  2024 Joseph Rézeau <moodle@rezeau.org>
+ * @copyright  2025 Joseph Rézeau <moodle@rezeau.org>
  * @copyright  based on GapFill by 2017 Marcus Green
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  * guessit editing form definition.
@@ -63,36 +63,15 @@ class qtype_guessit_edit_form extends question_edit_form {
         // Default mark will be set to 1 * number of fields.
         $mform->removeelement('defaultmark');
 
+        /* Guess one word only 'a la Wordle' instead of a phrase/set of words. */
+        $mform->addElement('advcheckbox', 'wordle', get_string('wordle', 'qtype_guessit'));
+        $mform->addHelpButton('wordle', 'wordle', 'qtype_guessit');
+
         $mform->addElement('text', 'guessitgaps', get_string('guessitgaps', 'qtype_guessit'), 'maxlength="254" size="50"');
         $mform->setDefault('guessitgaps', '');
         $mform->addRule('guessitgaps', get_string('wordssmissing', 'qtype_guessit'), 'required', null, 'client');
         $mform->setType('guessitgaps', PARAM_TEXT);
         $mform->addHelpButton('guessitgaps', 'guessitgaps', 'qtype_guessit');
-
-        $mform->addElement('editor', 'generalfeedback', get_string('generalfeedback', 'question')
-                , ['rows' => 10], $this->editoroptions);
-
-        $mform->setType('generalfeedback', PARAM_RAW);
-        $mform->addHelpButton('generalfeedback', 'generalfeedback', 'question');
-
-        $mform = $this->get_options($mform);
-
-    }
-
-    /**
-     * Add the (mainly) checkboxes for customising how a question
-     * works/displays
-     *
-     * @param MoodleQuickform $mform
-     * @return MoodleQuickform
-     */
-    protected function get_options(MoodleQuickform $mform) {
-        $mform->addElement('header', 'feedbackheader', get_string('options', 'question'));
-
-        /* Guess onoe word only a la Wordle instead of a phrase/set of words. */
-        $mform->addElement('advcheckbox', 'wordle', get_string('wordle', 'qtype_guessit'));
-        $mform->addHelpButton('wordle', 'wordle', 'qtype_guessit');
-
         $gapsizedisplaytypes = ["gapsizegrow" =>
             get_string('gapsize_grow', 'qtype_guessit'), "gapsizematchword" => get_string('gapsize_matchword',
             'qtype_guessit'), "gapsizefixed" => get_string('gapsize_fixed', 'qtype_guessit'),
@@ -118,7 +97,7 @@ class qtype_guessit_edit_form extends question_edit_form {
         // Hide the field 'nbtriesbeforehelp' if 'wordle' is selected.
         $mform->hideIf('nbtriesbeforehelp', 'wordle', 'checked');
         $mform->addHelpButton('nbtriesbeforehelp', 'nbtriesbeforehelp', 'qtype_guessit');
-        $mform->setDefault('nbtriesbeforehelp', 0);
+        $mform->setDefault('nbtriesbeforehelp', 10);
 
         $nbmaxtrieswordle = [
             6 => '6',
@@ -126,7 +105,6 @@ class qtype_guessit_edit_form extends question_edit_form {
             10 => '10',
             12 => '12',
             14 => '14',
-            0 => get_string('unlimited', 'qtype_guessit'),
         ];
 
         // Maximum number of tries to guess the word (Wordle option).
@@ -135,11 +113,18 @@ class qtype_guessit_edit_form extends question_edit_form {
         // Hide the field 'nbmaxtrieswordle' if 'wordle' is NOT selected.
         $mform->hideIf('nbmaxtrieswordle', 'wordle', 'not checked');
         $mform->addHelpButton('nbmaxtrieswordle', 'nbmaxtrieswordle', 'qtype_guessit');
-        $mform->setDefault('nbmaxtrieswordle', 0);
+        $mform->setDefault('nbmaxtrieswordle', 10);
 
         /* Remove specific feedback once all gaps correctly filled in. */
         $mform->addElement('advcheckbox', 'removespecificfeedback', get_string('removespecificfeedback', 'qtype_guessit'));
         $mform->addHelpButton('removespecificfeedback', 'removespecificfeedback', 'qtype_guessit');
+
+        $mform->addElement('editor', 'generalfeedback', get_string('generalfeedback', 'question')
+                , ['rows' => 10], $this->editoroptions);
+
+        $mform->setType('generalfeedback', PARAM_RAW);
+        $mform->addHelpButton('generalfeedback', 'generalfeedback', 'question');
+
     }
 
     /**
@@ -157,10 +142,8 @@ class qtype_guessit_edit_form extends question_edit_form {
     }
 
     /**
-     * Check the question text is valid, specifically that
-     * it contains at lease one gap (text surrounded by delimiters
-     * as in [cat]
-     *
+     * Check that if wordle option is selected
+     * then the word entered in guessitgaps is in capital letters.
      * @param array $fromform
      * @param array $files
      * @return boolean

@@ -19,7 +19,7 @@
  *
  * @package qtype_guessit
  * @subpackage guessit
- * @copyright  2024 Joseph Rézeau <moodle@rezeau.org>
+ * @copyright  2025 Joseph Rézeau <moodle@rezeau.org>
  * @copyright  based on GapFill by 2018 Marcus Green <marcusavgreen@gmail.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -36,7 +36,7 @@ require_once($CFG->dirroot . '/question/engine/lib.php');
  * Load from database, and initialise class
  * A "fill in the gaps" cloze style question type
  * @package    qtype_guessit
- * @copyright  2024 Joseph Rézeau <moodle@rezeau.org>
+ * @copyright  2025 Joseph Rézeau <moodle@rezeau.org>
  * @copyright  based on GapFill by 2018 Marcus Green <marcusavgreen@gmail.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -304,7 +304,6 @@ class qtype_guessit extends question_type {
         $question = parent::import_from_xml($data, $question, $format, null);
         $question->isimport = true;
         return $question;
-
     }
 
     /**
@@ -317,23 +316,11 @@ class qtype_guessit extends question_type {
      */
     public function export_to_xml($question, qformat_xml $format, $extra = null) {
         global $CFG;
+        /* No need to export the answers as they will be constructed upon import */
+        $question->options->answers = [];
         $pluginmanager = core_plugin_manager::instance();
         $guessitinfo = $pluginmanager->get_plugin_info('qtype_guessit');
-        /*convert json into an object */
-
         $output = parent::export_to_xml($question, $format);
-        $output .= '    <guessitgaps>' . $question->options->guessitgaps .
-                "</guessitgaps>\n";
-        $output .= '    <gapsizedisplay>' . $question->options->gapsizedisplay .
-                "</gapsizedisplay>\n";
-        $output .= '    <nbtriesbeforehelp>' . $question->options->nbtriesbeforehelp .
-                "</nbtriesbeforehelp>\n";
-        $output .= '    <nbmaxtrieswordle>' . $question->options->nbmaxtrieswordle .
-                "</nbmaxtrieswordle>\n";
-        $output .= '    <removespecificfeedback>' . $question->options->removespecificfeedback .
-                "</removespecificfeedback>\n";
-        $output .= '    <wordle>' . $question->options->wordle .
-                "</wordle>\n";
         $output .= '    <!-- guessit release:'
                 . $guessitinfo->release . ' version:' . $guessitinfo->versiondisk . ' Moodle version:'
                 . $CFG->version . ' release:' . $CFG->release
