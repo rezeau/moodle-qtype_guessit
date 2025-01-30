@@ -386,10 +386,7 @@ class qtype_guessit_renderer extends qtype_renderer {
             }
         } else {
             $nbmaxtrieswordle = $question->nbmaxtrieswordle;
-            $triesleft = 99;
-            if ($nbmaxtrieswordle !== 0) {
-                $triesleft = $nbmaxtrieswordle - $prevtries;
-            }
+            $triesleft = $nbmaxtrieswordle - $prevtries;
             if ($a->num == 0 || $a->num > 1) {
                 $a->letterorletters = get_string('letter_plural', 'qtype_guessit');
             } else {
@@ -402,7 +399,7 @@ class qtype_guessit_renderer extends qtype_renderer {
                 $a->misplacedletterorletters = get_string('misplacedletter_singular', 'qtype_guessit');
             }
             $trieslefttxt = '';
-            if ($triesleft > 0 && $nbmaxtrieswordle !== 0) {
+            if ($triesleft > 0) {
                 $trieslefttxt = '<div class="que guessit giveword numpartscorrect">';
                 if ($triesleft > 1 ) {
                     $trieslefttxt .= get_string('nbtriesleft_plural', 'qtype_guessit', $triesleft);
