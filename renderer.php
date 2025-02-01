@@ -278,8 +278,9 @@ class qtype_guessit_renderer extends qtype_renderer {
             return get_string('pleaseenterananswer', 'qtype_guessit');;
         }
         // No need to use specific feedback for the wordle option.
-        if ($question->wordle) {
-            return '';
+        $wordle = $question->wordle;
+        if ($wordle) {
+            ///return '';
         }
         $removespecificfeedback = $question->removespecificfeedback;
         $nbcorrect = $qa->get_question()->get_num_parts_right(
@@ -292,27 +293,55 @@ class qtype_guessit_renderer extends qtype_renderer {
         $allresponses = $this->get_all_responses($qa);
         $nbtries = count($allresponses);
         $formattedfeedback = '';
-
+        if ($wordle) {
+            $rightletters = implode('', $this->correctresponses);
+            $letterstates = [];
+        }
         for ($i = 0; $i < $nbtries; $i++) {
             $studentanswers = array_values($allresponses[$i]);
             // Format the feedback to display.
             $formattedfeedback .= '<b>' . ($nbtries - $i)  . '- </b>';
-            $markupcode = '';
-            for ($index = 0; $index < count($this->correctresponses); $index++) {
-                $studentanswer = $studentanswers[$index];
-                $rightanswer = $this->correctresponses[$index];
-                $markupcode = $this->get_markup_string ($studentanswer, $rightanswer);
-                if ($studentanswer === $rightanswer) {
-                    $colorclass = 'correct';
-                    $markupcode = '';
-                } else if (preg_match('/^' . preg_quote($studentanswer[0], '/') . '/i',
-                    $this->correctresponses[$index])) {
-                        $colorclass = 'partiallycorrect';
-                } else {
-                    $colorclass = 'incorrect';
+            if (!$wordle) {
+                $markupcode = '';
+                for ($index = 0; $index < count($this->correctresponses); $index++) {
+                    $studentanswer = $studentanswers[$index];
+                    $rightanswer = $this->correctresponses[$index];
+                    $markupcode = $this->get_markup_string ($studentanswer, $rightanswer);
+                    if ($studentanswer === $rightanswer) {
+                        $colorclass = 'correct';
+                        $markupcode = '';
+                    } else if (preg_match('/^' . preg_quote($studentanswer[0], '/') . '/i',
+                        $this->correctresponses[$index])) {
+                            $colorclass = 'partiallycorrect';
+                    } else {
+                        $colorclass = 'incorrect';
+                    }
+                    $formattedfeedback .= '<div class="specific-feedback input-wrapper '.$colorclass.'">'.
+                    $studentanswer. '<span class="feedback-markup">'.$markupcode. '</span></div>';
                 }
-                $formattedfeedback .= '<div class="specific-feedback input-wrapper '.$colorclass.'">'.
-                $studentanswer. '<span class="feedback-markup">'.$markupcode. '</span></div>';
+            } else {
+                $studentanswer = $studentanswers[$index];
+                $studentletters = '';
+                foreach ($studentanswers as $answer) {
+                    $studentletters .= $answer;
+                }
+                $letterstates[$i] = $this->get_wordle_letter_states($rightletters, $studentletters);
+                for ($index = 0; $index < strlen($rightletters); $index++) {
+                    $letterstate = $letterstates[$i];
+                    switch ($letterstate[$index]) {
+                        case 2:
+                            $colorclass = 'correct';
+                            break;
+                        case 1:
+                            $colorclass = 'partiallycorrect';
+                            break;
+                        case 0:
+                            $colorclass = 'incorrect';
+                            break;
+                    }
+                    $formattedfeedback .= '<div class="specific-feedback input-wrapper '.$colorclass.'">'.
+                        $studentletters[$index]. '<span class="feedback-markup"></span></div>';
+                }
             }
             $formattedfeedback  .= '<hr />';
         }
