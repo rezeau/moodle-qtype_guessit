@@ -279,9 +279,6 @@ class qtype_guessit_renderer extends qtype_renderer {
         }
         // No need to use specific feedback for the wordle option.
         $wordle = $question->wordle;
-        if ($wordle) {
-            ///return '';
-        }
         $removespecificfeedback = $question->removespecificfeedback;
         $nbcorrect = $qa->get_question()->get_num_parts_right(
             $qa->get_last_qt_data()
@@ -320,7 +317,6 @@ class qtype_guessit_renderer extends qtype_renderer {
                     $studentanswer. '<span class="feedback-markup">'.$markupcode. '</span></div>';
                 }
             } else {
-                $studentanswer = $studentanswers[$index];
                 $studentletters = '';
                 foreach ($studentanswers as $answer) {
                     $studentletters .= $answer;
@@ -340,7 +336,7 @@ class qtype_guessit_renderer extends qtype_renderer {
                             break;
                     }
                     $formattedfeedback .= '<div class="specific-feedback input-wrapper '.$colorclass.'">'.
-                        $studentletters[$index]. '<span class="feedback-markup"></span></div>';
+                        $studentletters[$index]. '</div>';
                 }
             }
             $formattedfeedback  .= '<hr />';
