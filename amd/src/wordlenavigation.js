@@ -23,7 +23,7 @@
 /**
  * @module qtype_guessit/wordlenavigation
  *
- * This script controls the navigation in the Wordler game.
+ * This script controls the navigation in the Wordle game.
  */
 
 /**
@@ -40,41 +40,36 @@ export function init() {
             element.addEventListener("click", () => {
                 element.value = ''; // Empty the gap on click
             });
+
             // Listen for keydown to capture the key press and prevent more than one character
-           element.addEventListener("keydown", (event) => {
-    // Block Backspace, Delete, Tab, and Arrow keys
-    const forbiddenKeys = ["Backspace", "Delete", "Tab", "ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown"];
-    if (forbiddenKeys.includes(event.key)) {
-        event.preventDefault(); // Stop default behavior
-        return;
-    }
+            element.addEventListener("keydown", (event) => {
+                // Allow only letters (A-Z, a-z)
+                if (!/^[a-zA-Z]$/.test(event.key)) {
+                    event.preventDefault();
+                }
+            });
 
-    // Allow only letters (A-Z, a-z)
-    if (!/^[a-zA-Z]$/.test(event.key)) {
-        event.preventDefault(); // Block any non-letter character
-    }
-});
-
-element.addEventListener("keyup", (event) => {
-    // Move to the next input gap after typing a valid letter
-    if (/^[a-zA-Z]$/.test(event.key)) {
-        let nextIndex = index + 1;
-        if (nextIndex < gaps.length) {
-            // Clear the next gap if it's already filled
-            if (gaps[nextIndex].value.trim() !== '') {
-                gaps[nextIndex].value = '';
-            }
-            // Move focus to the next input field
-            gaps[nextIndex].focus();
-        } else if (checkButton) {
-            // If it's the last gap, move focus to the "Check" button
-            checkButton.focus();
-        }
-    }
-});
-
-            element.addEventListener("input", function() {
-                    element.value = element.value.toUpperCase();
+            element.addEventListener("input", () => {
+                // Ensure only one character is allowed
+                if (element.value.length > 1) {
+                    element.value = element.value.charAt(0); // Keep only the first character
+                }
+                element.value = element.value.toUpperCase();
+                // Automatically move to the next input if a letter is typed
+                if (/^[a-zA-Z]$/.test(element.value)) {
+                    let nextIndex = index + 1;
+                    if (nextIndex < gaps.length) {
+                        // Clear the next gap if it's already filled
+                        if (gaps[nextIndex].value.trim() !== '') {
+                            gaps[nextIndex].value = '';
+                        }
+                        // Move focus to the next input field
+                        gaps[nextIndex].focus();
+                    } else if (checkButton) {
+                        // If it's the last gap, move focus to the "Check" button
+                        checkButton.focus();
+                    }
+                }
             });
         });
     });
