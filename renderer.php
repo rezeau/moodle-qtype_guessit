@@ -32,18 +32,10 @@ class qtype_guessit_renderer extends qtype_renderer {
     public $correctresponses = [];
 
     /**
-     * Used in wordle option: stores correct (2) partiallycorrect (1) and incorrect (0)
-     * values for each letter in student response.
-     * @var string
-     */
-    public $letterstates = '';
-
-    /**
      * Used in wordle option: stores the number of nbmisplacedletters
      * @var int
      */
     public $nbmisplacedletters = 0;
-
 
     /**
      * Generate the display of the formulation part of the question shown at runtime
@@ -60,9 +52,6 @@ class qtype_guessit_renderer extends qtype_renderer {
         $nbanswers = count($answers);
         $wordle = $question->wordle;
         $trieslefttxt = '';
-        // Check that all gaps have been filled in.
-        $complete = $this->check_complete_answer($qa);
-
         foreach ($question->answers as $answer) {
             $rightanswer = $answer->answer;
             array_push($this->correctresponses, $rightanswer);
@@ -78,15 +67,15 @@ class qtype_guessit_renderer extends qtype_renderer {
             foreach ($studentresponse as $answer) {
                 $studentletters .= $answer;
             }
-            if ($studentletters !== '' && $complete) {
-                $this->letterstates = $this->get_wordle_letter_states($rightletters, $studentletters);
-                $this->nbmisplacedletters = substr_count($this->letterstates, '1');
+            if ($studentletters !== '') {
+                $letterstates = $this->get_wordle_letter_states($rightletters, $studentletters);
+                $this->nbmisplacedletters = substr_count($letterstates, '1');
             }
         }
         $count = 1;
         foreach ($question->answers as $answer) {
             $questiontext .= '<div class="input-wrapper">';
-                $questiontext .= $this->embedded_element($qa, $count, $options);
+                $questiontext .= $this->embedded_element($qa, $count, $options, $letterstates);
                 $questiontext .= '</div>' . ' ';
             $count++;
         }
@@ -152,7 +141,7 @@ class qtype_guessit_renderer extends qtype_renderer {
      * @param question_display_options $options
      * @return string
      */
-    public function embedded_element(question_attempt $qa, $place, question_display_options $options) {
+    public function embedded_element(question_attempt $qa, $place, question_display_options $options, $letterstates) {
         /* fraction is the mark associated with this field, always 1 or 0 for this question type */
         /** @var \qtype_guessit_question $question */
         $question = $qa->get_question();
@@ -162,8 +151,6 @@ class qtype_guessit_renderer extends qtype_renderer {
 
         $studentanswer = htmlspecialchars_decode($studentanswer);
         $rightanswer = $question->get_right_choice_for($place);
-        // Check that all gaps have been filled in.
-        $complete = $this->check_complete_answer($qa);
         $size = 0;
         if (!$wordle) {
             if ($question->gapsizedisplay === 'gapsizematchword') {
@@ -177,7 +164,7 @@ class qtype_guessit_renderer extends qtype_renderer {
             $size = 2;
         }
         /* $options->correctness is really about it being ready to mark, */
-        if (empty($studentanswer) || !$complete) {
+        if (empty($studentanswer)) {
                 $inputclass = '';
         } else {
             if (!$wordle) {
@@ -213,7 +200,7 @@ class qtype_guessit_renderer extends qtype_renderer {
                 }
             } else {
                 $index = (int)substr($fieldname, 1) - 1;
-                $letterstate = $this->letterstates[$index];
+                $letterstate = $letterstates[$index];
                 switch ($letterstate) {
                     case 2:
                         $inputclass = 'correct';
@@ -274,8 +261,9 @@ class qtype_guessit_renderer extends qtype_renderer {
         $question = $qa->get_question();
         // Check that all gaps have been filled in.
         $complete = $this->check_complete_answer($qa);
+        $formattedfeedback = '';
         if (!$complete) {
-            return get_string('pleaseenterananswer', 'qtype_guessit');;
+            $formattedfeedback .= '<span class="giveword">'. get_string('pleaseenterananswer', 'qtype_guessit') . '</span><hr />';
         }
         // No need to use specific feedback for the wordle option.
         $wordle = $question->wordle;
@@ -288,8 +276,7 @@ class qtype_guessit_renderer extends qtype_renderer {
         }
         // Go through all student responses.
         $allresponses = $this->get_all_responses($qa);
-        $nbtries = count($allresponses);
-        $formattedfeedback = '';
+        $nbtries = count($allresponses);        
         if ($wordle) {
             $rightletters = implode('', $this->correctresponses);
             $letterstates = [];
@@ -322,7 +309,8 @@ class qtype_guessit_renderer extends qtype_renderer {
                     $studentletters .= $answer;
                 }
                 $letterstates[$i] = $this->get_wordle_letter_states($rightletters, $studentletters);
-                for ($index = 0; $index < strlen($rightletters); $index++) {
+                echo '<br>';
+                for ($index = 0; $index < strlen($rightletters); $index++) {                    
                     $letterstate = $letterstates[$i];
                     switch ($letterstate[$index]) {
                         case 2:
@@ -334,6 +322,10 @@ class qtype_guessit_renderer extends qtype_renderer {
                         case 0:
                             $colorclass = 'incorrect';
                             break;
+                    }
+                    if ($studentletters[$index] == '') {
+                        $studentletters[$index] = '-';
+                        $colorclass = '';
                     }
                     $formattedfeedback .= '<div class="specific-feedback input-wrapper '.$colorclass.'">'.
                         $studentletters[$index]. '</div>';
