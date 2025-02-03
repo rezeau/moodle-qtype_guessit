@@ -52,6 +52,7 @@ class qtype_guessit_renderer extends qtype_renderer {
         $nbanswers = count($answers);
         $wordle = $question->wordle;
         $trieslefttxt = '';
+        $letterstates = '';
         foreach ($question->answers as $answer) {
             $rightanswer = $answer->answer;
             array_push($this->correctresponses, $rightanswer);
@@ -65,6 +66,9 @@ class qtype_guessit_renderer extends qtype_renderer {
             $studentletters = '';
             $rightletters = implode('', $this->correctresponses);
             foreach ($studentresponse as $answer) {
+                if ($answer == '') {
+                    $answer = '?';
+                }
                 $studentletters .= $answer;
             }
             if ($studentletters !== '') {
@@ -148,20 +152,17 @@ class qtype_guessit_renderer extends qtype_renderer {
         $wordle = $question->wordle;
         $fieldname = $question->field($place);
         $studentanswer = $qa->get_last_qt_var($fieldname) ?? '';
-
         $studentanswer = htmlspecialchars_decode($studentanswer);
         $rightanswer = $question->get_right_choice_for($place);
-        $size = 0;
-        if (!$wordle) {
-            if ($question->gapsizedisplay === 'gapsizematchword') {
-                $size = $question->get_size($rightanswer);
-            } else if ($question->gapsizedisplay === 'gapsizefixed') {
-                $size = $question->maxgapsize;
-            } else if ($question->gapsizedisplay === 'gapsizegrow') {
-                $size = 6;
-            }
-        } else {
-            $size = 2;
+        // Set size of gaps.
+        if ($wordle) {
+            $size = 1;
+        } else if ($question->gapsizedisplay === 'gapsizematchword') {
+            $size = $question->get_size($rightanswer);
+        } else if ($question->gapsizedisplay === 'gapsizefixed') {
+            $size = $question->maxgapsize;
+        } else if ($question->gapsizedisplay === 'gapsizegrow') {
+            $size = 6;
         }
         /* $options->correctness is really about it being ready to mark, */
         if (empty($studentanswer)) {
@@ -276,7 +277,7 @@ class qtype_guessit_renderer extends qtype_renderer {
         }
         // Go through all student responses.
         $allresponses = $this->get_all_responses($qa);
-        $nbtries = count($allresponses);        
+        $nbtries = count($allresponses);
         if ($wordle) {
             $rightletters = implode('', $this->correctresponses);
             $letterstates = [];
@@ -306,11 +307,13 @@ class qtype_guessit_renderer extends qtype_renderer {
             } else {
                 $studentletters = '';
                 foreach ($studentanswers as $answer) {
+                    if ($answer == '') {
+                        $answer = '?';
+                    }
                     $studentletters .= $answer;
                 }
                 $letterstates[$i] = $this->get_wordle_letter_states($rightletters, $studentletters);
-                echo '<br>';
-                for ($index = 0; $index < strlen($rightletters); $index++) {                    
+                for ($index = 0; $index < strlen($rightletters); $index++) {
                     $letterstate = $letterstates[$i];
                     switch ($letterstate[$index]) {
                         case 2:
