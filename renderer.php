@@ -143,6 +143,7 @@ class qtype_guessit_renderer extends qtype_renderer {
      * @param question_attempt $qa
      * @param number $place
      * @param question_display_options $options
+     * @param string $letterstates
      * @return string
      */
     public function embedded_element(question_attempt $qa, $place, question_display_options $options, $letterstates) {
