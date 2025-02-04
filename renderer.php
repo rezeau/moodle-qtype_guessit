@@ -66,8 +66,9 @@ class qtype_guessit_renderer extends qtype_renderer {
             $studentletters = '';
             $rightletters = implode('', $this->correctresponses);
             foreach ($studentresponse as $answer) {
+                // Gap left unanswered.
                 if ($answer == '') {
-                    $answer = '?';
+                    $answer = '-';
                 }
                 $studentletters .= $answer;
             }
@@ -309,7 +310,7 @@ class qtype_guessit_renderer extends qtype_renderer {
                 $studentletters = '';
                 foreach ($studentanswers as $answer) {
                     if ($answer == '') {
-                        $answer = '?';
+                        $answer = '-';
                     }
                     $studentletters .= $answer;
                 }
@@ -327,8 +328,8 @@ class qtype_guessit_renderer extends qtype_renderer {
                             $colorclass = 'incorrect';
                             break;
                     }
-                    if ($studentletters[$index] == '') {
-                        $studentletters[$index] = '-';
+                    // Gap left unanswered.
+                    if ($studentletters[$index] == '-') {
                         $colorclass = '';
                     }
                     $formattedfeedback .= '<div class="specific-feedback input-wrapper '.$colorclass.'">'.
