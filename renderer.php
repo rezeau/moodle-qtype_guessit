@@ -229,9 +229,11 @@ class qtype_guessit_renderer extends qtype_renderer {
         // If wordle and maxtries reached, disable all input gaps.
         $prevtries = $qa->get_last_behaviour_var('_try', 0);
         $gradedstep = $this->get_graded_step($qa);
+        // Disable input in wordle gaps if game is over: either word not found in maxtries OR word found.
         if ($wordle && $prevtries !== 0) {
             $prevtries = $qa->get_last_behaviour_var('_try', 0);
-            if ($gradedstep->has_behaviour_var('_maxtriesreached', 1) ) {
+            $allcorrect = preg_match('/^2+$/', $letterstates) === 1;
+            if ($gradedstep->has_behaviour_var('_maxtriesreached', 1)  || $allcorrect) {
                 $inputattributes['disabled'] = 'disabled';
             }
         }
