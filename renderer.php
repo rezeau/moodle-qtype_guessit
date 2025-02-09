@@ -81,7 +81,7 @@ class qtype_guessit_renderer extends qtype_renderer {
         foreach ($question->answers as $answer) {
             $questiontext .= '<div class="input-wrapper">';
                 $questiontext .= $this->embedded_element($qa, $count, $options, $letterstates);
-                $questiontext .= '</div>' . ' ';
+                $questiontext .= '</div>' . '&nbsp;';
             $count++;
         }
         if ($wordle) {
