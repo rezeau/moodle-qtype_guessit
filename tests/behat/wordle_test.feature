@@ -30,7 +30,7 @@ Feature: Test all the basic functionality of this guessit (wordle) question type
     And I choose "Edit question" action for "guessit-001" in the question bank
     And I set the field "Guessit word(s)" to "pizza"
     And I press "id_submitbutton"
-    Then I should see " ERROR! In the Wordle option, gaps must consist only of CAPITAL LETTERS (A-Z) and no accents"
+    Then I should see "ERROR! In the Wordle option, You must type a single word and only use UPPERCASE LETTERS (A-Z) and no accents"
     And I set the field "Guessit word(s)" to "PIZZA"
     And I press "id_submitbutton"
     Then I should see "guessit-001"
