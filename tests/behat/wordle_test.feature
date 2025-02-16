@@ -22,7 +22,7 @@ Feature: Test all the basic functionality of this guessit (wordle) question type
       | Instructions                      | Guess this dish name.          |
       | Guessit word(s)                   | PIZZA                          |
       | General feedback                  | Enjoy your pizza!              |
-      | Wordle Option: Guess a word       | 1                              |
+      | Wordle: Guess a word              | 1                              |
       | Maximum number of tries           | 6                              |
     Then I should see "guessit-001"
 
