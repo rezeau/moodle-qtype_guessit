@@ -293,7 +293,7 @@ class qtype_guessit extends question_type {
             return false;
         }
         /* There are no answers to import as they will be constructed later on */
-        $data ['#']['answer'] = [];
+        $data['#']['answer'] = [];
         $question = parent::import_from_xml($data, $question, $format, null);
         $question->isimport = true;
         return $question;
