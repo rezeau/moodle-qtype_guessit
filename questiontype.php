@@ -262,15 +262,6 @@ class qtype_guessit extends question_type {
      */
     public function get_answer_fields(array $answerwords, $question) {
         /* This code runs both on saving from a form and from importing. */
-        $answerfields = [];
-        /* this next block runs when importing from xml */
-        if (property_exists($question, 'answer')) {
-            foreach ($question->answer as $key => $value) {
-                $answerfields[$key]['value'] = $question->answer[$key];
-                $answerfields[$key]['fraction'] = 1;
-            }
-        }
-        /* the rest of this function runs when saving from edit form */
         if (!property_exists($question, 'answer')) {
             foreach ($answerwords as $key => $value) {
                 $answerfields[$key]['value'] = $value;
@@ -301,6 +292,8 @@ class qtype_guessit extends question_type {
         if (!isset($data['@']['type']) || $data['@']['type'] != 'guessit') {
             return false;
         }
+        /* There are no answers to import as they will be constructed later on */
+        $data ['#']['answer'] = [];
         $question = parent::import_from_xml($data, $question, $format, null);
         $question->isimport = true;
         return $question;
