@@ -156,6 +156,9 @@ class qtype_guessit_edit_form extends question_edit_form {
             if (preg_match('/[^A-Z]/', $guessitgaps) ) {
                 $errors['guessitgaps'] = get_string('wordlecapitalsonly', 'qtype_guessit');
             };
+            if (strlen($guessitgaps) > 8) {
+                $errors['guessitgaps'] = get_string('wordletoolong', 'qtype_guessit');
+            }
         }
         if ($errors) {
             return $errors;
