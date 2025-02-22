@@ -30,6 +30,12 @@
  * Initialize the input gaps functionalities.
  */
 export function init() {
+    // Make correctly filled in gaps readonly
+        const correctGaps = document.querySelectorAll('input.correct');
+        correctGaps.forEach((input) => {
+          input.readOnly = true; // Make the input readonly.
+          input.style.cursor = "not-allowed"; // Set the cursor style.
+        });
 
     document.querySelectorAll('[id^="question-"]').forEach(question => {
         const gaps = question.querySelectorAll('input[type="text"][name*="p"]');
@@ -38,9 +44,11 @@ export function init() {
         gaps.forEach((element, index) => {
             // Empty the gap when clicked
             element.addEventListener("click", () => {
-                element.value = ''; // Empty the gap on click
-                // And remove all colour classes
-                element.classList.remove('correct', 'partiallycorrect', 'incorrect');
+                if (!element.classList.contains('correct')) {
+                    element.value = ''; // Empty the gap on click
+                    // And remove all colour classes
+                    element.classList.remove('correct', 'partiallycorrect', 'incorrect');
+                }
             });
 
             // Listen for keydown to capture the key press and prevent more than one character
@@ -54,18 +62,24 @@ export function init() {
             element.addEventListener("keyup", (event) => {
                 // Enable navigation with backtab to previous gap in order to modify it
                 if (event.key === 'Tab' && event.shiftKey) {
+                    // Prevent default behaviour of pressed keys
                     event.preventDefault();
                     let prevIndex = index - 1;
-                    if (prevIndex !== -1) {
-                        // Move to the next non-"correct" gap
-                        var prevGap = gaps[prevIndex];
-                        prevGap.focus();
-                        prevGap.value = '';
-                        prevGap.classList.remove('correct', 'partiallycorrect', 'incorrect');
-                    }
+                        // Skip over any gaps with class "correct"
+                        while (prevIndex !== -1 && gaps[prevIndex].classList.contains('correct')) {
+                            prevIndex--;
+                        }
+                        if (prevIndex !== -1) {
+                            // Move to the next non-"correct" gap
+                            var prevGap = gaps[prevIndex];
+                            prevGap.focus();
+                            if (gaps[prevIndex].classList.contains('incorrect')) {
+                                gaps[prevIndex].value = '';
+                                gaps[prevIndex].classList.remove('incorrect');
+                            }
+                        }
                 }
             });
-
 
             element.addEventListener("input", () => {
                 // Ensure only one character is allowed
@@ -77,16 +91,22 @@ export function init() {
                 // Automatically move to the next input if a letter is typed
                 if (/^[a-zA-Z]$/.test(element.value)) {
                     let nextIndex = index + 1;
+                    // Skip over any gaps with class "correct"
+                    while (nextIndex < gaps.length && gaps[nextIndex].classList.contains('correct')) {
+                        nextIndex++;
+                    }
                     if (nextIndex < gaps.length) {
-                        // Clear the next gap if it's already filled
                         let nextGap = gaps[nextIndex];
-                        if (nextGap.value.trim() !== '') {
-                            nextGap.value = '';
+                        // Clear the next gap if it's already filled and not correct!
+                        if (!nextGap.classList.contains('correct')) {
+                            if (nextGap.value.trim() !== '') {
+                                nextGap.value = '';
+                            }
+                            // Move focus to the next input field
+                            nextGap.focus();
+                            // And remove all colour classes
+                            nextGap.classList.remove('correct', 'partiallycorrect', 'incorrect');
                         }
-                        // Move focus to the next input field
-                        nextGap.focus();
-                        // And remove all colour classes
-                        nextGap.classList.remove('correct', 'partiallycorrect', 'incorrect');
                     } else if (checkButton) {
                         // If it's the last gap, move focus to the "Check" button
                         checkButton.focus();

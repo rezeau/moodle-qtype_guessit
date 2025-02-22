@@ -90,6 +90,7 @@ class qtype_guessit_renderer extends qtype_renderer {
             $this->page->requires->js_call_amd('qtype_guessit/gapsnavigation', 'init');
         }
         $output = "";
+
         // This is needed to display images or media etc.
         $output = $question->format_text($questiontext, $question->questiontextformat,
                 $qa, 'question', 'questiontext', $question->id);
@@ -226,17 +227,6 @@ class qtype_guessit_renderer extends qtype_renderer {
             'id' => $inputname,
             'size' => $size,
         ];
-        // If wordle and maxtries reached, disable all input gaps.
-        $prevtries = $qa->get_last_behaviour_var('_try', 0);
-        $gradedstep = $this->get_graded_step($qa);
-        // Disable input in wordle gaps if game is over: either word not found in maxtries OR word found.
-        if ($wordle && $prevtries !== 0) {
-            $prevtries = $qa->get_last_behaviour_var('_try', 0);
-            $allcorrect = preg_match('/^2+$/', $letterstates) === 1;
-            if ($gradedstep->has_behaviour_var('_maxtriesreached', 1)  || $allcorrect) {
-                $inputattributes['disabled'] = 'disabled';
-            }
-        }
 
         // Only use autogrowinput if gapsizedisplay is set to gapsizegrow.
         $autogrowinput = '';
@@ -253,6 +243,10 @@ class qtype_guessit_renderer extends qtype_renderer {
         if ($studentanswer !== $rightanswer && !$wordle) {
             $markupcode = $this->get_markup_string ($studentanswer, $rightanswer);
         }
+        // To prevent the possibility of entering input in incorrect gaps after submit!
+        if ($qa->get_state() == question_state::$gradedpartial) {
+            $inputattributes['disabled'] = 'disabled';
+        }
         return html_writer::empty_tag('input', $inputattributes) . '<span class="markup">'.$markupcode.'</span>';
     }
 
@@ -264,6 +258,10 @@ class qtype_guessit_renderer extends qtype_renderer {
      */
     public function specific_feedback(question_attempt $qa) {
         $question = $qa->get_question();
+        $issubmitted = false;
+        if ($qa->get_state() != question_state::$todo) {
+            $issubmitted = true;
+        }
         // Check that all gaps have been filled in.
         $complete = $this->check_complete_answer($qa);
         $formattedfeedback = '';
@@ -276,7 +274,7 @@ class qtype_guessit_renderer extends qtype_renderer {
         $nbcorrect = $qa->get_question()->get_num_parts_right(
             $qa->get_last_qt_data()
         );
-        if (($nbcorrect[0] === $nbcorrect[1]) && $removespecificfeedback == 1) {
+        if (($nbcorrect[0] === $nbcorrect[1]) && $removespecificfeedback == 1 || $issubmitted) {
             return '';
         }
         // Go through all student responses.
