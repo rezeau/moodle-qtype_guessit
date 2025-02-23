@@ -243,8 +243,8 @@ class qtype_guessit_renderer extends qtype_renderer {
         if ($studentanswer !== $rightanswer && !$wordle) {
             $markupcode = $this->get_markup_string ($studentanswer, $rightanswer);
         }
-        // To prevent the possibility of entering input in incorrect gaps after submit!
-        if ($qa->get_state() == question_state::$gradedpartial) {
+        // To prevent the possibility of entering input in gaps after Submit and finish.
+        if ($qa->get_state() == question_state::$gradedpartial || $qa->get_state() == question_state::$gradedright) {
             $inputattributes['disabled'] = 'disabled';
         }
         return html_writer::empty_tag('input', $inputattributes) . '<span class="markup">'.$markupcode.'</span>';
