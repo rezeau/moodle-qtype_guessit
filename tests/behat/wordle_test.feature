@@ -48,8 +48,8 @@ Feature: Test all the basic functionality of this guessit (wordle) question type
     And I press "Check"
     Then I should see "You've got 2 correctly placed letters and 0 misplaced letters."
     And I should see "5 tries left"
-    And I should see "Partially correct"
-    And I should see "Marks for this submission: 2.00/5.00."
+    And I should see "Incorrect"
+    And I should see "Marks for this submission: 0.00/5.00."
     And I press "Start again"
 
     # Enter partially correct answer.

@@ -277,7 +277,7 @@ class qtype_guessit_question extends question_graded_automatically_with_countbac
      * @param array $response
      * @return array
      */
-    public function grade_response(array $response) {        
+    public function grade_response(array $response) {
         $wordle = $this->wordle;
         $right = $this->get_num_parts_right($response)[0];
         $this->fraction = $right / $this->gapcount;

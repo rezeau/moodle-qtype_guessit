@@ -53,6 +53,7 @@ class qtype_guessit_renderer extends qtype_renderer {
         $wordle = $question->wordle;
         $trieslefttxt = '';
         $letterstates = '';
+        $finished = false;
         foreach ($question->answers as $answer) {
             $rightanswer = $answer->answer;
             array_push($this->correctresponses, $rightanswer);
@@ -76,7 +77,6 @@ class qtype_guessit_renderer extends qtype_renderer {
                 $letterstates = $this->get_wordle_letter_states($rightletters, $studentletters);
                 $this->nbmisplacedletters = substr_count($letterstates, '1');
             }
-            $finished = false;
             $prevtries = $qa->get_last_behaviour_var('_try', 0);
             if ($prevtries !== 0) {
                 $gradedstep = $this->get_graded_step($qa);
@@ -107,7 +107,6 @@ class qtype_guessit_renderer extends qtype_renderer {
         $output .= $trieslefttxt;
         return $output;
     }
-
 
     /**
      * Get feedback. We over-ride the default question feedback display to arrange its elements as we want.
@@ -155,6 +154,7 @@ class qtype_guessit_renderer extends qtype_renderer {
      * @param number $place
      * @param question_display_options $options
      * @param string $letterstates
+     * @param bool $finished
      * @return string
      */
     public function embedded_element(question_attempt $qa, $place, question_display_options $options, $letterstates, $finished) {
