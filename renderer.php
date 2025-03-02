@@ -76,11 +76,20 @@ class qtype_guessit_renderer extends qtype_renderer {
                 $letterstates = $this->get_wordle_letter_states($rightletters, $studentletters);
                 $this->nbmisplacedletters = substr_count($letterstates, '1');
             }
+            $finished = false;
+            $prevtries = $qa->get_last_behaviour_var('_try', 0);
+            if ($prevtries !== 0) {
+                $gradedstep = $this->get_graded_step($qa);
+                if ($gradedstep && $gradedstep->has_behaviour_var('finish', 1)
+                        || $gradedstep->has_behaviour_var('_maxtriesreached', 1) ) {
+                    $finished = true;
+                }
+            }
         }
         $count = 1;
         foreach ($question->answers as $answer) {
             $questiontext .= '<div class="input-wrapper">';
-                $questiontext .= $this->embedded_element($qa, $count, $options, $letterstates);
+                $questiontext .= $this->embedded_element($qa, $count, $options, $letterstates, $finished);
                 $questiontext .= '</div>' . '&nbsp;';
             $count++;
         }
@@ -148,7 +157,7 @@ class qtype_guessit_renderer extends qtype_renderer {
      * @param string $letterstates
      * @return string
      */
-    public function embedded_element(question_attempt $qa, $place, question_display_options $options, $letterstates) {
+    public function embedded_element(question_attempt $qa, $place, question_display_options $options, $letterstates, $finished) {
         /* fraction is the mark associated with this field, always 1 or 0 for this question type */
         /** @var \qtype_guessit_question $question */
         $question = $qa->get_question();
@@ -247,8 +256,8 @@ class qtype_guessit_renderer extends qtype_renderer {
         if ($studentanswer !== $rightanswer && !$wordle) {
             $markupcode = $this->get_markup_string ($studentanswer, $rightanswer);
         }
-        // To prevent the possibility of entering input in incorrect gaps after submit!
-        if ($qa->get_state() == question_state::$gradedpartial) {
+        // Disable input gaps if max tried reached OR incorrect gaps submitted.
+        if ($wordle && $finished) {
             $inputattributes['disabled'] = 'disabled';
         }
         return html_writer::empty_tag('input', $inputattributes) . '<span class="markup">'.$markupcode.'</span>';

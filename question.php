@@ -277,9 +277,14 @@ class qtype_guessit_question extends question_graded_automatically_with_countbac
      * @param array $response
      * @return array
      */
-    public function grade_response(array $response) {
+    public function grade_response(array $response) {        
+        $wordle = $this->wordle;
         $right = $this->get_num_parts_right($response)[0];
         $this->fraction = $right / $this->gapcount;
+        // For wordle option grade is 'all or nothing'.
+        if ($wordle && $this->fraction !== 1) {
+            $this->fraction = 0;
+        }
         $grade = [$this->fraction, question_state::graded_state_for_fraction($this->fraction)];
         return $grade;
     }
