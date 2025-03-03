@@ -77,13 +77,13 @@ class qtype_guessit_renderer extends qtype_renderer {
                 $letterstates = $this->get_wordle_letter_states($rightletters, $studentletters);
                 $this->nbmisplacedletters = substr_count($letterstates, '1');
             }
-            $prevtries = $qa->get_last_behaviour_var('_try', 0);
-            if ($prevtries !== 0) {
-                $gradedstep = $this->get_graded_step($qa);
-                if ($gradedstep && $gradedstep->has_behaviour_var('finish', 1)
-                        || $gradedstep->has_behaviour_var('_maxtriesreached', 1) ) {
-                    $finished = true;
-                }
+        }
+        $prevtries = $qa->get_last_behaviour_var('_try', 0);
+        if ($prevtries !== 0) {
+            $gradedstep = $this->get_graded_step($qa);
+            if ($gradedstep && $gradedstep->has_behaviour_var('finish', 1)
+                    || $gradedstep->has_behaviour_var('_maxtriesreached', 1) ) {
+                $finished = true;
             }
         }
         $count = 1;
@@ -257,7 +257,7 @@ class qtype_guessit_renderer extends qtype_renderer {
             $markupcode = $this->get_markup_string ($studentanswer, $rightanswer);
         }
         // Disable input gaps if max tried reached OR incorrect gaps submitted.
-        if ($wordle && $finished) {
+        if (/*$wordle && */$finished) {
             $inputattributes['disabled'] = 'disabled';
         }
         return html_writer::empty_tag('input', $inputattributes) . '<span class="markup">'.$markupcode.'</span>';
