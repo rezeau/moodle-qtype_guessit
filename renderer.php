@@ -85,6 +85,8 @@ class qtype_guessit_renderer extends qtype_renderer {
                     || $gradedstep->has_behaviour_var('_maxtriesreached', 1) ) {
                 $finished = true;
             }
+        } else if ($qa->get_state() == question_state::$gaveup) {
+            $finished = true;
         }
         $count = 1;
         foreach ($question->answers as $answer) {
@@ -154,7 +156,7 @@ class qtype_guessit_renderer extends qtype_renderer {
      * @param number $place
      * @param question_display_options $options
      * @param string $letterstates
-     * @param bool $finished
+     * @param bool $finished used to set the input gaps to 'disabled'
      * @return string
      */
     public function embedded_element(question_attempt $qa, $place, question_display_options $options, $letterstates, $finished) {
@@ -257,7 +259,7 @@ class qtype_guessit_renderer extends qtype_renderer {
             $markupcode = $this->get_markup_string ($studentanswer, $rightanswer);
         }
         // Disable input gaps if max tried reached OR incorrect gaps submitted.
-        if (/*$wordle && */$finished) {
+        if ($finished) {
             $inputattributes['disabled'] = 'disabled';
         }
         return html_writer::empty_tag('input', $inputattributes) . '<span class="markup">'.$markupcode.'</span>';
