@@ -42,14 +42,6 @@ class qtype_guessit_question extends question_graded_automatically_with_countbac
     public $answer;
 
     /**
-     * Set the size of every gap to the size of the larges so students do not
-     * get an idea of the correct answer from gap sizes
-     *
-     * @var bool
-     */
-    public $gapsizedisplay;
-
-    /**
      * The number of tries before getting help
      * @var int
      */
@@ -91,12 +83,6 @@ class qtype_guessit_question extends question_graded_automatically_with_countbac
      * @var string
      */
     public $guessitgaps;
-
-    /**
-     * Remove specific feedback when all gaps have been correctly filled in.
-     * @var bool
-     */
-    public $removespecificfeedback;
 
     /**
      * Wordle Option: Guess a word.

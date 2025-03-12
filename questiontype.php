@@ -57,8 +57,7 @@ class qtype_guessit extends question_type {
      * @return array
      */
     public function extra_question_fields() {
-        return ['question_guessit', 'guessitgaps', 'gapsizedisplay',
-        'nbtriesbeforehelp', 'nbmaxtrieswordle', 'removespecificfeedback', 'wordle'];
+        return ['question_guessit', 'guessitgaps', 'nbtriesbeforehelp', 'nbmaxtrieswordle', 'wordle'];
     }
 
     /**
@@ -110,12 +109,6 @@ class qtype_guessit extends question_type {
         $counter = 1;
         $question->maxgapsize = 0;
         foreach ($questiondata->options->answers as $choicedata) {
-            /* find the width of the biggest gap */
-            $len = $question->get_size($choicedata->answer);
-            if ($len > $question->maxgapsize) {
-                $question->maxgapsize = $len;
-            }
-
             /* fraction contains a 1 */
             if (strpos($choicedata->fraction, '1') !== false) {
                 $question->places[$counter] = $choicedata->answer;
@@ -200,19 +193,15 @@ class qtype_guessit extends question_type {
             $options = new stdClass();
             $options->question = $question->id;
             $options->guessitgaps = '';
-            $options->gapsizedisplay = '';
             $options->nbtriesbeforehelp = '';
             $options->nbmaxtrieswordle = '';
-            $options->removespecificfeedback = '';
             $options->wordle = '';
             $options->id = $DB->insert_record('question_guessit', $options);
         }
 
         $options->guessitgaps = $question->guessitgaps;
-        $options->gapsizedisplay = $question->gapsizedisplay;
         $options->nbtriesbeforehelp = $question->nbtriesbeforehelp;
         $options->nbmaxtrieswordle = $question->nbmaxtrieswordle;
-        $options->removespecificfeedback = $question->removespecificfeedback;
         $options->wordle = $question->wordle;
 
         $DB->update_record('question_guessit', $options);

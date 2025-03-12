@@ -39,11 +39,13 @@
 .que.guessit .incorrect,
 .que.guessit input.incorrect {
     background-color: #faa;
+    min-width: 76px;
 }
 
 .que.guessit .partiallycorrect,
 .que.guessit input.partiallycorrect {
     background-color: #ff9;
+    min-width: 76px;
 }
 
 /* Misplaced letter in Wordle */

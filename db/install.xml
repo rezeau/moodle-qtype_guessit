@@ -8,11 +8,9 @@
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
         <FIELD NAME="question" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="Foreign key references question.id"/>
-        <FIELD NAME="guessitgaps" TYPE="char" LENGTH="255" NOTNULL="true" SEQUENCE="false" COMMENT="this field will contain the gaps for guessit and wordle"/>
-        <FIELD NAME="gapsizedisplay" TYPE="char" LENGTH="20" NOTNULL="false" DEFAULT="1" SEQUENCE="false" COMMENT="select gaps size display in the renderer"/>
+        <FIELD NAME="guessitgaps" TYPE="char" LENGTH="255" NOTNULL="true" SEQUENCE="false" COMMENT="this field will contain the gaps for guessit and wordle"/>        
         <FIELD NAME="nbtriesbeforehelp" TYPE="int" LENGTH="1" NOTNULL="false" DEFAULT="0" SEQUENCE="false" COMMENT="Select how many prevtries before help is available."/>
-        <FIELD NAME="nbmaxtrieswordle" TYPE="int" LENGTH="1" NOTNULL="false" DEFAULT="0" SEQUENCE="false" COMMENT="Maximum number of tries to guess the word (Wordle option)"/>
-        <FIELD NAME="removespecificfeedback" TYPE="int" LENGTH="1" NOTNULL="false" DEFAULT="0" SEQUENCE="false" COMMENT="Remove specific feedback when all gaps have been correctly filled in."/>
+        <FIELD NAME="nbmaxtrieswordle" TYPE="int" LENGTH="1" NOTNULL="false" DEFAULT="0" SEQUENCE="false" COMMENT="Maximum number of tries to guess the word (Wordle option)"/>        
         <FIELD NAME="wordle" TYPE="int" LENGTH="1" NOTNULL="false" DEFAULT="0" SEQUENCE="false" COMMENT="guess one word a la wordle instead of one phrase (set of words)"/>
       </FIELDS>
       <KEYS>

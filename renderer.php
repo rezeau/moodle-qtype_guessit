@@ -171,11 +171,7 @@ class qtype_guessit_renderer extends qtype_renderer {
         // Set size of gaps.
         if ($wordle) {
             $size = 1;
-        } else if ($question->gapsizedisplay === 'gapsizematchword') {
-            $size = $question->get_size($rightanswer);
-        } else if ($question->gapsizedisplay === 'gapsizefixed') {
-            $size = $question->maxgapsize;
-        } else if ($question->gapsizedisplay === 'gapsizegrow') {
+        } else {
             $size = 6;
         }
         /* $options->correctness is really about it being ready to mark, */
@@ -239,9 +235,8 @@ class qtype_guessit_renderer extends qtype_renderer {
             'size' => $size,
         ];
 
-        // Only use autogrowinput if gapsizedisplay is set to gapsizegrow.
         $autogrowinput = '';
-        if (!$wordle && $question->gapsizedisplay === 'gapsizegrow') {
+        if (!$wordle) {
             $autogrowinput = ' auto-grow-input ';
         }
         $wordlegap = '';
@@ -285,11 +280,10 @@ class qtype_guessit_renderer extends qtype_renderer {
         }
         // No need to use specific feedback for the wordle option.
         $wordle = $question->wordle;
-        $removespecificfeedback = $question->removespecificfeedback;
         $nbcorrect = $qa->get_question()->get_num_parts_right(
             $qa->get_last_qt_data()
         );
-        if (($nbcorrect[0] === $nbcorrect[1]) && $removespecificfeedback == 1 || $issubmitted) {
+        if (($nbcorrect[0] === $nbcorrect[1]) || $issubmitted) {
             return '';
         }
         // Go through all student responses.
@@ -371,15 +365,11 @@ class qtype_guessit_renderer extends qtype_renderer {
         }
         $question = $qa->get_question();
         $wordle = $question->wordle;
-        $removespecificfeedback = $question->removespecificfeedback;
         $formattxt = '<span class="que guessit giveword numpartscorrect">';
         $nbcorrect = $qa->get_question()->get_num_parts_right(
                 $qa->get_last_qt_data()
             );
         $prevtries = $qa->get_last_behaviour_var('_try', 0);
-        if (($nbcorrect[0] === $nbcorrect[1]) && $removespecificfeedback == 1) {
-            return '';
-        }
         if ($nbcorrect[0] === $nbcorrect[1]) {
             $wordsfoundtxt = [
                 "wordfoundintry" => get_string('wordfoundintry', 'qtype_guessit'),
@@ -389,9 +379,6 @@ class qtype_guessit_renderer extends qtype_renderer {
             ];
 
             if ($wordle) {
-                if ($removespecificfeedback) {
-                    return '';
-                }
                 $rightletters = implode('', $this->correctresponses);
                 if ($prevtries > 1) {
                     return $formattxt . $wordsfoundtxt['wordfoundintries']. $rightletters. '</span>';
@@ -621,11 +608,6 @@ class qtype_guessit_renderer extends qtype_renderer {
             if ($step->has_behaviour_var('submit') && $step->get_state() != question_state::$invalid) {
                 $responses[] = $step->get_qt_data();
             }
-        }
-        // This is needed, don't know why.
-        // Sort each inner array by its keys.
-        foreach ($responses as &$innerarray) {
-            ksort($innerarray);
         }
         return $responses;
     }

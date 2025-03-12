@@ -16,10 +16,8 @@
     <hidden>0</hidden>
     <idnumber></idnumber>
     <guessitgaps>Too many cooks spoil the broth.</guessitgaps>
-    <gapsizedisplay>gapsizegrow</gapsizedisplay>
     <nbtriesbeforehelp>6</nbtriesbeforehelp>
     <nbmaxtrieswordle>0</nbmaxtrieswordle>
-    <removespecificfeedback>1</removespecificfeedback>
     <wordle>0</wordle>
     <answer fraction="100" format="moodle_auto_format">
       <text>Too</text>
@@ -58,10 +56,8 @@
       </feedback>
     </answer>
     <guessitgaps>Too many cooks spoil the broth.</guessitgaps>
-    <gapsizedisplay>gapsizegrow</gapsizedisplay>
     <nbtriesbeforehelp>6</nbtriesbeforehelp>
     <nbmaxtrieswordle>0</nbmaxtrieswordle>
-    <removespecificfeedback>1</removespecificfeedback>
     <wordle>0</wordle>
     <!-- guessit release:1.0 version:2025012101 Moodle version:2024100701.04 release:4.5.1+ (Build: 20250103) -->
   </question>

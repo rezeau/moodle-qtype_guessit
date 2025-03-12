@@ -27,17 +27,6 @@ defined('MOODLE_INTERNAL') || die();
 $string['editquestiontext'] = 'Edit question text';
 $string['gap_plural'] = 'words';
 $string['gap_singular'] = 'word';
-$string['gapsize_display'] = 'Select Gap Size to display';
-$string['gapsize_display_help'] = 'Select Gap Size to display when attempting the question:
-
-"Dynamic Gap Size" = each gap will grow to accomodate longish words if needed.
-
-"Proportional Gap Size" = each gap will be set to the same size as the gapped out word.
-
-"Fixed Gap Size" = all gaps will be set to the same size as the largest gap.';
-$string['gapsize_fixed'] = 'Fixed Gap Size';
-$string['gapsize_grow'] = 'Dynamic Gap Size';
-$string['gapsize_matchword'] = 'Proportional Gap Size';
 $string['gethelp'] = 'Get help';
 $string['guessit'] = 'guessit.';
 $string['guessitgaps'] = 'Guessit word(s)';
@@ -65,8 +54,6 @@ $string['pluginnameadding'] = 'Adding a Guess It Question.';
 $string['pluginnameediting'] = 'Editing Guess It.';
 $string['pluginnamesummary'] = 'A question type which is more like a game where the player has to guess a short sentence or a unique word (a la Wordle).';
 $string['privacy:null_reason'] = 'The guessit question type does not effect or store any data itself.';
-$string['removespecificfeedback'] = 'Remove specific feedback';
-$string['removespecificfeedback_help'] = 'Remove specific feedback when all gaps have been correctly filled in and the question is submitted.';
 $string['wordfoundintries'] = 'Word found in {$a} tries: ';
 $string['wordfoundintry'] = 'Word found in 1 try: ';
 $string['wordle'] = 'Wordle: Guess a word';

@@ -27,17 +27,6 @@ defined('MOODLE_INTERNAL') || die();
 $string['editquestiontext'] = 'Edit question text';
 $string['gap_plural'] = 'mots';
 $string['gap_singular'] = 'mot';
-$string['gapsize_display'] = 'Dimensions du blanc';
-$string['gapsize_display_help'] = 'Sélectionnez la taille du blanc à afficher lors de la tentative de réponse à la question.:
-
-Taille dynamique = chaque blanc s\'agrandira pour contenir les mots saisis.
-
-Taille proportionnelle = chaque blanc sera de la même taille que le mot à deviner.
-
-Taille fixe = tous les blancs seront de la même taille que le mot à deviner le plus long';
-$string['gapsize_fixed'] = 'Taille fixe';
-$string['gapsize_grow'] = 'Taille dynamique';
-$string['gapsize_matchword'] = 'Taille proportionnelle';
 $string['gethelp'] = 'Aide';
 $string['guessit'] = 'devinette.';
 $string['guessitgaps'] = 'Mot(s) à deviner';
@@ -65,13 +54,12 @@ $string['pluginnameadding'] = 'Ajout d\'une question de type Devinette.';
 $string['pluginnameediting'] = 'Édition d\'une question de type Devinette.';
 $string['pluginnamesummary'] = 'Une question de type Devinette. Le joueur doit deviner une courte phrase ou un mot unique (à la Wordle).';
 $string['privacy:null_reason'] = 'Le type de question Devinette ne stocke aucune donnée.';
-$string['removespecificfeedback'] = 'Supprimer le feedback spécifique';
-$string['removespecificfeedback_help'] = 'Supprimez le feedback spécifique lorsque tous les blancs ont été correctement remplis et que la question a été soumise.';
 $string['wordfoundintries'] = 'Mot trouvé en {$a} tentatives : ';
 $string['wordfoundintry'] = 'Mot trouvé en 1 tentative : ';
 $string['wordle'] = 'Option Wordle : Deviner un mot unique';
 $string['wordle_help'] = 'Cochez cette option si vous voulez que le joueur doive deviner un seul mot au lieu d\'une phrase. Utilisez uniquement des LETTRES MAJUSCULES (A-Z) et pas d\'accents.';
 $string['wordlecapitalsonly'] = 'ERREUR ! Dans l\'option Wordle, vous devez saisir un seul mot formé uniquement de LETTRES MAJUSCULES (A-Z) et sans accents.';
+$string['wordletoolong'] = 'ERREUR ! Trop long. Dans l\'option Wordle les mots sont limités à 8 caractères.';
 $string['wordnotfound'] = 'Mot non deviné en {$a} tentatives : ';
 $string['wordsfoundintries'] = 'Mots devinés en {$a} tentatives : ';
 $string['wordsfoundintry'] = 'Tous les mots ont été trouvés en une seule tentative ! Bien joué !';
