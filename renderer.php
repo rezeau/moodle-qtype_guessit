@@ -308,9 +308,9 @@ class qtype_guessit_renderer extends qtype_renderer {
                         $markupcode = '';
                     } else if (preg_match('/^' . preg_quote($studentanswer[0], '/') . '/i',
                         $this->correctresponses[$index])) {
-                            $colorclass = 'partiallycorrect';
+                            $colorclass = 'partiallycorrect minwidth';
                     } else {
-                        $colorclass = 'incorrect';
+                        $colorclass = 'incorrect minwidth';
                     }
                     $formattedfeedback .= '<div class="specific-feedback input-wrapper '.$colorclass.'">'.
                     $studentanswer. '<span class="feedback-markup">'.$markupcode. '</span></div>';
