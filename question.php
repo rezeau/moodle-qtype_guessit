@@ -150,7 +150,6 @@ class qtype_guessit_question extends question_graded_automatically_with_countbac
     /**
      * Has the user put something in every gap?
      * @param array $response
-     * @return boolean
      * Not used. Replaced by check_complete_answer() in the renderer.
      */
     public function is_complete_response(array $response) {
@@ -162,7 +161,6 @@ class qtype_guessit_question extends question_graded_automatically_with_countbac
      * if question state is invalid.
      *
      * @param array $response
-     * @return string
      */
     public function get_validation_error(array $response) {
         return; // Not used by guessit.
@@ -280,7 +278,6 @@ class qtype_guessit_question extends question_graded_automatically_with_countbac
      *
      * @param array $responses
      * @param array $totaltries
-     * @return number
      */
     public function compute_final_grade($responses, $totaltries) {
         // Grade is not used in this question type.

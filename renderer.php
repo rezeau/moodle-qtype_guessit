@@ -49,7 +49,6 @@ class qtype_guessit_renderer extends qtype_renderer {
         $question = $qa->get_question();
         $questiontext = $question->questiontext;
         $answers = $question->answers;
-        $nbanswers = count($answers);
         $wordle = $question->wordle;
         $trieslefttxt = '';
         $letterstates = '';
@@ -59,7 +58,6 @@ class qtype_guessit_renderer extends qtype_renderer {
             array_push($this->correctresponses, $rightanswer);
         }
         if ($wordle) {
-            $nbmaxtrieswordle = $question->nbmaxtrieswordle;
             // Display nb tries left when starting a new wordle.
             $studentresponse = $qa->get_last_qt_data();
             // This ksort is needed for my online site; maybe because of different PHP version?
@@ -540,7 +538,6 @@ class qtype_guessit_renderer extends qtype_renderer {
     protected function check_complete_answer(question_attempt $qa) {
         // Check that all gaps have been filled in.
         $currentresponses = $qa->get_last_qt_data();
-        $notcomplete = false;
         foreach ($currentresponses as $currentresponse) {
             if ($currentresponse === '') {
                 return false;
@@ -603,7 +600,6 @@ class qtype_guessit_renderer extends qtype_renderer {
      */
     public function get_all_responses(question_attempt $qa) {
         $responses = [];
-        $prevtries = $qa->get_last_behaviour_var('_try', 0);
         foreach ($qa->get_reverse_step_iterator() as $step) {
             if ($step->has_behaviour_var('submit') && $step->get_state() != question_state::$invalid) {
                 $responses[] = $step->get_qt_data();
@@ -633,7 +629,7 @@ class qtype_guessit_renderer extends qtype_renderer {
     public function get_extra_help(question_attempt $qa) {
         // Try to find the last graded step.
         $question = $qa->get_question();
-        $nbtriesbeforehelp = $question->nbtriesbeforehelp;;
+        $nbtriesbeforehelp = $question->nbtriesbeforehelp;
         $prevtries = $qa->get_last_behaviour_var('_try', 0);
         $output = '';
         $gradedstep = $this->get_graded_step($qa);
@@ -646,8 +642,7 @@ class qtype_guessit_renderer extends qtype_renderer {
             $answersarray = $question->answers;
             $answerlist = '';
             $counter = 1; // Start counter from 0.
-            $nbanswers = count($answersarray);
-            foreach ($answersarray as $key => $rightansweer) {
+            foreach ($answersarray as $rightansweer) {
                 if ($rightansweer->answer !== $prevresponse['p' . $counter] ) {
                     $answerlist .= '<b>' . $rightansweer->answer . '</b> ';
                     break;
