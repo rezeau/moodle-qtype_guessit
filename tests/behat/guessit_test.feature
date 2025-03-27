@@ -62,7 +62,7 @@ Feature: Test all the basic functionality of this guessit question type
     # Completing the gaps and submitting
     Then I should see "Too many cooks spoil the broth."
     And I set the field with xpath "//input[contains(@id, '1_p6')]" to "broth."
-    And I press "Check"    
+    And I press "Check"
     Then I should see "All words found in 7 tries."
     And I press "Submit and finish"
     And I should see "Well-done!"
