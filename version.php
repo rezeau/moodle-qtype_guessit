@@ -30,7 +30,7 @@ $plugin->component = 'qtype_guessit';
 $plugin->dependencies = [
     'qbehaviour_guessit'   => 2025012600,
 ];
-$plugin->version = 2025032700;
+$plugin->version = 2025040800;
 $plugin->requires = 2022111500;  // Moodle 4.1.
 $plugin->release = '1.2';
 $plugin->supported = [401, 405];
