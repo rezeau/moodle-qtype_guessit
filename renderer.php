@@ -60,8 +60,8 @@ class qtype_guessit_renderer extends qtype_renderer {
         if ($wordle) {
             // Display nb tries left when starting a new wordle.
             $studentresponse = $qa->get_last_qt_data();
-            // This ksort is needed for my online site; maybe because of different PHP version? not sure so removed it 08/04/2025.
-            /// ksort($studentresponse);
+            // Not sure if ksort is needed so removed it 08/04/2025.
+            // Removed ksort($studentresponse).
             $studentletters = '';
             $rightletters = implode('', $this->correctresponses);
             foreach ($studentresponse as $answer) {
