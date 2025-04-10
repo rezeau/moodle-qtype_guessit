@@ -60,8 +60,7 @@ class qtype_guessit_renderer extends qtype_renderer {
         if ($wordle) {
             // Display nb tries left when starting a new wordle.
             $studentresponse = $qa->get_last_qt_data();
-            // Not sure if ksort is needed so removed it 08/04/2025.
-            // Removed ksort($studentresponse).
+            ksort($studentresponse).
             $studentletters = '';
             $rightletters = implode('', $this->correctresponses);
             foreach ($studentresponse as $answer) {
@@ -292,6 +291,7 @@ class qtype_guessit_renderer extends qtype_renderer {
             $letterstates = [];
         }
         for ($i = 0; $i < $nbtries; $i++) {
+            ksort($allresponses[$i]);
             $studentanswers = array_values($allresponses[$i]);
             // Format the feedback to display.
             $formattedfeedback .= '<b>' . ($nbtries - $i)  . '- </b>';
