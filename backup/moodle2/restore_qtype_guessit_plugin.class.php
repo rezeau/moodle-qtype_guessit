@@ -81,4 +81,30 @@ class restore_qtype_guessit_plugin extends restore_qtype_plugin {
         }
     }
 
+    #[\Override]
+    public static function convert_backup_to_questiondata(array $backupdata): \stdClass {
+        $questiondata = parent::convert_backup_to_questiondata($backupdata);
+        $questiondata->options->answers = array_map(
+            fn($answer) => (object) $answer,
+            $backupdata['plugin_qtype_guessit_question']['answers']['answer'] ?? [],
+        );
+        return $questiondata;
+    }
+
+    /**
+     * Return a list of paths to fields to be removed from questiondata before creating an identity hash.
+     * We have to remove the id property from all answers.
+     *
+     * @return array
+     */
+    protected function define_excluded_identity_hash_fields(): array {
+        return [
+            '/options/settings/itemid',
+            '/options/settings/correctfeedback',
+            '/options/settings/incorrectfeedback',
+            '/options/question',
+            '/options/itemsettings',
+        ];
+    }
+
 }
