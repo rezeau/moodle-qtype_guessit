@@ -59,7 +59,7 @@ class qtype_guessit_renderer extends qtype_renderer {
         if ($wordle) {
             // Display nb tries left when starting a new wordle.
             $studentresponse = $qa->get_last_qt_data();
-            ksort($studentresponse) .
+            ksort($studentresponse);
             $studentletters = '';
             $rightletters = implode('', $this->correctresponses);
             foreach ($studentresponse as $answer) {
