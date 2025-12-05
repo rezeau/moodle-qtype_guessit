@@ -37,7 +37,6 @@ require_once($CFG->dirroot . '/question/type/edit_question_form.php');
  * about the Moodle forms library, which is based on the HTML Quickform PEAR library.
  */
 class qtype_guessit_edit_form extends question_edit_form {
-
     /**
      * Doesn't seem to be used
      * @var string
@@ -52,8 +51,13 @@ class qtype_guessit_edit_form extends question_edit_form {
     protected function definition_inner($mform) {
         global $CFG, $OUTPUT, $SESSION;
         $mform->removeelement('questiontext');
-        $mform->addElement('editor', 'questiontext', get_string('instructions', 'qtype_guessit'), ['rows' => 10],
-                $this->editoroptions);
+        $mform->addElement(
+            'editor',
+            'questiontext',
+            get_string('instructions', 'qtype_guessit'),
+            ['rows' => 10],
+            $this->editoroptions
+        );
 
         $mform->setType('questiontext', PARAM_RAW);
         $mform->addHelpButton('questiontext', 'instructions', 'qtype_guessit');
@@ -82,8 +86,12 @@ class qtype_guessit_edit_form extends question_edit_form {
             14 => '14',
         ];
         // Select how many prevtries before help is available.
-        $mform->addElement('select', 'nbtriesbeforehelp',
-                get_string('nbtriesbeforehelp', 'qtype_guessit'), $nbtriesbeforehelp);
+        $mform->addElement(
+            'select',
+            'nbtriesbeforehelp',
+            get_string('nbtriesbeforehelp', 'qtype_guessit'),
+            $nbtriesbeforehelp
+        );
         // Hide the field 'nbtriesbeforehelp' if 'wordle' is selected.
         $mform->hideIf('nbtriesbeforehelp', 'wordle', 'checked');
         $mform->addHelpButton('nbtriesbeforehelp', 'nbtriesbeforehelp', 'qtype_guessit');
@@ -98,19 +106,27 @@ class qtype_guessit_edit_form extends question_edit_form {
         ];
 
         // Maximum number of tries to guess the word (Wordle option).
-        $mform->addElement('select', 'nbmaxtrieswordle',
-                get_string('nbmaxtrieswordle', 'qtype_guessit'), $nbmaxtrieswordle);
+        $mform->addElement(
+            'select',
+            'nbmaxtrieswordle',
+            get_string('nbmaxtrieswordle', 'qtype_guessit'),
+            $nbmaxtrieswordle
+        );
         // Hide the field 'nbmaxtrieswordle' if 'wordle' is NOT selected.
         $mform->hideIf('nbmaxtrieswordle', 'wordle', 'not checked');
         $mform->addHelpButton('nbmaxtrieswordle', 'nbmaxtrieswordle', 'qtype_guessit');
         $mform->setDefault('nbmaxtrieswordle', 10);
 
-        $mform->addElement('editor', 'generalfeedback', get_string('generalfeedback', 'question')
-                , ['rows' => 10], $this->editoroptions);
+        $mform->addElement(
+            'editor',
+            'generalfeedback',
+            get_string('generalfeedback', 'question'),
+            ['rows' => 10],
+            $this->editoroptions
+        );
 
         $mform->setType('generalfeedback', PARAM_RAW);
         $mform->addHelpButton('generalfeedback', 'generalfeedback', 'question');
-
     }
 
     /**
@@ -139,7 +155,7 @@ class qtype_guessit_edit_form extends question_edit_form {
         $wordle = $fromform['wordle'];
         $guessitgaps = $fromform['guessitgaps'];
         if ($wordle) {
-            if (preg_match('/[^A-Z]/', $guessitgaps) ) {
+            if (preg_match('/[^A-Z]/', $guessitgaps)) {
                 $errors['guessitgaps'] = get_string('wordlecapitalsonly', 'qtype_guessit');
             };
             if (strlen($guessitgaps) > 8) {
@@ -159,5 +175,4 @@ class qtype_guessit_edit_form extends question_edit_form {
     public function qtype() {
         return 'guessit';
     }
-
 }

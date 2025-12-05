@@ -24,7 +24,6 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class backup_qtype_guessit_plugin extends backup_qtype_plugin {
-
     /**
      * returns the name of the plugin/question type
      *
@@ -59,11 +58,12 @@ class backup_qtype_guessit_plugin extends backup_qtype_plugin {
         $pluginwrapper->add_child($guessit);
 
         // Set source to populate the data.
-        $guessit->set_source_table('question_guessit',
-                ['question' => backup::VAR_PARENTID]);
+        $guessit->set_source_table(
+            'question_guessit',
+            ['question' => backup::VAR_PARENTID]
+        );
 
         // Don't need to annotate ids nor files.
         return $plugin;
     }
-
 }

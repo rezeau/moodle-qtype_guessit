@@ -33,7 +33,6 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class qtype_guessit_question extends question_graded_automatically_with_countback {
-
     /**
      * Apparently not used
      *
@@ -293,9 +292,9 @@ class qtype_guessit_question extends question_graded_automatically_with_countbac
      * @return question_behaviour the new behaviour object.
      */
     public function make_behaviour(question_attempt $qa, $preferredbehaviour) {
-        GLOBAL $CFG;
+        global $CFG;
         // If guessit behaviour has been installed, make all behaviours default to guessit.
-        if (file_exists($CFG->dirroot.'/question/behaviour/guessit/')) {
+        if (file_exists($CFG->dirroot . '/question/behaviour/guessit/')) {
             return question_engine::make_behaviour('guessit', $qa, 'adaptive');
         }
         return question_engine::make_archetypal_behaviour($preferredbehaviour, $qa);

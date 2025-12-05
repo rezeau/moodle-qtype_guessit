@@ -41,7 +41,6 @@ require_once($CFG->dirroot . '/question/engine/lib.php');
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class qtype_guessit extends question_type {
-
     /**
      * Whether the quiz statistics report can analyse
      * all the student responses. See questiontypebase for more
@@ -88,8 +87,13 @@ class qtype_guessit extends question_type {
             /* answer in this context means correct answers, i.e. where
              * fraction contains a 1 */
             if (strpos($a->fraction, '1') !== false) {
-                $question->answers[$a->id] = new question_answer($a->id, $a->answer, $a->fraction,
-                        $a->feedback, $a->feedbackformat);
+                $question->answers[$a->id] = new question_answer(
+                    $a->id,
+                    $a->answer,
+                    $a->fraction,
+                    $a->feedback,
+                    $a->feedbackformat
+                );
                 $question->gapcount++;
             }
         }
@@ -309,5 +313,4 @@ class qtype_guessit extends question_type {
                 . " -->\n";
         return $output;
     }
-
 }
