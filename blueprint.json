@@ -36,7 +36,7 @@
       "step": "installMoodlePlugin",
       "pluginType": "qtype",
       "pluginName": "guessit",
-      "url": "https://github.com/erseco/moodle-qtype_guessit/archive/refs/heads/main.zip"
+      "url": "https://github.com/bhect0/moodle-qtype_guessit/archive/refs/heads/main.zip"
     },
     {
       "step": "createCategory",

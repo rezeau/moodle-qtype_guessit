@@ -12,7 +12,7 @@ edit it right away. Every pull request automatically generates a playground
 preview link appended to the PR description, so reviewers can test the
 changes in a live Moodle instance without any local setup.
 
-<a href="https://moodle-playground.com/?blueprint-url=https://raw.githubusercontent.com/erseco/moodle-qtype_guessit/refs/heads/main/blueprint.json" target="_blank" rel="noopener"><img src="https://raw.githubusercontent.com/ateeducacion/action-moodle-playground-pr-preview/refs/heads/main/assets/playground-preview-button.svg" alt="Preview in Moodle Playground" width="200"></a>
+<a href="https://moodle-playground.com/?blueprint-url=https://raw.githubusercontent.com/bhect0/moodle-qtype_guessit/refs/heads/main/blueprint.json" target="_blank" rel="noopener"><img src="https://raw.githubusercontent.com/ateeducacion/action-moodle-playground-pr-preview/refs/heads/main/assets/playground-preview-button.svg" alt="Preview in Moodle Playground" width="200"></a>
 
 The PR preview links are produced by the
 <a href="https://github.com/ateeducacion/action-moodle-playground-pr-preview" target="_blank" rel="noopener">ateeducacion/action-moodle-playground-pr-preview</a>
