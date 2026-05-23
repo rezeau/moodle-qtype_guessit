@@ -6,9 +6,11 @@ This question type was written by Joseph Rézeau (based on GapFill by Marcus Gre
 
 Click the badge below to open the `main` branch instantly in Moodle Playground
 with the plugin (and its required `qbehaviour_guessit` dependency)
-pre-installed. Every pull request automatically generates a playground preview
-link appended to the PR description, so reviewers can test the changes in a
-live Moodle instance without any local setup.
+pre-installed. The playground boots straight into the demo course's question
+bank with a sample guessit question already imported, so you can preview and
+edit it right away. Every pull request automatically generates a playground
+preview link appended to the PR description, so reviewers can test the
+changes in a live Moodle instance without any local setup.
 
 <a href="https://moodle-playground.com/?blueprint-url=https://raw.githubusercontent.com/erseco/moodle-qtype_guessit/refs/heads/main/blueprint.json" target="_blank" rel="noopener"><img src="https://raw.githubusercontent.com/ateeducacion/action-moodle-playground-pr-preview/refs/heads/main/assets/playground-preview-button.svg" alt="Preview in Moodle Playground" width="200"></a>
 

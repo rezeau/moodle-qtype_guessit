@@ -1,7 +1,10 @@
 {
   "$schema": "https://raw.githubusercontent.com/ateeducacion/moodle-playground/refs/heads/main/assets/blueprints/blueprint-schema.json",
-  "preferredVersions": { "php": "8.3", "moodle": "5.0" },
-  "landingPage": "/",
+  "preferredVersions": {
+    "php": "8.3",
+    "moodle": "5.0"
+  },
+  "landingPage": "/question/edit.php?courseid=2",
   "constants": {
     "ADMIN_USER": "admin",
     "ADMIN_PASS": "test",
@@ -19,7 +22,10 @@
         "timezone": "Europe/Madrid"
       }
     },
-    { "step": "login", "username": "{{ADMIN_USER}}" },
+    {
+      "step": "login",
+      "username": "{{ADMIN_USER}}"
+    },
     {
       "step": "installMoodlePlugin",
       "pluginType": "qbehaviour",
@@ -63,6 +69,13 @@
       "course": "GUESSIT01",
       "role": "student"
     },
-    { "step": "setLandingPage", "path": "/" }
+    {
+      "step": "runPhpCode",
+      "code": "if (!defined('CLI_SCRIPT')) { define('CLI_SCRIPT', true); }\nrequire('/www/moodle/config.php');\nrequire_once($CFG->dirroot . '/lib/questionlib.php');\nrequire_once($CFG->dirroot . '/question/format/xml/format.php');\ntry {\n    $course = $DB->get_record('course', ['shortname' => 'GUESSIT01'], '*', MUST_EXIST);\n    $coursecontext = context_course::instance($course->id);\n    $category = question_make_default_categories([$coursecontext]);\n    $xml = <<<'GUESSITXML'\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<quiz>\n<!-- question: 835  -->\n  <question type=\"guessit\">\n    <name>\n      <text>Guessit001</text>\n    </name>\n    <questiontext format=\"html\">\n      <text><![CDATA[<p>Guess an English proverb</p>]]></text>\n    </questiontext>\n    <generalfeedback format=\"html\">\n      <text></text>\n    </generalfeedback>\n    <defaultgrade>6</defaultgrade>\n    <penalty>0</penalty>\n    <hidden>0</hidden>\n    <idnumber></idnumber>\n    <guessitgaps>Too many cooks spoil the broth.</guessitgaps>\n    <nbtriesbeforehelp>6</nbtriesbeforehelp>\n    <nbmaxtrieswordle>0</nbmaxtrieswordle>\n    <wordle>0</wordle>\n    <answer fraction=\"100\" format=\"moodle_auto_format\">\n      <text>Too</text>\n      <feedback format=\"moodle_auto_format\">\n        <text></text>\n      </feedback>\n    </answer>\n    <answer fraction=\"100\" format=\"moodle_auto_format\">\n      <text>many</text>\n      <feedback format=\"moodle_auto_format\">\n        <text></text>\n      </feedback>\n    </answer>\n    <answer fraction=\"100\" format=\"moodle_auto_format\">\n      <text>cooks</text>\n      <feedback format=\"moodle_auto_format\">\n        <text></text>\n      </feedback>\n    </answer>\n    <answer fraction=\"100\" format=\"moodle_auto_format\">\n      <text>spoil</text>\n      <feedback format=\"moodle_auto_format\">\n        <text></text>\n      </feedback>\n    </answer>\n    <answer fraction=\"100\" format=\"moodle_auto_format\">\n      <text>the</text>\n      <feedback format=\"moodle_auto_format\">\n        <text></text>\n      </feedback>\n    </answer>\n    <answer fraction=\"100\" format=\"moodle_auto_format\">\n      <text>broth.</text>\n      <feedback format=\"moodle_auto_format\">\n        <text></text>\n      </feedback>\n    </answer>\n    <guessitgaps>Too many cooks spoil the broth.</guessitgaps>\n    <nbtriesbeforehelp>6</nbtriesbeforehelp>\n    <nbmaxtrieswordle>0</nbmaxtrieswordle>\n    <wordle>0</wordle>\n    <!-- guessit release:1.0 version:2025012101 Moodle version:2024100701.04 release:4.5.1+ (Build: 20250103) -->\n  </question>\n\n</quiz>\nGUESSITXML;\n    $tmpdir = make_request_directory();\n    $tmpfile = $tmpdir . '/guessit.xml';\n    file_put_contents($tmpfile, $xml);\n    $qformat = new qformat_xml();\n    $qformat->setCategory($category);\n    $qformat->setContexts([$coursecontext]);\n    $qformat->setCourse($course);\n    $qformat->setFilename($tmpfile);\n    $qformat->setMatchgrades('error');\n    $qformat->setCatfromfile(false);\n    $qformat->setContextfromfile(false);\n    $qformat->setStoponerror(false);\n    if ($qformat->importpreprocess() && $qformat->importprocess() && $qformat->importpostprocess()) {\n        echo \"Imported sample guessit question into category id={$category->id} (courseid={$course->id})\\n\";\n    } else {\n        echo \"Import returned false\\n\";\n    }\n} catch (\\Throwable $e) {\n    echo 'ERROR: ' . $e->getMessage() . \"\\n\";\n}"
+    },
+    {
+      "step": "setLandingPage",
+      "path": "/question/edit.php?courseid=2"
+    }
   ]
 }
