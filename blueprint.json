@@ -4,7 +4,7 @@
     "php": "8.3",
     "moodle": "5.0"
   },
-  "landingPage": "/question/edit.php?courseid=2",
+  "landingPage": "/mod/quiz/view.php?id=2",
   "constants": {
     "ADMIN_USER": "admin",
     "ADMIN_PASS": "test",
@@ -47,7 +47,7 @@
       "fullname": "Guessit Demo Course",
       "shortname": "GUESSIT01",
       "category": "Test Courses",
-      "summary": "Demo course for the guessit question type. Create a new question of type 'guessit' inside this course's question bank to try the plugin."
+      "summary": "Demo course with a preconfigured Guess It quiz and question, ready for interactive testing."
     },
     {
       "step": "createUser",
@@ -70,12 +70,46 @@
       "role": "student"
     },
     {
+      "step": "addModule",
+      "module": "qbank",
+      "course": "GUESSIT01",
+      "section": 0,
+      "name": "Guess It Question Bank",
+      "intro": "<p>Question bank for the preconfigured Guess It demo.</p>",
+      "type": "system",
+      "visible": 0
+    },
+    {
+      "step": "addModule",
+      "module": "quiz",
+      "course": "GUESSIT01",
+      "section": 1,
+      "name": "Testing Guess It!",
+      "intro": "<p>This quiz contains a preconfigured Guess It question for interactive testing.</p>",
+      "preferredbehaviour": "interactive",
+      "browsersecurity": "-",
+      "password": "",
+      "subnet": "",
+      "grade": 6,
+      "questionsperpage": 1,
+      "attempts": 0,
+      "shuffleanswers": 0,
+      "reviewattempt": 69904,
+      "reviewcorrectness": 69904,
+      "reviewmaxmarks": 69904,
+      "reviewmarks": 69904,
+      "reviewspecificfeedback": 69904,
+      "reviewgeneralfeedback": 69904,
+      "reviewrightanswer": 69904,
+      "reviewoverallfeedback": 4368
+    },
+    {
       "step": "runPhpCode",
-      "code": "if (!defined('CLI_SCRIPT')) { define('CLI_SCRIPT', true); }\nrequire('/www/moodle/config.php');\nrequire_once($CFG->dirroot . '/lib/questionlib.php');\nrequire_once($CFG->dirroot . '/question/format/xml/format.php');\ntry {\n    $course = $DB->get_record('course', ['shortname' => 'GUESSIT01'], '*', MUST_EXIST);\n    $coursecontext = context_course::instance($course->id);\n    $category = question_make_default_categories([$coursecontext]);\n    $xml = <<<'GUESSITXML'\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<quiz>\n<!-- question: 835  -->\n  <question type=\"guessit\">\n    <name>\n      <text>Guessit001</text>\n    </name>\n    <questiontext format=\"html\">\n      <text><![CDATA[<p>Guess an English proverb</p>]]></text>\n    </questiontext>\n    <generalfeedback format=\"html\">\n      <text></text>\n    </generalfeedback>\n    <defaultgrade>6</defaultgrade>\n    <penalty>0</penalty>\n    <hidden>0</hidden>\n    <idnumber></idnumber>\n    <guessitgaps>Too many cooks spoil the broth.</guessitgaps>\n    <nbtriesbeforehelp>6</nbtriesbeforehelp>\n    <nbmaxtrieswordle>0</nbmaxtrieswordle>\n    <wordle>0</wordle>\n    <answer fraction=\"100\" format=\"moodle_auto_format\">\n      <text>Too</text>\n      <feedback format=\"moodle_auto_format\">\n        <text></text>\n      </feedback>\n    </answer>\n    <answer fraction=\"100\" format=\"moodle_auto_format\">\n      <text>many</text>\n      <feedback format=\"moodle_auto_format\">\n        <text></text>\n      </feedback>\n    </answer>\n    <answer fraction=\"100\" format=\"moodle_auto_format\">\n      <text>cooks</text>\n      <feedback format=\"moodle_auto_format\">\n        <text></text>\n      </feedback>\n    </answer>\n    <answer fraction=\"100\" format=\"moodle_auto_format\">\n      <text>spoil</text>\n      <feedback format=\"moodle_auto_format\">\n        <text></text>\n      </feedback>\n    </answer>\n    <answer fraction=\"100\" format=\"moodle_auto_format\">\n      <text>the</text>\n      <feedback format=\"moodle_auto_format\">\n        <text></text>\n      </feedback>\n    </answer>\n    <answer fraction=\"100\" format=\"moodle_auto_format\">\n      <text>broth.</text>\n      <feedback format=\"moodle_auto_format\">\n        <text></text>\n      </feedback>\n    </answer>\n    <guessitgaps>Too many cooks spoil the broth.</guessitgaps>\n    <nbtriesbeforehelp>6</nbtriesbeforehelp>\n    <nbmaxtrieswordle>0</nbmaxtrieswordle>\n    <wordle>0</wordle>\n    <!-- guessit release:1.0 version:2025012101 Moodle version:2024100701.04 release:4.5.1+ (Build: 20250103) -->\n  </question>\n\n</quiz>\nGUESSITXML;\n    $tmpdir = make_request_directory();\n    $tmpfile = $tmpdir . '/guessit.xml';\n    file_put_contents($tmpfile, $xml);\n    $qformat = new qformat_xml();\n    $qformat->setCategory($category);\n    $qformat->setContexts([$coursecontext]);\n    $qformat->setCourse($course);\n    $qformat->setFilename($tmpfile);\n    $qformat->setMatchgrades('error');\n    $qformat->setCatfromfile(false);\n    $qformat->setContextfromfile(false);\n    $qformat->setStoponerror(false);\n    if ($qformat->importpreprocess() && $qformat->importprocess() && $qformat->importpostprocess()) {\n        echo \"Imported sample guessit question into category id={$category->id} (courseid={$course->id})\\n\";\n    } else {\n        echo \"Import returned false\\n\";\n    }\n} catch (\\Throwable $e) {\n    echo 'ERROR: ' . $e->getMessage() . \"\\n\";\n}"
+      "code": "if (!defined('CLI_SCRIPT')) { define('CLI_SCRIPT', true); }\nrequire('/www/moodle/config.php');\nrequire_once($CFG->dirroot . '/lib/questionlib.php');\nrequire_once($CFG->dirroot . '/question/format/xml/format.php');\nrequire_once($CFG->dirroot . '/mod/quiz/lib.php');\nrequire_once($CFG->dirroot . '/mod/quiz/locallib.php');\ntry {\n    global $DB, $USER;\n    $USER = get_admin();\n\n    $course = $DB->get_record('course', ['shortname' => 'GUESSIT01']);\n    if (!$course) {\n        throw new \\RuntimeException(\"Course 'GUESSIT01' was not found.\");\n    }\n\n    $questionbanks = $DB->get_records('qbank', ['course' => $course->id]);\n    if (count($questionbanks) !== 1) {\n        throw new \\RuntimeException(\"Expected one question bank for course 'GUESSIT01'; found \" . count($questionbanks) . '.');\n    }\n    $questionbank = reset($questionbanks);\n    $questionbankcm = get_coursemodule_from_instance('qbank', $questionbank->id, $course->id);\n    if (!$questionbankcm) {\n        throw new \\RuntimeException(\"The course-module record for the 'GUESSIT01' question bank was not found.\");\n    }\n    $questionbankcontext = context_module::instance($questionbankcm->id);\n    $category = question_get_default_category($questionbankcontext->id, true);\n    if (!$category) {\n        throw new \\RuntimeException(\"The default question category for course 'GUESSIT01' was not found or created.\");\n    }\n\n    $findquestion = static function () use ($DB, $category) {\n        $sql = \"SELECT q.*\n                  FROM {question} q\n                  JOIN {question_versions} qv ON qv.questionid = q.id\n                  JOIN {question_bank_entries} qbe ON qbe.id = qv.questionbankentryid\n                 WHERE qbe.questioncategoryid = :categoryid\n                   AND q.qtype = :qtype\n                   AND q.name = :name\n              ORDER BY qv.version DESC, q.id DESC\";\n        $questions = $DB->get_records_sql($sql, [\n            'categoryid' => $category->id,\n            'qtype' => 'guessit',\n            'name' => 'guessit-001',\n        ], 0, 2);\n        if (count($questions) > 1) {\n            throw new \\RuntimeException(\"More than one 'guessit-001' Guess It question exists in the target category.\");\n        }\n        return $questions ? reset($questions) : false;\n    };\n\n    $question = $findquestion();\n    if (!$question) {\n        $xml = <<<'GUESSITXML'\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<quiz>\n  <question type=\"guessit\">\n    <name>\n      <text>guessit-001</text>\n    </name>\n    <questiontext format=\"html\">\n      <text><![CDATA[<p>Guess this English proverb.</p>]]></text>\n    </questiontext>\n    <generalfeedback format=\"html\">\n      <text><![CDATA[<p>Well-done!</p>]]></text>\n    </generalfeedback>\n    <defaultgrade>6</defaultgrade>\n    <penalty>0</penalty>\n    <hidden>0</hidden>\n    <idnumber></idnumber>\n    <guessitgaps>Too many cooks spoil the broth.</guessitgaps>\n    <nbtriesbeforehelp>6</nbtriesbeforehelp>\n    <nbmaxtrieswordle>0</nbmaxtrieswordle>\n    <wordle>0</wordle>\n  </question>\n</quiz>\nGUESSITXML;\n        $tmpdir = make_request_directory();\n        $tmpfile = $tmpdir . '/guessit.xml';\n        if (file_put_contents($tmpfile, $xml) === false) {\n            throw new \\RuntimeException('Could not write the temporary Guess It question import file.');\n        }\n\n        $qformat = new qformat_xml();\n        $qformat->setCategory($category);\n        $qformat->setContexts([$questionbankcontext]);\n        $qformat->setCourse($course);\n        $qformat->setFilename($tmpfile);\n        $qformat->setMatchgrades('error');\n        $qformat->setCatfromfile(false);\n        $qformat->setContextfromfile(false);\n        $qformat->setStoponerror(true);\n        $qformat->set_display_progress(false);\n        ob_start();\n        try {\n            $imported = $qformat->importpreprocess()\n                && $qformat->importprocess()\n                && $qformat->importpostprocess();\n        } finally {\n            ob_end_clean();\n        }\n        if (!$imported || count($qformat->questionids) !== 1) {\n            throw new \\RuntimeException('Moodle XML import did not create exactly one Guess It question.');\n        }\n        $question = $findquestion();\n        if (!$question || (int) $question->id !== (int) reset($qformat->questionids)) {\n            throw new \\RuntimeException(\"The imported 'guessit-001' question could not be retrieved from its category.\");\n        }\n    }\n\n    $quizzes = $DB->get_records('quiz', ['course' => $course->id, 'name' => 'Testing Guess It!']);\n    if (count($quizzes) !== 1) {\n        throw new \\RuntimeException(\"Expected one quiz named 'Testing Guess It!' in course 'GUESSIT01'; found \" . count($quizzes) . '.');\n    }\n    $quiz = reset($quizzes);\n    $quizcm = get_coursemodule_from_instance('quiz', $quiz->id, $course->id);\n    if (!$quizcm) {\n        throw new \\RuntimeException(\"The course-module record for quiz 'Testing Guess It!' was not found.\");\n    }\n    $quiz->cmid = $quizcm->id;\n    $quiz->cmidnumber = $quizcm->idnumber ?? '';\n\n    if ((int) $quiz->cmid !== 2) {\n        throw new \\RuntimeException(\"Quiz 'Testing Guess It!' must have course-module ID 2 for the configured landing page; found {$quiz->cmid}.\");\n    }\n\n    $questionbankentry = get_question_bank_entry($question->id);\n    $assignedcount = $DB->count_records_sql(\n        \"SELECT COUNT(1)\n           FROM {quiz_slots} slot\n           JOIN {question_references} qr ON qr.itemid = slot.id\n          WHERE slot.quizid = :quizid\n            AND qr.component = :component\n            AND qr.questionarea = :questionarea\n            AND qr.questionbankentryid = :questionbankentryid\",\n        [\n            'quizid' => $quiz->id,\n            'component' => 'mod_quiz',\n            'questionarea' => 'slot',\n            'questionbankentryid' => $questionbankentry->id,\n        ]\n    );\n    if ($assignedcount > 1) {\n        throw new \\RuntimeException(\"The 'guessit-001' question is assigned to the quiz more than once.\");\n    }\n    if ($assignedcount === 0) {\n        quiz_add_quiz_question($question->id, $quiz, 0, 6);\n    }\n\n    $assignedcount = $DB->count_records_sql(\n        \"SELECT COUNT(1)\n           FROM {quiz_slots} slot\n           JOIN {question_references} qr ON qr.itemid = slot.id\n          WHERE slot.quizid = :quizid\n            AND qr.component = :component\n            AND qr.questionarea = :questionarea\n            AND qr.questionbankentryid = :questionbankentryid\",\n        [\n            'quizid' => $quiz->id,\n            'component' => 'mod_quiz',\n            'questionarea' => 'slot',\n            'questionbankentryid' => $questionbankentry->id,\n        ]\n    );\n    if ($assignedcount !== 1) {\n        throw new \\RuntimeException(\"The 'guessit-001' question could not be assigned to the quiz.\");\n    }\n\n    $quizsettings = \\mod_quiz\\quiz_settings::create($quiz->id);\n    $quizsettings->get_grade_calculator()->recompute_quiz_sumgrades();\n    $quiz = $DB->get_record('quiz', ['id' => $quiz->id]);\n    if (!$quiz || (float) $quiz->sumgrades !== 6.0 || (float) $quiz->grade !== 6.0) {\n        throw new \\RuntimeException(\"Quiz grade and sum-of-grades must both equal 6.\");\n    }\n    $quiz->cmid = $quizcm->id;\n    $quiz->cmidnumber = $quizcm->idnumber ?? '';\n    quiz_update_grades($quiz);\n\n    echo \"Provisioned quiz 'Testing Guess It!' with question 'guessit-001' at cmid={$quiz->cmid}.\\n\";\n} catch (\\Throwable $e) {\n    fwrite(STDERR, 'Guess It quiz provisioning failed: ' . $e->getMessage() . \"\\n\");\n}"
     },
     {
       "step": "setLandingPage",
-      "path": "/question/edit.php?courseid=2"
+      "path": "/mod/quiz/view.php?id=2"
     }
   ]
 }
